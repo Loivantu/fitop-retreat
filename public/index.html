@@ -1130,7 +1130,7 @@ new MutationObserver(ms=>{ const lang=window.__lang||'vi'; if(lang==='vi') retur
   if(!$('pm-pick')) return;
 
   var pkg='online', wanted=250000, code='';
-  var order=null, creating=false, timer=null, poll=null, pollUntil=0, seen=false;
+  var order=null, creating=false, timer=null, poll=null, pollUntil=0, seen=false, lanGoi=0, lanHong=0;
 
   function fmt(n){ return (n||0).toLocaleString('vi-VN')+'đ'; }
   function msg(t,ok){ var m=$('pm-cmsg'); if(!m) return; m.textContent=t||''; m.className='pm-cmsg '+(ok?'ok':'err'); }
@@ -1144,7 +1144,7 @@ new MutationObserver(ms=>{ const lang=window.__lang||'vi'; if(lang==='vi') retur
 
   function paint(){
     var o=order;
-    $('pm-amt').textContent  = o ? fmt(o.total)      : 'Đang tạo mã đơn…';
+    $('pm-amt').textContent  = o ? fmt(o.total) : (creating ? 'Đang tạo mã đơn…' : 'Chọn gói để lấy mã');
     $('pm-oid').textContent  = o ? o.order_id        : '…';
     $('pm-note').textContent = o ? o.transfer_note   : 'FITOP …';
     var orig=$('pm-orig');
@@ -1162,7 +1162,7 @@ new MutationObserver(ms=>{ const lang=window.__lang||'vi'; if(lang==='vi') retur
   function restore(){ try{ var s=sessionStorage.getItem('fitop_don'); return s?JSON.parse(s):null; }catch(e){ return null; } }
 
   function fail(c){
-    order=null; paint();
+    order=null; lanHong++; paint();
     var t='Chưa tạo được mã đơn. Anh chị bấm “Tạo mã đơn mới”, hoặc nhắn Zalo để FiTop gửi mã đơn.';
     if(c==='invalid_amount') t='Gói tư vấn nhận số tiền từ 100.000đ trở lên.';
     if(c==='unknown_package') t='Gói không hợp lệ. Anh chị chọn lại giúp em.';
@@ -1173,6 +1173,8 @@ new MutationObserver(ms=>{ const lang=window.__lang||'vi'; if(lang==='vi') retur
     if(creating) return;
     if(pkg==='other' && (!wanted || wanted<100000)){ order=null; paint(); msg('Gói tư vấn: nhập số tiền từ 100.000đ.',false); return; }
     creating=true; stopPoll(); order=null; paint();
+    var phien=++lanGoi;
+    setTimeout(function(){ if(creating&&phien===lanGoi){ creating=false; fail('mang'); } },12000);
     var body={ package:pkg, coupon:code||null };
     if(pkg==='other') body.amount=wanted;
     fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
@@ -1180,7 +1182,7 @@ new MutationObserver(ms=>{ const lang=window.__lang||'vi'; if(lang==='vi') retur
       .then(function(res){
         creating=false;
         if(!res.ok||!res.j||!res.j.order_id){ fail(res.j&&res.j.error); return; }
-        order=res.j; remember(); paint();
+        order=res.j; lanHong=0; remember(); paint();
         if(code){
           if(order.coupon) msg('Đã áp dụng '+order.coupon+'. Giảm '+fmt(order.discount)+'.',true);
           else msg('Mã không hợp lệ, đã hết hạn, hoặc không áp dụng cho gói đang chọn.',false);
@@ -1259,7 +1261,7 @@ new MutationObserver(ms=>{ const lang=window.__lang||'vi'; if(lang==='vi') retur
   var ci=$('pm-code'); if(ci) ci.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); applyCode(); } });
   var rm=$('pm-rmcode');
   if(rm) rm.addEventListener('click',function(){ $('pm-code').value=''; code=''; seen=true; msg('Đã bỏ mã ưu đãi.',true); schedule(0); });
-  var nb=$('pm-new'); if(nb) nb.addEventListener('click',function(){ seen=true; create(); });
+  var nb=$('pm-new'); if(nb) nb.addEventListener('click',function(){ seen=true; lanHong=0; creating=false; create(); });
 
   document.querySelectorAll('.pm-copy:not(.pm-rm)').forEach(function(btn){
     btn.addEventListener('click',function(){
@@ -1287,14 +1289,21 @@ new MutationObserver(ms=>{ const lang=window.__lang||'vi'; if(lang==='vi') retur
     if(btn){ $('pm-pick').querySelectorAll('.pm-opt').forEach(function(x){ x.classList.remove('pm-on'); }); btn.classList.add('pm-on'); }
   } else { paint(); }
 
-  /* Chỉ tạo mã đơn khi khách thật sự nhìn tới khối thanh toán */
+  /* Chỉ tạo mã đơn khi khách thật sự tới khối thanh toán — đo trực tiếp vị trí,
+     không dùng IntersectionObserver (có máy không kích hoạt, khách kẹt ở màn chờ). */
   var card=document.querySelector('.pm-card');
-  if(card&&'IntersectionObserver' in window){
-    var io=new IntersectionObserver(function(es){
-      es.forEach(function(en){ if(en.isIntersecting){ seen=true; io.disconnect(); if(!order) create(); } });
-    },{threshold:.2});
-    io.observe(card);
-  } else { seen=true; if(!order) create(); }
+  function toiNoi(){
+    if(!card) return false;
+    var r=card.getBoundingClientRect();
+    return r.top < innerHeight+300 && r.bottom > -300;
+  }
+  function thuTao(){ if(order||creating||lanHong>=3||!toiNoi()) return; seen=true; create(); }
+  if(card){
+    addEventListener('scroll',thuTao,{passive:true});
+    addEventListener('resize',thuTao,{passive:true});
+    card.addEventListener('click',function(){ seen=true; if(!order&&!creating) create(); },true);
+    setTimeout(thuTao,400); setTimeout(thuTao,1500); setTimeout(thuTao,4000);
+  } else { seen=true; create(); }
 })();
 /* ---- CRM BRIDGE (Cách 3): đẩy ngầm lead sang HubSpot Forms API ----
    Điền Portal ID + Form GUID lấy từ HubSpot (Marketing → Forms → form → Embed/Share → "portalId" & "formId").
