@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>FiTop Retreat — Bảng theo dõi</title>
+<link rel="icon" href="favicon.png">
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#16202E; --navy-2:#1E2B3D; --gold:#C69A3A; --gold-2:#E3C77A;
+  --ink:#1A1A1A; --grey:#6B7280; --line:#E5E7EB; --bg:#F6F7F9;
+  --ok:#17803D; --warn:#B45309; --bad:#B91C1C; --card:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0F1621; --card:#17212F; --ink:#E8EDF3; --grey:#9AA7B6;
+    --line:#26344A; --navy:#0B121B;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0F1621; --card:#17212F; --ink:#E8EDF3; --grey:#9AA7B6;
+  --line:#26344A; --navy:#0B121B;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:15px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px 64px}
+
+/* ---- thanh đầu ---- */
+header{background:var(--navy);color:#fff;padding:18px 0;border-bottom:3px solid var(--gold)}
+header .wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding-bottom:0}
+header h1{font-family:Lora,Georgia,serif;font-size:19px;margin:0;font-weight:700}
+header .sub{color:var(--gold-2);font-size:12.5px;margin-top:2px}
+header .spacer{flex:1}
+.pill{font-size:12px;padding:5px 11px;border-radius:999px;background:rgba(255,255,255,.1);color:#fff}
+.btn{font:inherit;font-size:13.5px;font-weight:600;padding:9px 16px;border-radius:9px;
+  border:1px solid var(--gold);background:var(--gold);color:#16202E;cursor:pointer}
+.btn:hover{background:var(--gold-2)}
+.btn.ghost{background:transparent;color:var(--gold-2)}
+.btn.sm{padding:6px 12px;font-size:12.5px;border-radius:7px}
+.btn:disabled{opacity:.5;cursor:default}
+
+/* ---- đăng nhập ---- */
+#login{max-width:430px;margin:80px auto;background:var(--card);border:1px solid var(--line);
+  border-radius:16px;padding:32px}
+#login h2{font-family:Lora,Georgia,serif;margin:0 0 6px;font-size:21px}
+#login p{color:var(--grey);font-size:13.5px;margin:0 0 20px}
+input[type=email]{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:9px;
+  font:inherit;background:var(--card);color:var(--ink);margin-bottom:12px}
+#login .btn{width:100%}
+.msg{margin-top:14px;font-size:13.5px;padding:11px 13px;border-radius:9px;display:none}
+.msg.ok{display:block;background:#E8F5EC;color:var(--ok)}
+.msg.err{display:block;background:#FDECEC;color:var(--bad)}
+
+/* ---- thẻ số liệu ---- */
+.grid{display:grid;gap:14px;margin-top:22px}
+.g5{grid-template-columns:repeat(5,1fr)}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:1fr 1fr}
+@media(max-width:900px){.g5{grid-template-columns:repeat(2,1fr)}.g3,.g2{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:17px}
+.stat .lbl{font-size:12px;color:var(--grey);text-transform:uppercase;letter-spacing:.4px}
+.stat .num{font-family:Lora,Georgia,serif;font-size:27px;font-weight:700;margin-top:5px;line-height:1.15}
+.stat .sub{font-size:12px;color:var(--grey);margin-top:3px}
+.gold{color:var(--gold)}
+h3{font-family:Lora,Georgia,serif;font-size:16px;margin:0 0 13px;display:flex;align-items:center;gap:8px}
+h3 .tag{font-family:Inter;font-size:11px;font-weight:600;color:var(--grey);
+  background:var(--bg);padding:2px 8px;border-radius:999px;text-transform:none;letter-spacing:0}
+
+/* ---- biểu đồ cột ---- */
+.bars{display:flex;align-items:flex-end;gap:3px;height:140px;margin-top:6px}
+.bars .b{flex:1;background:linear-gradient(180deg,var(--gold-2),var(--gold));
+  border-radius:3px 3px 0 0;min-height:2px;position:relative}
+.bars .b:hover{background:var(--navy)}
+.bars .b span{position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
+  background:var(--navy);color:#fff;font-size:11px;padding:3px 7px;border-radius:5px;
+  white-space:nowrap;opacity:0;pointer-events:none;margin-bottom:4px;z-index:2}
+.bars .b:hover span{opacity:1}
+.axis{display:flex;justify-content:space-between;font-size:11px;color:var(--grey);margin-top:7px}
+
+/* ---- bảng ---- */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.4px;
+  color:var(--grey);padding:9px 10px;border-bottom:2px solid var(--line);font-weight:600}
+td{padding:10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.mono{font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:12.5px}
+.badge{font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:999px;white-space:nowrap}
+.b-pending{background:#FEF3C7;color:var(--warn)}
+.b-paid{background:#DCFCE7;color:var(--ok)}
+.b-mismatch{background:#FEE2E2;color:var(--bad)}
+.b-other{background:var(--bg);color:var(--grey)}
+.empty{text-align:center;color:var(--grey);padding:28px;font-size:13.5px}
+.srcrow{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:13.5px}
+.srcrow .nm{width:92px;flex-shrink:0}
+.srcrow .track{flex:1;height:9px;background:var(--bg);border-radius:999px;overflow:hidden}
+.srcrow .fill{height:100%;background:var(--gold);border-radius:999px}
+.srcrow .n{width:52px;text-align:right;color:var(--grey);font-size:12.5px}
+.foot{margin-top:22px;font-size:12px;color:var(--grey);text-align:center}
+.hide{display:none!important}
+</style>
+</head>
+<body>
+
+<div id="login">
+  <h2>Bảng theo dõi FiTop</h2>
+  <p>Nhập email quản trị. Hệ thống gửi một đường dẫn đăng nhập vào hộp thư — không cần mật khẩu.</p>
+  <input type="email" id="email" placeholder="loivantu2019@gmail.com" autocomplete="email">
+  <button class="btn" id="send">Gửi link đăng nhập</button>
+  <div class="msg" id="lmsg"></div>
+</div>
+
+<div id="app" class="hide">
+  <header>
+    <div class="wrap">
+      <div>
+        <h1>FiTop Retreat</h1>
+        <div class="sub">Bảng theo dõi lượt truy cập &amp; đơn hàng</div>
+      </div>
+      <div class="spacer"></div>
+      <span class="pill" id="who"></span>
+      <button class="btn sm" id="reload">Làm mới</button>
+      <button class="btn sm ghost" id="out">Thoát</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="grid g5" id="cards"></div>
+
+    <div class="grid g2">
+      <div class="card">
+        <h3>Lượt truy cập theo giờ <span class="tag">24 giờ gần nhất</span></h3>
+        <div class="bars" id="bar-hour"></div>
+        <div class="axis" id="ax-hour"></div>
+      </div>
+      <div class="card">
+        <h3>Lượt truy cập theo ngày <span class="tag">30 ngày gần nhất</span></h3>
+        <div class="bars" id="bar-day"></div>
+        <div class="axis" id="ax-day"></div>
+      </div>
+    </div>
+
+    <div class="grid g3">
+      <div class="card">
+        <h3>Luỹ kế theo tháng</h3>
+        <table><tbody id="t-month"></tbody></table>
+      </div>
+      <div class="card">
+        <h3>Khách đến từ đâu <span class="tag">30 ngày</span></h3>
+        <div id="srcs"></div>
+      </div>
+      <div class="card">
+        <h3>Giao dịch gần nhất</h3>
+        <table><tbody id="t-event"></tbody></table>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Đơn hàng <span class="tag">50 đơn gần nhất</span></h3>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr>
+            <th>Mã đơn</th><th>Khách</th><th>Gói</th><th>Số tiền</th>
+            <th>CTV</th><th>Trạng thái</th><th>Lúc</th><th></th>
+          </tr></thead>
+          <tbody id="t-order"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="foot">
+      Tự làm mới mỗi 60 giây · Cập nhật lúc <span id="ts">—</span><br>
+      CÔNG TY TNHH TƯ VẤN &amp; DỊCH VỤ FITOP · MST 0317740194
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+(function(){
+  var SB_URL = 'https://kevmadvmqsqhaltznknq.supabase.co';
+  var SB_KEY = 'sb_publishable_xdMiANHLWt6isE5I9XbyxA_VWfzizFQ';
+  var sb = window.supabase.createClient(SB_URL, SB_KEY);
+
+  var $ = function(id){ return document.getElementById(id); };
+  var fmt = function(n){ return (Number(n)||0).toLocaleString('vi-VN'); };
+  var money = function(n){ return fmt(n) + 'đ'; };
+  var lastPaid = null, timer = null;
+
+  /* ---------------- đăng nhập ---------------- */
+  function msg(t, ok){
+    var m = $('lmsg'); m.textContent = t; m.className = 'msg ' + (ok ? 'ok' : 'err');
+  }
+
+  $('send').onclick = async function(){
+    var em = $('email').value.trim();
+    if(!em){ msg('Chưa nhập email.', false); return; }
+    this.disabled = true; this.textContent = 'Đang gửi…';
+    var r = await sb.auth.signInWithOtp({
+      email: em,
+      options: { emailRedirectTo: window.location.href }
+    });
+    this.disabled = false; this.textContent = 'Gửi link đăng nhập';
+    if(r.error) msg('Không gửi được: ' + r.error.message, false);
+    else msg('Đã gửi. Mở hộp thư ' + em + ' và bấm vào đường dẫn trong email.', true);
+  };
+  $('email').addEventListener('keydown', function(e){ if(e.key==='Enter') $('send').click(); });
+
+  $('out').onclick = async function(){
+    await sb.auth.signOut();
+    clearInterval(timer);
+    $('app').classList.add('hide'); $('login').classList.remove('hide');
+  };
+  $('reload').onclick = function(){ load(); };
+
+  /* ---------------- vẽ ---------------- */
+  function bars(elBar, elAx, rows, keyLabel, keyVal, labeller){
+    var max = Math.max.apply(null, rows.map(function(r){ return Number(r[keyVal])||0; }).concat([1]));
+    elBar.innerHTML = rows.map(function(r){
+      var v = Number(r[keyVal])||0;
+      var h = Math.max(2, Math.round(v / max * 100));
+      return '<div class="b" style="height:'+h+'%"><span>'+labeller(r)+': '+fmt(v)+'</span></div>';
+    }).join('') || '<div class="empty" style="width:100%">Chưa có dữ liệu</div>';
+    if(rows.length){
+      elAx.innerHTML = '<span>'+labeller(rows[0])+'</span><span>'+labeller(rows[rows.length-1])+'</span>';
+    } else { elAx.innerHTML = ''; }
+  }
+
+  function badge(s){
+    var map = {pending:['b-pending','Chờ thanh toán'], paid:['b-paid','Đã thanh toán'],
+               mismatch:['b-mismatch','Lệch số tiền'], cancelled:['b-other','Đã huỷ'],
+               refunded:['b-other','Đã hoàn']};
+    var m = map[s] || ['b-other', s];
+    return '<span class="badge '+m[0]+'">'+m[1]+'</span>';
+  }
+
+  function when(iso){
+    if(!iso) return '—';
+    var d = new Date(iso);
+    return d.toLocaleString('vi-VN', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+  }
+
+  function render(d){
+    var s = d.tong_quan || {};
+    $('who').textContent = d.nguoi_dung.email;
+
+    $('cards').innerHTML = [
+      ['Lượt xem hôm nay', fmt(s.luot_hom_nay), fmt(s.khach_hom_nay)+' khách'],
+      ['Lượt xem tháng này', fmt(s.luot_thang_nay), fmt(s.khach_thang_nay)+' khách'],
+      ['Luỹ kế tất cả', fmt(s.luot_tong), 'từ khi bật đếm'],
+      ['Doanh thu tháng', money(s.doanh_thu_thang), fmt(s.don_da_tra)+' đơn đã trả'],
+      ['Đơn chờ xử lý', fmt(s.don_cho), (Number(s.don_lech)||0) ? fmt(s.don_lech)+' đơn lệch tiền' : 'không có đơn lệch']
+    ].map(function(c,i){
+      return '<div class="card stat"><div class="lbl">'+c[0]+'</div>'+
+             '<div class="num'+(i>=3?' gold':'')+'">'+c[1]+'</div>'+
+             '<div class="sub">'+c[2]+'</div></div>';
+    }).join('');
+
+    bars($('bar-hour'), $('ax-hour'), d.theo_gio, 'gio', 'luot', function(r){
+      return new Date(r.gio).toLocaleTimeString('vi-VN',{hour:'2-digit'})+'h';
+    });
+    bars($('bar-day'), $('ax-day'), d.theo_ngay, 'ngay', 'luot', function(r){
+      var p = String(r.ngay).split('-'); return p[2]+'/'+p[1];
+    });
+
+    $('t-month').innerHTML = (d.theo_thang.length ? d.theo_thang.slice().reverse() : [])
+      .map(function(r){
+        return '<tr><td class="mono">'+r.thang+'</td><td style="text-align:right">'+
+               fmt(r.luot)+' lượt</td><td style="text-align:right;color:var(--grey)">'+
+               fmt(r.khach)+' khách</td></tr>'; }).join('')
+      || '<tr><td class="empty">Chưa có dữ liệu</td></tr>';
+
+    var tot = d.nguon.reduce(function(a,b){ return a + Number(b.luot); }, 0) || 1;
+    $('srcs').innerHTML = d.nguon.map(function(r){
+      return '<div class="srcrow"><div class="nm">'+r.nguon+'</div>'+
+             '<div class="track"><div class="fill" style="width:'+(r.luot/tot*100)+'%"></div></div>'+
+             '<div class="n">'+fmt(r.luot)+'</div></div>'; }).join('')
+      || '<div class="empty">Chưa có dữ liệu</div>';
+
+    $('t-event').innerHTML = d.giao_dich.map(function(e){
+      return '<tr><td class="mono">'+(e.matched_order||'—')+'</td>'+
+             '<td style="text-align:right">'+money(e.amount)+'</td>'+
+             '<td style="color:var(--grey);font-size:12px">'+when(e.created_at)+'</td></tr>'; }).join('')
+      || '<tr><td class="empty">Chưa có giao dịch</td></tr>';
+
+    $('t-order').innerHTML = d.don_hang.map(function(o){
+      var act = (o.status === 'pending' || o.status === 'mismatch')
+        ? '<button class="btn sm" data-pay="'+o.order_id+'">Xác nhận đã nhận tiền</button>' : '';
+      return '<tr>'+
+        '<td class="mono"><b>'+o.order_id+'</b></td>'+
+        '<td>'+(o.customer_name || '—')+'<div style="color:var(--grey);font-size:12px">'+(o.customer_phone||'')+'</div></td>'+
+        '<td>'+o.package+'</td>'+
+        '<td style="text-align:right"><b>'+money(o.paid_amount || o.total)+'</b></td>'+
+        '<td class="mono">'+(o.ctv_code || '—')+'</td>'+
+        '<td>'+badge(o.status)+'</td>'+
+        '<td style="color:var(--grey);font-size:12px">'+when(o.paid_at || o.created_at)+'</td>'+
+        '<td style="text-align:right">'+act+'</td></tr>'; }).join('')
+      || '<tr><td colspan="8" class="empty">Chưa có đơn nào</td></tr>';
+
+    Array.prototype.forEach.call(document.querySelectorAll('[data-pay]'), function(b){
+      b.onclick = function(){ markPaid(b.getAttribute('data-pay'), b); };
+    });
+
+    // Báo khi có đơn mới được trả tiền trong lúc đang mở trang
+    var paidNow = Number(s.don_da_tra) || 0;
+    if(lastPaid !== null && paidNow > lastPaid){
+      try{
+        if(window.Notification && Notification.permission === 'granted'){
+          new Notification('FiTop — có đơn vừa thanh toán', { body: 'Tổng đã trả: ' + paidNow + ' đơn' });
+        }
+      }catch(e){}
+      document.title = '🔔 Đơn mới — FiTop Retreat';
+    }
+    lastPaid = paidNow;
+
+    $('ts').textContent = new Date().toLocaleTimeString('vi-VN');
+  }
+
+  /* ---------------- gọi dữ liệu ---------------- */
+  async function token(){
+    var s = await sb.auth.getSession();
+    return s.data.session ? s.data.session.access_token : null;
+  }
+
+  async function markPaid(oid, btn){
+    if(!confirm('Xác nhận đã nhận đủ tiền cho đơn ' + oid + '?\n\nHoa hồng CTV sẽ được ghi tự động.')) return;
+    btn.disabled = true; btn.textContent = 'Đang lưu…';
+    var t = await token();
+    var r = await fetch('/api/mark-paid', {
+      method:'POST',
+      headers:{'content-type':'application/json','authorization':'Bearer '+t},
+      body: JSON.stringify({ order_id: oid })
+    });
+    if(r.ok){ load(); } else { btn.disabled = false; btn.textContent = 'Lỗi — thử lại'; }
+  }
+
+  async function load(){
+    var t = await token();
+    if(!t) return showLogin();
+    var r = await fetch('/api/stats', { headers:{ 'authorization':'Bearer '+t } });
+    if(r.status === 401) return showLogin();
+    if(r.status === 403){
+      $('login').classList.remove('hide'); $('app').classList.add('hide');
+      msg('Tài khoản này chưa được cấp quyền quản trị.', false);
+      return;
+    }
+    if(!r.ok) return;
+    render(await r.json());
+  }
+
+  function showLogin(){
+    clearInterval(timer);
+    $('app').classList.add('hide'); $('login').classList.remove('hide');
+  }
+
+  async function start(){
+    var s = await sb.auth.getSession();
+    if(!s.data.session){ showLogin(); return; }
+    $('login').classList.add('hide'); $('app').classList.remove('hide');
+    try{ if(window.Notification && Notification.permission === 'default') Notification.requestPermission(); }catch(e){}
+    await load();
+    clearInterval(timer);
+    timer = setInterval(load, 60000);
+  }
+
+  sb.auth.onAuthStateChange(function(){ start(); });
+  start();
+})();
+</script>
+</body>
+</html>

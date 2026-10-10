@@ -13,6 +13,7 @@
 //   5. Chỉ đơn 'pending' mới được chuyển sang 'paid'.
 import crypto from 'node:crypto';
 import { admin, json } from './_lib/supabase.js';
+import { pushOrderToHubspot } from './_lib/hubspot.js';
 
 /* ---------- 1. Xác thực nguồn gọi ---------- */
 function authenticate(req, rawBody) {
@@ -201,6 +202,14 @@ export default async (req) => {
   await logEvent(updated && updated.length ? 'matched' : 'duplicate', oid);
 
   // Trigger accrue_commission() trong Supabase tự ghi hoa hồng CTV.
+  // Báo sang CRM để HubSpot biết lead này đã thành khách trả tiền.
+  if (updated && updated.length) {
+    const { data: full } = await sb.from('orders')
+      .select('order_id, package, total, paid_amount, customer_name, customer_phone, customer_email, coupon_code, ctv_code')
+      .eq('order_id', oid).maybeSingle();
+    if (full) await pushOrderToHubspot(full, 'da_thanh_toan');
+  }
+
   return json(200, { success: true, matched: true, status: 'paid', order_id: oid });
 };
 

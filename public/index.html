@@ -1234,5 +1234,41 @@ window.hsLead = function(formKey, data){
   });
 })();
 </script>
+<script>
+/* ---- ĐẾM LƯỢT TRUY CẬP ---- *
+   Gửi một tín hiệu nhẹ về /api/track khi trang tải xong.
+   Bọc trong try/catch và luôn .catch() — nếu hỏng thì trang vẫn chạy bình thường. */
+(function(){
+  try{
+    var sid;
+    try{
+      sid = sessionStorage.getItem('fitop_sid');
+      if(!sid){ sid = Math.random().toString(36).slice(2) + Date.now().toString(36); sessionStorage.setItem('fitop_sid', sid); }
+    }catch(e){ sid = null; }
+
+    var utm = null;
+    try{ utm = new URLSearchParams(location.search).get('utm_source'); }catch(e){}
+
+    var send = function(){
+      try{
+        fetch('/api/track', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          keepalive:true,
+          body: JSON.stringify({
+            path: location.pathname + location.search,
+            referrer: document.referrer || null,
+            utm_source: utm,
+            session_id: sid
+          })
+        }).catch(function(){});
+      }catch(e){}
+    };
+
+    if(document.readyState === 'complete') send();
+    else window.addEventListener('load', send, {once:true});
+  }catch(e){}
+})();
+</script>
 </body>
 </html>
