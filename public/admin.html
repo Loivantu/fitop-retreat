@@ -106,9 +106,9 @@ tr:last-child td{border-bottom:none}
 
 <div id="login">
   <h2>Bảng theo dõi FiTop</h2>
-  <p>Nhập email quản trị. Hệ thống gửi một đường dẫn đăng nhập vào hộp thư — không cần mật khẩu.</p>
-  <input type="email" id="email" placeholder="loivantu2019@gmail.com" autocomplete="email">
-  <button class="btn" id="send">Gửi link đăng nhập</button>
+  <p>Nhập mã truy cập quản trị. Máy này sẽ nhớ mã, lần sau vào thẳng.</p>
+  <input type="password" id="pass" placeholder="Mã truy cập" autocomplete="current-password" spellcheck="false">
+  <button class="btn" id="send">Vào bảng theo dõi</button>
   <div class="msg" id="lmsg"></div>
 </div>
 
@@ -177,13 +177,8 @@ tr:last-child td{border-bottom:none}
   </div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 (function(){
-  var SB_URL = 'https://kevmadvmqsqhaltznknq.supabase.co';
-  var SB_KEY = 'sb_publishable_xdMiANHLWt6isE5I9XbyxA_VWfzizFQ';
-  var sb = window.supabase.createClient(SB_URL, SB_KEY);
-
   var $ = function(id){ return document.getElementById(id); };
   var fmt = function(n){ return (Number(n)||0).toLocaleString('vi-VN'); };
   var money = function(n){ return fmt(n) + 'đ'; };
@@ -194,23 +189,25 @@ tr:last-child td{border-bottom:none}
     var m = $('lmsg'); m.textContent = t; m.className = 'msg ' + (ok ? 'ok' : 'err');
   }
 
-  $('send').onclick = async function(){
-    var em = $('email').value.trim();
-    if(!em){ msg('Chưa nhập email.', false); return; }
-    this.disabled = true; this.textContent = 'Đang gửi…';
-    var r = await sb.auth.signInWithOtp({
-      email: em,
-      options: { emailRedirectTo: window.location.href }
-    });
-    this.disabled = false; this.textContent = 'Gửi link đăng nhập';
-    if(r.error) msg('Không gửi được: ' + r.error.message, false);
-    else msg('Đã gửi. Mở hộp thư ' + em + ' và bấm vào đường dẫn trong email.', true);
-  };
-  $('email').addEventListener('keydown', function(e){ if(e.key==='Enter') $('send').click(); });
+  var KEY = 'fitop_admin_pass';
+  function getPass(){ try{ return sessionStorage.getItem(KEY) || localStorage.getItem(KEY) || ''; }catch(e){ return ''; } }
+  function setPass(v){ try{ localStorage.setItem(KEY, v); }catch(e){ try{ sessionStorage.setItem(KEY, v); }catch(e2){} } }
+  function clearPass(){ try{ localStorage.removeItem(KEY); }catch(e){} try{ sessionStorage.removeItem(KEY); }catch(e){} }
 
-  $('out').onclick = async function(){
-    await sb.auth.signOut();
-    clearInterval(timer);
+  $('send').onclick = async function(){
+    var v = ($('pass').value || '').trim();
+    if(!v){ msg('Chưa nhập mã truy cập.', false); return; }
+    this.disabled = true; this.textContent = 'Đang kiểm tra…';
+    setPass(v);
+    var ok = await tryLoad();
+    this.disabled = false; this.textContent = 'Vào bảng theo dõi';
+    if(!ok){ clearPass(); msg('Mã truy cập không đúng.', false); }
+  };
+  $('pass').addEventListener('keydown', function(e){ if(e.key==='Enter') $('send').click(); });
+
+  $('out').onclick = function(){
+    clearPass(); clearInterval(timer);
+    $('pass').value = ''; msg('', true);
     $('app').classList.add('hide'); $('login').classList.remove('hide');
   };
   $('reload').onclick = function(){ load(); };
@@ -319,35 +316,38 @@ tr:last-child td{border-bottom:none}
   }
 
   /* ---------------- gọi dữ liệu ---------------- */
-  async function token(){
-    var s = await sb.auth.getSession();
-    return s.data.session ? s.data.session.access_token : null;
-  }
 
   async function markPaid(oid, btn){
     if(!confirm('Xác nhận đã nhận đủ tiền cho đơn ' + oid + '?\n\nHoa hồng CTV sẽ được ghi tự động.')) return;
     btn.disabled = true; btn.textContent = 'Đang lưu…';
-    var t = await token();
     var r = await fetch('/api/mark-paid', {
       method:'POST',
-      headers:{'content-type':'application/json','authorization':'Bearer '+t},
+      headers:{'content-type':'application/json','x-admin-pass': getPass()},
       body: JSON.stringify({ order_id: oid })
     });
     if(r.ok){ load(); } else { btn.disabled = false; btn.textContent = 'Lỗi — thử lại'; }
   }
 
   async function load(){
-    var t = await token();
-    if(!t) return showLogin();
-    var r = await fetch('/api/stats', { headers:{ 'authorization':'Bearer '+t } });
-    if(r.status === 401) return showLogin();
-    if(r.status === 403){
-      $('login').classList.remove('hide'); $('app').classList.add('hide');
-      msg('Tài khoản này chưa được cấp quyền quản trị.', false);
-      return;
-    }
-    if(!r.ok) return;
+    var p = getPass();
+    if(!p){ showLogin(); return false; }
+    var r;
+    try{ r = await fetch('/api/stats', { headers:{ 'x-admin-pass': p } }); }
+    catch(e){ return false; }
+    if(r.status === 401 || r.status === 403){ showLogin(); return false; }
+    if(!r.ok) return false;
     render(await r.json());
+    return true;
+  }
+
+  // Dang nhap thanh cong thi mo bang va bat tu lam moi
+  async function tryLoad(){
+    var ok = await load();
+    if(!ok) return false;
+    $('login').classList.add('hide'); $('app').classList.remove('hide');
+    try{ if(window.Notification && Notification.permission === 'default') Notification.requestPermission(); }catch(e){}
+    clearInterval(timer); timer = setInterval(load, 60000);
+    return true;
   }
 
   function showLogin(){
@@ -356,16 +356,11 @@ tr:last-child td{border-bottom:none}
   }
 
   async function start(){
-    var s = await sb.auth.getSession();
-    if(!s.data.session){ showLogin(); return; }
-    $('login').classList.add('hide'); $('app').classList.remove('hide');
-    try{ if(window.Notification && Notification.permission === 'default') Notification.requestPermission(); }catch(e){}
-    await load();
-    clearInterval(timer);
-    timer = setInterval(load, 60000);
+    if(!getPass()){ showLogin(); return; }
+    var ok = await tryLoad();
+    if(!ok){ clearPass(); showLogin(); }
   }
 
-  sb.auth.onAuthStateChange(function(){ start(); });
   start();
 })();
 </script>

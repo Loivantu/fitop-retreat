@@ -1,37 +1,16 @@
 // GET /api/stats
 // Trả số liệu cho trang theo dõi. Chỉ tài khoản có quyền admin/staff đọc được.
 //
-// Trang admin đăng nhập bằng Supabase (gửi link vào email), rồi gửi kèm
-// access token ở header Authorization. Hàm này xác minh token, tra bảng
-// profiles xem có phải admin/staff không, rồi mới trả dữ liệu.
-import { createClient } from '@supabase/supabase-js';
+// Trang admin gửi mã truy cập ở header x-admin-pass (hoặc token Supabase ở
+// header Authorization nếu sau này quay lại đăng nhập bằng email).
+// Xem _lib/adminauth.js.
 import { admin, json } from './_lib/supabase.js';
+import { requireAdmin } from './_lib/adminauth.js';
 
 export default async (req) => {
-  const auth = req.headers.get('authorization') || '';
-  const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
-  if (!token) return json(401, { error: 'chua_dang_nhap' });
-
-  // Xác minh token bằng khoá công khai (publishable — an toàn khi lộ,
-  // RLS mới là lớp chặn thật, nên để thẳng trong mã cho đỡ phải khai biến)
-  const PUBLISHABLE = 'sb_publishable_xdMiANHLWt6isE5I9XbyxA_VWfzizFQ';
-  const anon = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_PUBLISHABLE_KEY || PUBLISHABLE,
-    { auth: { persistSession: false } }
-  );
-  const { data: userData, error: userErr } = await anon.auth.getUser(token);
-  if (userErr || !userData?.user) return json(401, { error: 'token_khong_hop_le' });
-
   const sb = admin();
-
-  const { data: me } = await sb
-    .from('profiles').select('role, full_name, email')
-    .eq('id', userData.user.id).maybeSingle();
-
-  if (!me || !['admin', 'staff'].includes(me.role)) {
-    return json(403, { error: 'khong_du_quyen' });
-  }
+  const me = await requireAdmin(req, sb);
+  if (!me.ok) return json(me.status, { error: me.error });
 
   const [summary, hourly, daily, monthly, sources, orders, events] =
     await Promise.all([

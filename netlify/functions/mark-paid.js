@@ -4,38 +4,16 @@
 //
 // Đổi status sang 'paid' sẽ kích hoạt trigger accrue_commission() trong
 // Supabase, tự ghi hoa hồng cho CTV nếu đơn có mã CTV.
-import { createClient } from '@supabase/supabase-js';
 import { admin, json } from './_lib/supabase.js';
+import { requireAdmin } from './_lib/adminauth.js';
 import { pushOrderToHubspot } from './_lib/hubspot.js';
-
-const PUBLISHABLE = 'sb_publishable_xdMiANHLWt6isE5I9XbyxA_VWfzizFQ';
-
-async function requireStaff(req, sb) {
-  const auth = req.headers.get('authorization') || '';
-  const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
-  if (!token) return null;
-
-  const anon = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_PUBLISHABLE_KEY || PUBLISHABLE,
-    { auth: { persistSession: false } }
-  );
-  const { data } = await anon.auth.getUser(token);
-  if (!data?.user) return null;
-
-  const { data: me } = await sb
-    .from('profiles').select('id, role, email')
-    .eq('id', data.user.id).maybeSingle();
-
-  return me && ['admin', 'staff'].includes(me.role) ? me : null;
-}
 
 export default async (req) => {
   if (req.method !== 'POST') return json(405, { error: 'method_not_allowed' });
 
   const sb = admin();
-  const me = await requireStaff(req, sb);
-  if (!me) return json(403, { error: 'khong_du_quyen' });
+  const me = await requireAdmin(req, sb);
+  if (!me.ok) return json(me.status, { error: me.error });
 
   let body;
   try { body = await req.json(); }
