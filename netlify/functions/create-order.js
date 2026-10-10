@@ -6,7 +6,7 @@ import { admin, json } from './_lib/supabase.js';
 // Giá niêm yết — sửa ở đây là nơi duy nhất
 const PRICES = {
   online: { amount: 250000, label: 'Tài liệu bản Online' },
-  usb:    { amount: 450000, label: 'Tài liệu bản USB' },
+  usb:    { amount: 299000, label: 'Tài liệu bản USB' },
   other:  { amount: 0,      label: 'Gói dịch vụ tư vấn' }, // báo giá riêng
 };
 

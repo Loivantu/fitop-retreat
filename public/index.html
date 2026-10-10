@@ -574,7 +574,7 @@ html{scroll-padding-top:74px}
       <p class="pm-qrcap">Quét bằng app ngân hàng bất kỳ (napas 247 / VietQR)</p>
     </div>
   </div>
-  <p style="max-width:760px;font-size:12.5px;color:var(--ink-3);margin:14px auto 30px;line-height:1.6">Đây là chuyển khoản trực tiếp vào tài khoản công ty; FiTop xác nhận thủ công sau khi nhận được tiền (thường trong giờ làm việc). Hệ thống tự động báo “Đã thanh toán” qua cổng thanh toán cần bước nâng cấp backend — xem đề xuất bên dưới.</p>
+  <p style="max-width:760px;font-size:12.5px;color:var(--ink-3);margin:14px auto 30px;line-height:1.6">Đây là chuyển khoản trực tiếp vào tài khoản công ty. Mã đơn và số tiền do hệ thống FiTop tạo, không nhập tay — anh chị giữ nguyên nội dung chuyển khoản là được. Trang này tự kiểm tra và báo “Đã nhận được thanh toán” ngay khi tiền về; ngoài giờ làm việc có thể chậm hơn, khi đó FiTop xác nhận và gửi tài liệu qua Zalo.</p>
 
   <div class="sec-head" style="max-width:640px;margin-bottom:16px"><h2 style="font-size:22px">Quy định sử dụng</h2></div>
   <div style="max-width:760px;font-size:14px;color:var(--ink-2);line-height:1.7">
@@ -1118,90 +1118,183 @@ new MutationObserver(ms=>{ const lang=window.__lang||'vi'; if(lang==='vi') retur
 })();
 </script>
 <script>
-/* ---- THANH TOÁN VietQR + MÃ ƯU ĐÃI / CTV ---- */
+/* ---- THANH TOÁN VietQR + MÃ ƯU ĐÃI / CTV ----
+   Đơn hàng do MÁY CHỦ tạo qua /api/create-order: giá niêm yết và mức giảm
+   tính ở server, trình duyệt không tự quyết số tiền. Có mã đơn rồi thì web
+   hỏi /api/order-status mỗi 5 giây để tự mở tài liệu ngay khi tiền về,
+   khách không phải chờ FiTop xác nhận tay.
+   Mã đơn chỉ được tạo khi khách thật sự kéo tới khối thanh toán. */
 (function(){
   var BIN='970432', ACC='92779', NAME='CONG TY TNHH TU VAN VA DICH VU FITOP';
-  var SB_URL='https://kevmadvmqsqhaltznknq.supabase.co', SB_KEY='sb_publishable_xdMiANHLWt6isE5I9XbyxA_VWfzizFQ';
-  /* Bảng mã mặc định. Quản lý thêm/sửa không cần deploy: tạo bảng "coupons" trên Supabase (xem tài liệu Quy định CTV). */
-  var COUPONS={
-    'ONLINE10':{type:'percent',value:10,applies:['online'],min:0,note:'Giảm 10% tài liệu Online'},
-    'USB10'   :{type:'percent',value:10,applies:['usb'],min:0,note:'Giảm 10% tài liệu USB'},
-    'COMBO20' :{type:'percent',value:20,applies:['all'],min:500000,note:'Giảm 20% combo từ 2 bộ (đơn từ 500.000đ)'},
-    'FITOP100':{type:'amount',value:100000,applies:['all'],min:500000,note:'Voucher 100.000đ cho dịch vụ / combo (đơn từ 500.000đ)'},
-    'TUVAN5'  :{type:'percent',value:5,applies:['other'],min:0,note:'Giảm 5% gói tư vấn'},
-    'CTV-DEMO':{type:'percent',value:10,applies:['all'],min:0,ctv:'DEMO',note:'Mã CTV mẫu — giảm 10%'}
-  };
-  var amount=250000, oid='', label='Tài liệu bản Online', pkg='online', coupon=null, remote=null;
   var $=function(id){return document.getElementById(id);};
   if(!$('pm-pick')) return;
-  function newOid(){ return 'FT'+Date.now().toString(36).slice(-5).toUpperCase(); }
+
+  var pkg='online', wanted=250000, code='';
+  var order=null, creating=false, timer=null, poll=null, pollUntil=0, seen=false;
+
   function fmt(n){ return (n||0).toLocaleString('vi-VN')+'đ'; }
-  function expired(c){ if(!c||!c.expires) return false; try{ return new Date(c.expires+'T23:59:59')<new Date(); }catch(e){ return false; } }
-  function fits(c){ var a=(c&&c.applies)||['all']; return a.indexOf('all')>=0||a.indexOf(pkg)>=0; }
-  function discount(){ if(!coupon||!amount||!fits(coupon)||amount<(coupon.min||0)) return 0; var d=coupon.type==='percent'?Math.round(amount*coupon.value/100):Math.min(coupon.value,amount); return Math.max(0,d); }
-  function finalAmt(){ return Math.max(0, amount-discount()); }
-  function note(){ return 'FITOP '+oid+(coupon?' '+coupon.code:''); }
-  function qrUrl(){ var f=finalAmt(); if(!f||f<1000) return 'qr-fitop.png'; return 'https://img.vietqr.io/image/'+BIN+'-'+ACC+'-compact2.png?amount='+f+'&addInfo='+encodeURIComponent(note())+'&accountName='+encodeURIComponent(NAME); }
-  function saveOrder(){ try{ var k='fitop_orders', arr=JSON.parse(localStorage.getItem(k)||'[]'); var i=-1; for(var j=0;j<arr.length;j++){ if(arr[j].order_id===oid){ i=j; break; } }
-    var rec={order_id:oid,package:pkg,description:label,amount:amount,discount:discount(),total:finalAmt(),coupon:coupon?coupon.code:null,ctv:(coupon&&coupon.ctv)?coupon.ctv:null,status:'pending',ts:new Date().toISOString()};
-    if(i>=0) arr[i]=rec; else arr.push(rec); localStorage.setItem(k,JSON.stringify(arr.slice(-50))); }catch(e){} }
-  function render(){ var d=discount(), f=finalAmt();
-    $('pm-amt').textContent= amount? fmt(f) : '—';
-    var o=$('pm-orig'); if(o){ if(d>0){ o.textContent=fmt(amount); o.style.display='inline'; } else { o.style.display='none'; } }
-    var dr=$('pm-discrow'); if(dr){ dr.style.display=d>0?'flex':'none'; if(d>0) $('pm-disc').textContent='-'+fmt(d)+' ('+coupon.code+')'; }
-    $('pm-note').textContent=note(); $('pm-oid').textContent=oid;
-    var ca=$('pm-copyamt'); if(ca) ca.setAttribute('data-copy',String(f||''));
-    var cn=$('pm-copynote'); if(cn) cn.setAttribute('data-copy',note());
-    var img=$('pm-qr'); if(img) img.src=qrUrl();
-    saveOrder();
+  function msg(t,ok){ var m=$('pm-cmsg'); if(!m) return; m.textContent=t||''; m.className='pm-cmsg '+(ok?'ok':'err'); }
+
+  function qrUrl(o){
+    if(!o||!o.total||o.total<1000) return 'qr-fitop.png';
+    return 'https://img.vietqr.io/image/'+BIN+'-'+ACC+'-compact2.png?amount='+o.total
+         +'&addInfo='+encodeURIComponent(o.transfer_note)
+         +'&accountName='+encodeURIComponent(NAME);
   }
-  function msg(t,ok){ var m=$('pm-cmsg'); if(!m) return; m.textContent=t; m.className='pm-cmsg '+(ok?'ok':'err'); }
-  function setCoupon(code,def){ coupon=def?Object.assign({code:code},def):null; render(); }
-  function lookup(code,cb){
-    if(COUPONS[code]) return cb(COUPONS[code]);
-    if(remote===false||!window.supabase) return cb(null);
-    try{
-      var c=window.supabase.createClient(SB_URL,SB_KEY);
-      c.from('coupons').select('*').eq('code',code).eq('active',true).maybeSingle().then(function(r){
-        if(r.error||!r.data){ if(r.error) remote=false; return cb(null); }
-        var x=r.data; cb({type:x.type,value:Number(x.value),applies:String(x.applies||'all').split(','),min:Number(x.min_order||0),expires:x.expires||null,ctv:x.ctv||null,note:x.note||''});
-      },function(){ remote=false; cb(null); });
-    }catch(e){ cb(null); }
+
+  function paint(){
+    var o=order;
+    $('pm-amt').textContent  = o ? fmt(o.total)      : 'Đang tạo mã đơn…';
+    $('pm-oid').textContent  = o ? o.order_id        : '…';
+    $('pm-note').textContent = o ? o.transfer_note   : 'FITOP …';
+    var orig=$('pm-orig');
+    if(orig){ if(o&&o.discount>0){ orig.textContent=fmt(o.amount); orig.style.display='inline'; } else { orig.style.display='none'; } }
+    var dr=$('pm-discrow');
+    if(dr){ var on=!!(o&&o.discount>0); dr.style.display=on?'flex':'none';
+      if(on) $('pm-disc').textContent='-'+fmt(o.discount)+(o.coupon?' ('+o.coupon+')':''); }
+    var ca=$('pm-copyamt'); if(ca) ca.setAttribute('data-copy', o?String(o.total):'');
+    var cn=$('pm-copynote'); if(cn) cn.setAttribute('data-copy', o?o.transfer_note:'');
+    var img=$('pm-qr'); if(img){ var u=qrUrl(o); if(img.getAttribute('src')!==u) img.src=u; }
   }
-  function apply(){
-    var inp=$('pm-code'); var code=(inp.value||'').trim().toUpperCase().replace(/\s+/g,'');
-    if(!code){ setCoupon(null,null); msg('',true); return; }
-    msg('Đang kiểm tra mã…',true);
-    lookup(code,function(def){
-      if(!def){ setCoupon(null,null); msg('Mã không hợp lệ hoặc đã hết hiệu lực.',false); return; }
-      if(expired(def)){ setCoupon(null,null); msg('Mã đã hết hạn.',false); return; }
-      if(!fits(def)){ setCoupon(null,null); msg('Mã này không áp dụng cho gói đang chọn.',false); return; }
-      if(amount<(def.min||0)){ setCoupon(null,null); msg('Mã yêu cầu đơn tối thiểu '+fmt(def.min)+'.',false); return; }
-      setCoupon(code,def); msg('Đã áp dụng '+code+(def.note?' — '+def.note:'')+'. Giảm '+fmt(discount())+'.',true);
-    });
+
+  /* Nhớ đơn trong phiên để khách lỡ tải lại trang vẫn được mở tài liệu tự động */
+  function remember(){ try{ sessionStorage.setItem('fitop_don', JSON.stringify(Object.assign({package:pkg},order))); }catch(e){} }
+  function restore(){ try{ var s=sessionStorage.getItem('fitop_don'); return s?JSON.parse(s):null; }catch(e){ return null; } }
+
+  function fail(c){
+    order=null; paint();
+    var t='Chưa tạo được mã đơn. Anh chị bấm “Tạo mã đơn mới”, hoặc nhắn Zalo để FiTop gửi mã đơn.';
+    if(c==='invalid_amount') t='Gói tư vấn nhận số tiền từ 100.000đ trở lên.';
+    if(c==='unknown_package') t='Gói không hợp lệ. Anh chị chọn lại giúp em.';
+    msg(t,false);
   }
-  function gen(){ oid=newOid(); render(); }
-  var qimg=$('pm-qr'); if(qimg){ qimg.addEventListener('error',function(){ if(this.getAttribute('src').indexOf('qr-fitop')<0){ this.src='qr-fitop.png'; } }); }
-  $('pm-pick').addEventListener('click',function(e){ var b=e.target.closest('.pm-opt'); if(!b) return;
-    this.querySelectorAll('.pm-opt').forEach(function(x){x.classList.remove('pm-on');}); b.classList.add('pm-on');
-    label=b.getAttribute('data-label'); pkg=b.getAttribute('data-pkg')||'other';
-    var a=parseInt(b.getAttribute('data-amt'),10)||0; var box=$('pm-amtbox');
-    if(a===0){ box.style.display='block'; var c=$('pm-custom'); amount=parseInt(c.value,10)||0; c.focus(); } else { box.style.display='none'; amount=a; }
-    gen(); if($('pm-code').value) apply();
+
+  function create(){
+    if(creating) return;
+    if(pkg==='other' && (!wanted || wanted<100000)){ order=null; paint(); msg('Gói tư vấn: nhập số tiền từ 100.000đ.',false); return; }
+    creating=true; stopPoll(); order=null; paint();
+    var body={ package:pkg, coupon:code||null };
+    if(pkg==='other') body.amount=wanted;
+    fetch('/api/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(function(r){ return r.json().then(function(j){ return {ok:r.ok,j:j}; },function(){ return {ok:false,j:null}; }); })
+      .then(function(res){
+        creating=false;
+        if(!res.ok||!res.j||!res.j.order_id){ fail(res.j&&res.j.error); return; }
+        order=res.j; remember(); paint();
+        if(code){
+          if(order.coupon) msg('Đã áp dụng '+order.coupon+'. Giảm '+fmt(order.discount)+'.',true);
+          else msg('Mã không hợp lệ, đã hết hạn, hoặc không áp dụng cho gói đang chọn.',false);
+        } else msg('',true);
+        startPoll();
+      },function(){ creating=false; fail('mang'); });
+  }
+
+  function schedule(ms){ clearTimeout(timer); timer=setTimeout(function(){ if(seen) create(); }, ms===undefined?700:ms); }
+
+  /* ---- Tự nhận biết tiền đã về ---- */
+  function stopPoll(){ if(poll){ clearInterval(poll); poll=null; } }
+  function startPoll(){
+    stopPoll(); if(!order||!order.order_id) return;
+    pollUntil=Date.now()+30*60*1000;          // theo dõi 30 phút rồi dừng
+    poll=setInterval(check,5000);
+  }
+  function check(){
+    if(!order){ stopPoll(); return; }
+    if(Date.now()>pollUntil){ stopPoll(); return; }
+    if(document.hidden) return;               // tab ẩn thì nghỉ, đỡ tốn pin
+    fetch('/api/order-status?order_id='+encodeURIComponent(order.order_id)
+         +'&token='+encodeURIComponent(order.unlock_token||''))
+      .then(function(r){ return r.json(); })
+      .then(function(j){ if(j&&j.status==='paid') paid(j); },function(){});
+  }
+  function paid(j){
+    stopPoll();
+    var right=document.querySelector('.pm-right');
+    if(right&&!$('pm-done')){
+      var safe = (j.download_url&&/^https?:\/\//i.test(j.download_url)) ? j.download_url : '';
+      var d=document.createElement('div'); d.id='pm-done';
+      d.style.cssText='background:#F3F8F3;border:1px solid #C3E0C3;border-radius:14px;padding:20px;text-align:left;max-width:280px';
+      var head=document.createElement('p');
+      head.style.cssText='font-weight:600;font-size:15px;color:#2E6B35'; head.textContent='Đã nhận được thanh toán';
+      var sub=document.createElement('p');
+      sub.style.cssText='font-size:13.5px;color:var(--ink-2);margin-top:6px';
+      sub.textContent='Đơn '+j.order_id+' · '+fmt(j.total);
+      d.appendChild(head); d.appendChild(sub);
+      if(safe){
+        var a=document.createElement('a'); a.className='btn btn-gold'; a.href=safe;
+        a.target='_blank'; a.rel='noopener';
+        a.style.cssText='margin-top:14px;display:inline-block'; a.textContent='Mở tài liệu';
+        d.appendChild(a);
+      } else {
+        var p=document.createElement('p');
+        p.style.cssText='font-size:13px;color:var(--ink-3);margin-top:10px;line-height:1.6';
+        p.textContent='FiTop gửi đường dẫn tài liệu qua Zalo trong ít phút.';
+        d.appendChild(p);
+      }
+      right.innerHTML=''; right.appendChild(d);
+    }
+    msg('Đã nhận được tiền cho đơn '+j.order_id+'.',true);
+  }
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden&&poll) check(); });
+
+  /* ---- Thao tác của khách ---- */
+  $('pm-pick').addEventListener('click',function(e){
+    var b=e.target.closest('.pm-opt'); if(!b) return;
+    this.querySelectorAll('.pm-opt').forEach(function(x){ x.classList.remove('pm-on'); });
+    b.classList.add('pm-on');
+    pkg=b.getAttribute('data-pkg')||'other';
+    var a=parseInt(b.getAttribute('data-amt'),10)||0, box=$('pm-amtbox');
+    if(a===0){ box.style.display='block'; var c=$('pm-custom'); wanted=parseInt(c.value,10)||0; c.focus(); }
+    else { box.style.display='none'; wanted=a; }
+    seen=true; schedule(250);
   });
-  var cust=$('pm-custom'); if(cust){ cust.addEventListener('input',function(){ amount=parseInt(this.value,10)||0; render(); if($('pm-code').value) apply(); }); }
-  var ap=$('pm-apply'); if(ap) ap.addEventListener('click',apply);
-  var ci=$('pm-code'); if(ci) ci.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); apply(); } });
-  var rm=$('pm-rmcode'); if(rm) rm.addEventListener('click',function(){ $('pm-code').value=''; setCoupon(null,null); msg('Đã bỏ mã ưu đãi.',true); });
-  document.querySelectorAll('.pm-copy:not(.pm-rm)').forEach(function(btn){ btn.addEventListener('click',function(){ var v=this.getAttribute('data-copy')||''; var self=this;
-    var done=function(){ self.classList.add('ok'); var t=self.textContent; self.textContent='Đã chép'; setTimeout(function(){self.classList.remove('ok'); self.textContent=t;},1400); };
-    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(v).then(done,done); }
-    else { try{ var ta=document.createElement('textarea'); ta.value=v; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }catch(e){} } }); });
-  var nb=$('pm-new'); if(nb) nb.addEventListener('click',gen);
+  var cust=$('pm-custom');
+  if(cust) cust.addEventListener('input',function(){ wanted=parseInt(this.value,10)||0; seen=true; schedule(900); });
+
+  function applyCode(){
+    code=(($('pm-code').value)||'').trim().toUpperCase().replace(/\s+/g,'');
+    seen=true; msg(code?'Đang kiểm tra mã…':'',true); schedule(0);
+  }
+  var ap=$('pm-apply'); if(ap) ap.addEventListener('click',applyCode);
+  var ci=$('pm-code'); if(ci) ci.addEventListener('keydown',function(e){ if(e.key==='Enter'){ e.preventDefault(); applyCode(); } });
+  var rm=$('pm-rmcode');
+  if(rm) rm.addEventListener('click',function(){ $('pm-code').value=''; code=''; seen=true; msg('Đã bỏ mã ưu đãi.',true); schedule(0); });
+  var nb=$('pm-new'); if(nb) nb.addEventListener('click',function(){ seen=true; create(); });
+
+  document.querySelectorAll('.pm-copy:not(.pm-rm)').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var v=this.getAttribute('data-copy')||''; if(!v) return; var self=this;
+      var done=function(){ self.classList.add('ok'); var t=self.textContent; self.textContent='Đã chép';
+        setTimeout(function(){ self.classList.remove('ok'); self.textContent=t; },1400); };
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(v).then(done,done); }
+      else { try{ var ta=document.createElement('textarea'); ta.value=v; document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta); done(); }catch(e){} }
+    });
+  });
+
+  var qimg=$('pm-qr');
+  if(qimg) qimg.addEventListener('error',function(){ if(this.getAttribute('src').indexOf('qr-fitop')<0) this.src='qr-fitop.png'; });
+
   /* Link CTV chia sẻ: fitop.com.vn/?ma=CTV-XXXX → tự điền mã */
-  var pre=''; try{ var u=new URLSearchParams(location.search); pre=u.get('ma')||u.get('code')||''; }catch(e){}
-  if(pre&&$('pm-code')) $('pm-code').value=pre.toUpperCase();
-  gen(); if(pre) apply();
+  try{ var u=new URLSearchParams(location.search); var pre=u.get('ma')||u.get('code')||'';
+    if(pre&&$('pm-code')){ $('pm-code').value=pre.toUpperCase(); code=pre.toUpperCase(); } }catch(e){}
+
+  /* Đơn còn dở của phiên trước → hiện lại và tiếp tục theo dõi */
+  var old=restore();
+  if(old&&old.order_id){
+    order=old; paint(); startPoll();
+    var btn=$('pm-pick').querySelector('.pm-opt[data-pkg="'+(old.package||'online')+'"]');
+    if(btn){ $('pm-pick').querySelectorAll('.pm-opt').forEach(function(x){ x.classList.remove('pm-on'); }); btn.classList.add('pm-on'); }
+  } else { paint(); }
+
+  /* Chỉ tạo mã đơn khi khách thật sự nhìn tới khối thanh toán */
+  var card=document.querySelector('.pm-card');
+  if(card&&'IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(en){ if(en.isIntersecting){ seen=true; io.disconnect(); if(!order) create(); } });
+    },{threshold:.2});
+    io.observe(card);
+  } else { seen=true; if(!order) create(); }
 })();
 /* ---- CRM BRIDGE (Cách 3): đẩy ngầm lead sang HubSpot Forms API ----
    Điền Portal ID + Form GUID lấy từ HubSpot (Marketing → Forms → form → Embed/Share → "portalId" & "formId").
