@@ -1019,7 +1019,9 @@ const frm=document.getElementById('frm');function err(id,on){document.getElement
 ['ten','sdt','nhucau'].forEach(id=>{const el=document.getElementById(id);el.addEventListener('input',()=>err(id,false));el.addEventListener('change',()=>err(id,false))});
 frm.addEventListener('submit',e=>{e.preventDefault();const ten=document.getElementById('ten').value.trim(),sdt=document.getElementById('sdt').value.trim(),nc=document.getElementById('nhucau').value;let bad=false;
   if(!ten){err('ten',true);bad=true}if(!/^[0-9\s+().-]{9,}$/.test(sdt)){err('sdt',true);bad=true}if(!nc){err('nhucau',true);bad=true}if(bad)return;const btn=document.getElementById('btnDat');btn.disabled=true;btn.textContent='Đang gửi...';
-  try{ if(window.hsLead){ hsLead('datlich',{firstname:ten,phone:sdt,email:(document.getElementById('email')||{}).value||'',message:'Đặt lịch đánh giá · Loại hình: '+nc+' · Ghi chú: '+((document.getElementById('ghichu')||{}).value||'—')}); } }catch(_e){}
+  var _em=(document.getElementById('email')||{}).value||'', _gc=(document.getElementById('ghichu')||{}).value||'—';
+  try{ if(window.hsLead){ hsLead('datlich',{firstname:ten,phone:sdt,email:_em,message:'Đặt lịch đánh giá · Loại hình: '+nc+' · Ghi chú: '+_gc}); } }catch(_e){}
+  try{ if(window.fiLead){ fiLead('datlich',{name:ten,phone:sdt,email:_em,business:nc,note:_gc}); } }catch(_e){}
   fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(new FormData(frm)).toString()})
   .catch(()=>{}).finally(()=>{frm.style.display='none';document.getElementById('ok').classList.add('show')})});
 document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeAdd()});
@@ -1320,6 +1322,19 @@ window.hsLead = function(formKey, data){
     var host='https://api'+((c.region&&c.region!=='na1')?'-'+c.region:'')+'.hsforms.com'; fetch(host+'/submissions/v3/integration/submit/'+c.portalId+'/'+guid,{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body), keepalive:true }).catch(function(){});
   }catch(e){}
 };
+/* ---- GHI LEAD VỀ SUPABASE + BÁO THƯ CHO FITOP ----
+   Chạy song song với hsLead, không thay thế. HubSpot lo danh bạ liên hệ;
+   Supabase lo đếm lead thật để hiện trong admin.html, và /api/lead gửi thư
+   báo ngay cho FiTop. Lỗi ở đây không được làm hỏng việc gửi form. */
+window.fiLead = function(form, data){
+  try{
+    data=data||{};
+    fetch('/api/lead',{ method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ form:form, name:data.name, phone:data.phone,
+        email:data.email||'', business:data.business||'', note:data.note||'',
+        ctv_code:data.ctv_code||'' }), keepalive:true }).catch(function(){});
+  }catch(e){}
+};
 /* ---- FORM ĐĂNG KÝ CTV ---- */
 (function(){ var f=document.getElementById('frmctv'); if(!f) return;
   function err(id,on){ var e=document.getElementById('e-'+id); if(e) e.classList.toggle('show',on); }
@@ -1330,7 +1345,9 @@ window.hsLead = function(formKey, data){
     err('c-nghe',!ng); if(!ng) bad=true;
     if(bad) return;
     var b=document.getElementById('btnCtv'); b.disabled=true; b.textContent='Đang gửi...';
-    try{ if(window.hsLead){ hsLead('ctv',{firstname:ten,phone:sdt,email:(f.email&&f.email.value)||'',message:'Đăng ký CTV · Nghề: '+ng+' · Kênh: '+((f.kenh&&f.kenh.value)||'—')+' · Mã mong muốn: '+((f.ma_mong_muon&&f.ma_mong_muon.value)||'—')}); } }catch(_e){}
+    var _em=(f.email&&f.email.value)||'', _kenh=(f.kenh&&f.kenh.value)||'—', _ma=(f.ma_mong_muon&&f.ma_mong_muon.value)||'—';
+    try{ if(window.hsLead){ hsLead('ctv',{firstname:ten,phone:sdt,email:_em,message:'Đăng ký CTV · Nghề: '+ng+' · Kênh: '+_kenh+' · Mã mong muốn: '+_ma}); } }catch(_e){}
+    try{ if(window.fiLead){ fiLead('ctv',{name:ten,phone:sdt,email:_em,business:ng,note:'Kênh: '+_kenh+' · Mã mong muốn: '+_ma}); } }catch(_e){}
     fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(new FormData(f)).toString()})
       .catch(function(){}).finally(function(){ f.style.display='none'; document.getElementById('okctv').classList.add('show'); });
   });
