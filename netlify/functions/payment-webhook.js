@@ -14,6 +14,7 @@
 import crypto from 'node:crypto';
 import { admin, json } from './_lib/supabase.js';
 import { pushOrderToHubspot } from './_lib/hubspot.js';
+import { mailXacNhanDon } from './_lib/mail.js';
 
 /* ---------- 1. Xác thực nguồn gọi ---------- */
 function authenticate(req, rawBody) {
@@ -207,7 +208,16 @@ export default async (req) => {
     const { data: full } = await sb.from('orders')
       .select('order_id, package, total, paid_amount, customer_name, customer_phone, customer_email, coupon_code, ctv_code')
       .eq('order_id', oid).maybeSingle();
-    if (full) await pushOrderToHubspot(full, 'da_thanh_toan');
+    if (full) {
+      await pushOrderToHubspot(full, 'da_thanh_toan');
+      // Luật 1: email xác nhận kèm link tài liệu
+      const mail = await mailXacNhanDon(full);
+      if (mail.ok) {
+        await sb.from('orders')
+          .update({ mail_paid_at: new Date().toISOString() })
+          .eq('order_id', oid);
+      }
+    }
   }
 
   return json(200, { success: true, matched: true, status: 'paid', order_id: oid });
