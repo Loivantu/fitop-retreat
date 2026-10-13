@@ -339,6 +339,7 @@ button{font-family:inherit}
 /* THANH TOÁN / VietQR */
 .pm-card{display:grid;grid-template-columns:1fr 280px;gap:26px;align-items:start;max-width:860px;margin:0 auto;background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 24px;box-shadow:0 10px 30px rgba(20,29,41,.06)}
 .pm-pick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.pm-grp{flex:0 0 100%;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-3);margin:6px 0 0}
 .pm-opt{font:inherit;font-size:13px;font-weight:600;color:var(--ink-2);background:#F6F3EC;border:1.5px solid var(--line);border-radius:10px;padding:9px 13px;cursor:pointer;transition:all .15s}
 .pm-opt:hover{border-color:var(--gold)}
 .pm-opt.pm-on{background:var(--gold-bg);border-color:var(--gold);color:var(--gold-dk)}
@@ -522,8 +523,9 @@ html{scroll-padding-top:74px}
 
   <div class="svc-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:26px">
     <div class="svc" style="border-color:var(--gold);border-width:1.5px"><span class="svc-dim" style="background:var(--green-bg);color:var(--green)">Miễn phí</span><h4>Tài khoản cơ bản</h4><p>Dùng công cụ đánh giá sức khoẻ cơ sở, lưu hồ sơ trên thiết bị, xem mục lục thư viện, nhận kế hoạch hành động gợi ý. Đăng ký bằng số điện thoại hoặc Zalo.</p><p style="margin-top:10px;font-size:20px;font-weight:700;color:var(--ink)">0đ</p></div>
-    <div class="svc"><span class="svc-dim" style="background:#EAF1F7;color:#2A5A86">Theo bộ</span><h4>Tài liệu bản Online</h4><p>Mở khoá một bộ tài liệu để xem trực tuyến trên web — chỉ xem, không tải về. Kèm biểu mẫu, checklist tham khảo. Cập nhật bản mới trong 12 tháng.</p><p style="margin-top:10px;font-size:20px;font-weight:700;color:var(--ink)">250.000đ <span style="font-size:13px;font-weight:500;color:var(--ink-3)">/ bộ</span></p></div>
-    <div class="svc"><span class="svc-dim" style="background:var(--gold-bg);color:var(--gold-dk)">Trọn bộ</span><h4>Tài liệu bản USB</h4><p>Toàn bộ thư viện vận hành lưu trong USB, giao tận nơi. Phù hợp cơ sở muốn có bản gốc để đào tạo nội bộ, dùng khi không có mạng.</p><p style="margin-top:10px;font-size:20px;font-weight:700;color:var(--ink)">299.000đ</p></div>
+    <div class="svc"><span class="svc-dim" style="background:#EAF1F7;color:#2A5A86">Theo bộ phận</span><h4>Một bộ phận</h4><p>Mở khoá tài liệu của một bộ phận trong thư viện. Tải về bản PDF có đóng dấu tên người mua, kèm biểu mẫu và checklist. Nhận bản cập nhật trong 12 tháng.</p><p style="margin-top:10px;font-size:20px;font-weight:700;color:var(--ink)">250.000đ <span style="font-size:13px;font-weight:500;color:var(--ink-3)">/ bộ phận</span></p></div>
+    <div class="svc" style="border-color:var(--gold);border-width:1.5px"><span class="svc-dim" style="background:var(--gold-bg);color:var(--gold-dk)">Đáng tiền nhất</span><h4>Trọn thư viện</h4><p>Cả 6 bộ phận, 66 tài liệu — Lễ tân·Buồng phòng, Nhà hàng·Bếp, Kinh doanh·Marketing, Nhân sự·Đào tạo, Tài chính·Kiểm soát, An toàn·Pháp lý. Nhận bản cập nhật trong 12 tháng.</p><p style="margin-top:10px;font-size:20px;font-weight:700;color:var(--ink)">1.290.000đ <span style="font-size:13px;font-weight:500;color:var(--ink-3)">· rẻ hơn mua lẻ 210.000đ</span></p></div>
+    <div class="svc"><span class="svc-dim" style="background:var(--navy);color:var(--gold-lt)">Bản gốc</span><h4>USB bản gốc sửa được</h4><p>Trọn thư viện kèm file gốc Word và Excel — sửa tên cơ sở, thêm logo, đổi biểu mẫu cho đúng cách làm của mình. USB giao tận nơi, dùng được khi không có mạng.</p><p style="margin-top:10px;font-size:20px;font-weight:700;color:var(--ink)">1.890.000đ</p></div>
   </div>
 
   <div class="sec-head" style="max-width:640px;margin-bottom:20px"><h2 style="font-size:22px">Đăng ký &amp; sử dụng — 4 bước</h2></div>
@@ -539,8 +541,16 @@ html{scroll-padding-top:74px}
   <div class="pm-card">
     <div class="pm-left">
       <div class="pm-pick" id="pm-pick">
-        <button type="button" class="pm-opt pm-on" data-amt="250000" data-pkg="online" data-label="Tài liệu bản Online">Online · 250.000đ</button>
-        <button type="button" class="pm-opt" data-amt="299000" data-pkg="usb" data-label="Tài liệu bản USB">USB · 299.000đ</button>
+        <span class="pm-grp">Theo bộ phận · 250.000đ mỗi bộ</span>
+        <button type="button" class="pm-opt pm-on" data-amt="250000" data-pkg="bo-LT" data-label="Bộ Lễ tân · Buồng phòng">Lễ tân · Buồng phòng</button>
+        <button type="button" class="pm-opt" data-amt="250000" data-pkg="bo-FB" data-label="Bộ Nhà hàng · Bếp">Nhà hàng · Bếp</button>
+        <button type="button" class="pm-opt" data-amt="250000" data-pkg="bo-KD" data-label="Bộ Kinh doanh · Marketing">Kinh doanh · Marketing</button>
+        <button type="button" class="pm-opt" data-amt="250000" data-pkg="bo-NS" data-label="Bộ Nhân sự · Đào tạo">Nhân sự · Đào tạo</button>
+        <button type="button" class="pm-opt" data-amt="250000" data-pkg="bo-TC" data-label="Bộ Tài chính · Kiểm soát">Tài chính · Kiểm soát</button>
+        <button type="button" class="pm-opt" data-amt="250000" data-pkg="bo-AT" data-label="Bộ An toàn · Pháp lý">An toàn · Pháp lý</button>
+        <span class="pm-grp">Trọn thư viện 66 tài liệu</span>
+        <button type="button" class="pm-opt" data-amt="1290000" data-pkg="tron" data-label="Trọn thư viện 6 bộ phận">Trọn bộ · 1.290.000đ</button>
+        <button type="button" class="pm-opt" data-amt="1890000" data-pkg="usb-goc" data-label="USB bản gốc sửa được">USB bản gốc · 1.890.000đ</button>
         <button type="button" class="pm-opt" data-amt="0" data-pkg="other" data-label="Tư vấn / khác">Số tiền khác</button>
       </div>
       <div class="pm-amtbox" id="pm-amtbox" style="display:none">
@@ -1291,7 +1301,7 @@ new MutationObserver(ms=>{ const lang=window.__lang||'vi'; if(lang==='vi') retur
   var old=restore();
   if(old&&old.order_id){
     order=old; paint(); startPoll();
-    var btn=$('pm-pick').querySelector('.pm-opt[data-pkg="'+(old.package||'online')+'"]');
+    var btn=$('pm-pick').querySelector('.pm-opt[data-pkg="'+(old.package||'bo-LT')+'"]');
     if(btn){ $('pm-pick').querySelectorAll('.pm-opt').forEach(function(x){ x.classList.remove('pm-on'); }); btn.classList.add('pm-on'); }
   } else { paint(); }
 

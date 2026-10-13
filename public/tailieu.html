@@ -279,7 +279,12 @@ async function tai(ma, nut) {
 const esc = (s) => String(s == null ? '' : s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-const TEN_GOI = { online: 'Gói Online', usb: 'Gói USB', cuulo: 'Gói Cứu lỗ', nam: 'Gói năm' };
+const TEN_GOI = {
+  'bo-LT': 'Lễ tân · Buồng phòng', 'bo-FB': 'Nhà hàng · Bếp',
+  'bo-KD': 'Kinh doanh · Marketing', 'bo-NS': 'Nhân sự · Đào tạo',
+  'bo-TC': 'Tài chính · Kiểm soát', 'bo-AT': 'An toàn · Pháp lý',
+  'tron': 'Trọn thư viện', 'usb-goc': 'USB bản gốc',
+};
 
 function veThuVien(d) {
   $('ai').textContent = d.email || '';
