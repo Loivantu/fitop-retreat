@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Thư viện tài liệu — FiTop Retreat</title>
+<meta name="description" content="Khu vực tài liệu dành cho khách đã mua gói FiTop Retreat. Đăng nhập bằng email đã dùng khi đặt mua.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#16202E;--navy-2:#1E2A38;--gold:#C69A3A;--gold-lt:#E3C77A;--gold-bg:#FBF3E2;
+  --sand:#F7F4EE;--white:#fff;--ink:#1A1F26;--ink-2:#56606C;--ink-3:#8A929C;--line:#E2DED6;
+  --red:#B8433A;--red-bg:#FBEDEC;--green:#357254;--green-bg:#EAF3EE;--amber:#B57B12;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Be Vietnam Pro',system-ui,sans-serif;color:var(--ink);background:var(--sand);font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:900px;margin:0 auto;padding:0 22px}
+
+.nav{background:var(--navy);border-bottom:1px solid rgba(198,154,58,.2)}
+.nav-in{max-width:900px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:16px}
+.logo{display:flex;align-items:center;gap:7px;font-size:20px;font-weight:700;color:#fff;letter-spacing:-.02em;text-decoration:none}
+.logo span{color:var(--gold);font-weight:300}
+.logo img{width:28px;border-radius:6px;background:#fff;padding:2px}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:14px;font-size:13.5px;color:#B9C2CC}
+.nav-right button{background:none;border:1px solid rgba(255,255,255,.25);color:#B9C2CC;font-size:13px;padding:6px 13px;border-radius:6px}
+.nav-right button:hover{color:#fff;border-color:var(--gold)}
+
+.hd{padding:40px 0 26px}
+.hd h1{font-family:'Lora',serif;font-size:32px;font-weight:500;letter-spacing:-.015em;line-height:1.2}
+.hd p{color:var(--ink-2);margin-top:9px;max-width:60ch}
+
+.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:28px}
+.card-tight{padding:22px}
+
+/* --- Đăng nhập --- */
+.login{max-width:470px;margin:30px auto 70px}
+.login h2{font-family:'Lora',serif;font-size:23px;font-weight:500;margin-bottom:8px}
+.login p.sub{color:var(--ink-2);font-size:14.5px;margin-bottom:22px}
+label{display:block;font-size:13.5px;font-weight:500;margin-bottom:7px}
+input[type=email]{width:100%;font-family:inherit;font-size:16px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:#fff}
+input[type=email]:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+.btn{font-size:15px;font-weight:500;padding:13px 24px;border-radius:8px;border:1px solid transparent;transition:background .15s}
+.btn-gold{background:var(--gold);color:var(--navy)}
+.btn-gold:hover{background:var(--gold-lt)}
+.btn-gold:disabled{background:#D9D3C6;color:#8A929C;cursor:default}
+.btn-full{width:100%;margin-top:16px}
+.hint{font-size:13px;color:var(--ink-3);margin-top:14px;line-height:1.6}
+
+.msg{border-radius:9px;padding:13px 15px;font-size:14px;margin-top:16px;line-height:1.6}
+.msg-ok{background:var(--green-bg);color:var(--green);border:1px solid #CADFD3}
+.msg-err{background:var(--red-bg);color:var(--red);border:1px solid #F0CFCC}
+.msg-info{background:var(--gold-bg);color:#7A5B12;border:1px solid #EBDCB4}
+
+/* --- Thư viện --- */
+.goi-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:22px}
+.chip{font-size:13px;font-weight:500;padding:6px 13px;border-radius:999px;background:var(--navy);color:var(--gold-lt)}
+.chip-plain{background:var(--white);color:var(--ink-2);border:1px solid var(--line)}
+
+.nhom{margin-bottom:26px}
+.nhom-hd{display:flex;align-items:baseline;gap:11px;margin-bottom:11px}
+.nhom-ma{font-size:12px;font-weight:600;letter-spacing:.06em;color:var(--gold);background:var(--gold-bg);padding:3px 9px;border-radius:5px}
+.nhom-hd h3{font-family:'Lora',serif;font-size:19px;font-weight:500}
+.dl{border:1px solid var(--line);border-radius:12px;background:var(--white);overflow:hidden}
+.row{display:flex;align-items:center;gap:14px;padding:14px 18px;border-top:1px solid var(--line)}
+.row:first-child{border-top:none}
+.row-main{flex:1;min-width:0}
+.row-ten{font-weight:500;font-size:15px}
+.row-meta{font-size:12.5px;color:var(--ink-3);margin-top:2px}
+.btn-tai{font-size:13.5px;font-weight:500;padding:8px 16px;border-radius:7px;background:var(--navy);color:#fff;border:none;white-space:nowrap}
+.btn-tai:hover{background:var(--navy-2)}
+.btn-tai:disabled{background:#C9CDD3;cursor:default}
+
+.trong{text-align:center;padding:44px 20px;color:var(--ink-2)}
+.trong h3{font-family:'Lora',serif;font-size:20px;color:var(--ink);margin-bottom:8px;font-weight:500}
+
+.ft{border-top:1px solid var(--line);margin-top:52px;padding:26px 0 44px;font-size:13px;color:var(--ink-3);line-height:1.7}
+.ft strong{color:var(--ink-2)}
+
+.an{display:none}
+@media(max-width:560px){
+  .hd h1{font-size:26px}
+  .row{flex-wrap:wrap}
+  .btn-tai{width:100%}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="logo" href="/"><img src="logo-fitop.png" alt="">FiTop<span>Retreat</span></a>
+    <div class="nav-right">
+      <span id="ai"></span>
+      <button id="thoat" class="an" type="button">Thoát</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ======================= MÀN ĐĂNG NHẬP ======================= -->
+<section id="man-dangnhap" class="wrap an">
+  <div class="login card">
+    <h2>Thư viện tài liệu</h2>
+    <p class="sub">Khu vực dành cho khách đã mua gói. Nhập email anh/chị đã dùng khi đặt mua — chúng tôi gửi một đường link đăng nhập, không cần mật khẩu.</p>
+
+    <form id="form-login" autocomplete="on">
+      <label for="email">Email đã đặt mua</label>
+      <input type="email" id="email" name="email" required placeholder="ten@congty.com" autocomplete="email" inputmode="email">
+      <button class="btn btn-gold btn-full" type="submit" id="nut-gui">Gửi link đăng nhập</button>
+    </form>
+
+    <div id="bao-login"></div>
+
+    <p class="hint">
+      Link có hiệu lực trong 1 giờ và chỉ dùng được một lần. Nếu không thấy thư,
+      kiểm tra mục Quảng cáo hoặc Spam — thư gửi từ <strong>no-reply@email.fitop.com.vn</strong>.<br>
+      Nhập sai email so với lúc đặt mua thì đăng nhập được nhưng không thấy tài liệu.
+      Lúc đó gọi <strong>0937 116 819</strong> để FiTop đổi email trên đơn.
+    </p>
+  </div>
+</section>
+
+<!-- ======================= THƯ VIỆN ======================= -->
+<section id="man-thuvien" class="wrap an">
+  <div class="hd">
+    <h1>Tài liệu của anh/chị</h1>
+    <p>Bấm <em>Tải về</em> để lấy từng tài liệu. Mỗi bản tải có đóng dấu tên người mua.</p>
+  </div>
+  <div class="goi-bar" id="goi-bar"></div>
+  <div id="bao-thuvien"></div>
+  <div id="danh-sach"></div>
+</section>
+
+<!-- ======================= ĐANG TẢI ======================= -->
+<section id="man-cho" class="wrap">
+  <div class="hd"><h1>Đang mở thư viện…</h1></div>
+</section>
+
+<footer class="ft">
+  <div class="wrap">
+    <strong>CÔNG TY TNHH TƯ VẤN &amp; DỊCH VỤ FITOP</strong> · MST 0317740194<br>
+    Lầu 5, số 15 Trần Khắc Chân, phường Tân Định, TP. Hồ Chí Minh · Hotline 0937 116 819<br><br>
+    Tài liệu trong thư viện này thuộc bản quyền FiTop, cấp cho một người mua.
+    Mỗi bản tải về có đóng dấu tên người mua và được ghi nhật ký. Sao chép, bán lại
+    hoặc phát tán cho bên thứ ba là vi phạm điều khoản sử dụng.
+  </div>
+</footer>
+
+<script>
+const SB_URL  = 'https://kevmadvmqsqhaltznknq.supabase.co';
+const SB_KEY  = 'sb_publishable_xdMiANHLWt6isE5I9XbyxA_VWfzizFQ';
+const VE_LAI  = location.origin + '/tailieu';
+
+const $ = (id) => document.getElementById(id);
+const hien = (id, co) => $(id).classList.toggle('an', !co);
+
+function bao(oId, loai, html) {
+  $(oId).innerHTML = html ? `<div class="msg msg-${loai}">${html}</div>` : '';
+}
+
+/* Dấu vân tay thiết bị — chuỗi ngẫu nhiên, chỉ nằm trên máy này.
+   Máy chủ băm nó cùng user-agent để đếm số thiết bị, không biết là máy nào. */
+function thietBi() {
+  let v = null;
+  try { v = localStorage.getItem('fitop_tb'); } catch (e) {}
+  if (!v) {
+    v = (crypto.randomUUID ? crypto.randomUUID() : String(Math.random()).slice(2) + Date.now());
+    try { localStorage.setItem('fitop_tb', v); } catch (e) {}
+  }
+  return v;
+}
+
+/* Token để trong sessionStorage: đóng tab là mất, máy dùng chung đỡ rủi ro */
+const kho = {
+  lay() { try { return sessionStorage.getItem('fitop_token'); } catch (e) { return null; } },
+  dat(t) { try { sessionStorage.setItem('fitop_token', t); } catch (e) {} },
+  xoa() { try { sessionStorage.removeItem('fitop_token'); } catch (e) {} },
+};
+
+/* ---------- Gửi link đăng nhập ---------- */
+$('form-login').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = $('email').value.trim().toLowerCase();
+  if (!email || !email.includes('@')) return;
+
+  const nut = $('nut-gui');
+  nut.disabled = true;
+  nut.textContent = 'Đang gửi…';
+  bao('bao-login', '', '');
+
+  try {
+    const r = await fetch(
+      SB_URL + '/auth/v1/otp?redirect_to=' + encodeURIComponent(VE_LAI),
+      {
+        method: 'POST',
+        headers: { apikey: SB_KEY, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, create_user: true }),
+      }
+    );
+    if (r.ok) {
+      bao('bao-login', 'ok',
+        'Đã gửi. Mở hộp thư <strong>' + email.replace(/[<>&]/g, '') +
+        '</strong> và bấm vào đường link trong thư. Có thể mất 1–2 phút.');
+      $('form-login').reset();
+    } else if (r.status === 429) {
+      bao('bao-login', 'info',
+        'Anh/chị vừa yêu cầu một link cách đây chưa lâu. Chờ khoảng một phút rồi thử lại, ' +
+        'hoặc tìm lại thư đã gửi lúc nãy.');
+    } else {
+      bao('bao-login', 'err',
+        'Chưa gửi được. Thử lại sau ít phút, hoặc gọi 0937 116 819.');
+    }
+  } catch (err) {
+    bao('bao-login', 'err', 'Không nối được máy chủ. Kiểm tra mạng rồi thử lại.');
+  }
+  nut.disabled = false;
+  nut.textContent = 'Gửi link đăng nhập';
+});
+
+/* ---------- Tải một tài liệu ---------- */
+async function tai(ma, nut) {
+  const token = kho.lay();
+  if (!token) return veManDangNhap();
+
+  const chu = nut.textContent;
+  nut.disabled = true;
+  nut.textContent = 'Đang lấy…';
+  bao('bao-thuvien', '', '');
+
+  try {
+    const r = await fetch('/api/tai-file?ma=' + encodeURIComponent(ma), {
+      headers: { Authorization: 'Bearer ' + token, 'x-thiet-bi': thietBi() },
+    });
+
+    if (r.status === 401) { kho.xoa(); return veManDangNhap('het-han'); }
+
+    const kieu = r.headers.get('content-type') || '';
+
+    if (r.ok && kieu.includes('application/pdf')) {
+      const blob = await r.blob();
+      const u = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = u;
+      a.download = (ma + '.pdf');
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(u), 30000);
+    } else {
+      const j = await r.json().catch(() => ({}));
+      if (r.ok && j.url) {
+        window.location.href = j.url;
+      } else if (j.error === 'vuot_tran_thiet_bi') {
+        bao('bao-thuvien', 'err',
+          'Gói của anh/chị cho phép dùng trên <strong>' + (j.tran || '?') +
+          ' thiết bị</strong>, hiện đã dùng đủ. Tải trên một trong những máy đã dùng, ' +
+          'hoặc gọi <strong>0937 116 819</strong> để FiTop mở thêm.');
+      } else if (j.error === 'khong_co_quyen_voi_tai_lieu_nay') {
+        bao('bao-thuvien', 'info',
+          'Tài liệu này nằm ngoài gói hiện tại. Gọi 0937 116 819 để nâng gói.');
+      } else {
+        bao('bao-thuvien', 'err', 'Chưa tải được tài liệu này. Thử lại, hoặc gọi 0937 116 819.');
+      }
+    }
+  } catch (err) {
+    bao('bao-thuvien', 'err', 'Không nối được máy chủ. Kiểm tra mạng rồi thử lại.');
+  }
+
+  nut.disabled = false;
+  nut.textContent = chu;
+}
+
+/* ---------- Vẽ thư viện ---------- */
+const esc = (s) => String(s == null ? '' : s)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+const TEN_GOI = { online: 'Gói Online', usb: 'Gói USB', cuulo: 'Gói Cứu lỗ', nam: 'Gói năm' };
+
+function veThuVien(d) {
+  $('ai').textContent = d.email || '';
+  hien('thoat', true);
+
+  const chips = [];
+  for (const g of d.goi || []) {
+    let t = TEN_GOI[g.goi] || g.goi;
+    if (g.het_han) {
+      const ngay = Math.max(0, Math.round((new Date(g.het_han) - Date.now()) / 86400000));
+      t += ' · còn ' + ngay + ' ngày';
+    }
+    chips.push('<span class="chip">' + esc(t) + '</span>');
+  }
+  if (d.so_tai_lieu) {
+    chips.push('<span class="chip chip-plain">' + d.so_tai_lieu + ' tài liệu</span>');
+  }
+  $('goi-bar').innerHTML = chips.join('');
+
+  if (!d.nhom || !d.nhom.length) {
+    $('danh-sach').innerHTML =
+      '<div class="card trong">' +
+      '<h3>Chưa có tài liệu nào cho email này</h3>' +
+      '<p>Email <strong>' + esc(d.email) + '</strong> chưa gắn với đơn hàng nào đã thanh toán.<br>' +
+      'Nếu anh/chị đã mua rồi, có thể đơn ghi một email khác. Gọi <strong>0937 116 819</strong> ' +
+      'để FiTop kiểm tra và gắn lại.</p></div>';
+    return;
+  }
+
+  let h = '';
+  for (const n of d.nhom) {
+    h += '<div class="nhom"><div class="nhom-hd">' +
+         '<span class="nhom-ma">' + esc(n.nhom) + '</span>' +
+         '<h3>' + esc(n.ten_nhom) + '</h3></div><div class="dl">';
+    for (const t of n.tai_lieu) {
+      const meta = [t.loai, (t.dinh_dang || '').toUpperCase(),
+                    t.phien_ban ? 'bản ' + t.phien_ban : '',
+                    t.ngay_cap_nhat ? 'cập nhật ' + t.ngay_cap_nhat : '']
+        .filter(Boolean).join(' · ');
+      h += '<div class="row"><div class="row-main">' +
+           '<div class="row-ten">' + esc(t.ten) + '</div>' +
+           '<div class="row-meta">' + esc(meta) + '</div></div>' +
+           '<button class="btn-tai" data-ma="' + esc(t.ma) + '" type="button">Tải về</button></div>';
+    }
+    h += '</div></div>';
+  }
+  $('danh-sach').innerHTML = h;
+
+  for (const b of $('danh-sach').querySelectorAll('.btn-tai')) {
+    b.addEventListener('click', () => tai(b.dataset.ma, b));
+  }
+}
+
+/* ---------- Điều hướng màn hình ---------- */
+function veManDangNhap(ly_do) {
+  hien('man-cho', false);
+  hien('man-thuvien', false);
+  hien('man-dangnhap', true);
+  hien('thoat', false);
+  $('ai').textContent = '';
+  if (ly_do === 'het-han') {
+    bao('bao-login', 'info', 'Phiên đăng nhập đã hết hạn. Nhập lại email để nhận link mới.');
+  } else if (ly_do === 'link-hong') {
+    bao('bao-login', 'err',
+      'Đường link này đã hết hạn hoặc đã dùng rồi. Nhập email để nhận link mới.');
+  }
+}
+
+async function moThuVien() {
+  const token = kho.lay();
+  if (!token) return veManDangNhap();
+
+  hien('man-cho', true);
+  try {
+    const r = await fetch('/api/tai-lieu', { headers: { Authorization: 'Bearer ' + token } });
+    if (r.status === 401) { kho.xoa(); return veManDangNhap('het-han'); }
+    if (!r.ok) throw new Error('loi ' + r.status);
+    const d = await r.json();
+
+    hien('man-cho', false);
+    hien('man-dangnhap', false);
+    hien('man-thuvien', true);
+    veThuVien(d);
+  } catch (e) {
+    hien('man-cho', false);
+    hien('man-thuvien', true);
+    bao('bao-thuvien', 'err',
+      'Chưa mở được thư viện. Tải lại trang, hoặc gọi 0937 116 819.');
+  }
+}
+
+/* ---------- Khởi động ---------- */
+(function khoiDong() {
+  // Supabase trả token về sau dấu # của URL
+  const h = new URLSearchParams((location.hash || '').replace(/^#/, ''));
+  const tk = h.get('access_token');
+  const loi = h.get('error_description') || h.get('error');
+
+  if (tk) {
+    kho.dat(tk);
+    history.replaceState(null, '', location.pathname);  // xoá token khỏi thanh địa chỉ
+    return moThuVien();
+  }
+  if (loi) {
+    history.replaceState(null, '', location.pathname);
+    hien('man-cho', false);
+    return veManDangNhap('link-hong');
+  }
+  moThuVien();
+})();
+
+$('thoat').addEventListener('click', () => { kho.xoa(); veManDangNhap(); });
+</script>
+</body>
+</html>
