@@ -167,9 +167,6 @@ export async function mailXacNhanDon(o) {
   if (!to || !to.includes('@')) return { ok: false, skipped: 'khach_khong_de_email' };
 
   const soTien = Number(o.paid_amount || o.total || 0);
-  const link = o.package === 'usb'
-    ? (process.env.DOC_URL_USB || '')
-    : (process.env.DOC_URL_ONLINE || '');
 
   const them = [
     ['Số tiền đã nhận', `<strong>${tien(soTien)}</strong>`],
@@ -177,15 +174,27 @@ export async function mailXacNhanDon(o) {
     ['Trạng thái', '<strong style="color:#1F7A45">Đã thanh toán</strong>'],
   ].filter(Boolean);
 
-  const phanLink = link
-    ? `<p>Tài liệu của anh/chị đã mở. Bấm vào đây để tải:</p>${nut(link, 'Tải tài liệu')}
-       <p style="font-size:12px;color:#6B6B6B">Giữ lại thư này — link tải nằm trong đây.</p>`
-    : (o.package === 'usb'
-        ? `<p>Bộ USB sẽ được FiTop gửi tới anh/chị. Nhân viên sẽ liên hệ trong
-           24 giờ làm việc để xác nhận địa chỉ nhận hàng.</p>`
-        : `<p>FiTop đang chuẩn bị tài liệu và sẽ gửi link tải tới anh/chị trong
-           24 giờ làm việc. Cần gấp, anh/chị nhắn
-           <a href="${DN.zalo}" style="color:${GOLD_DK}">Zalo ${DN.tel}</a>.</p>`);
+  // Tài liệu giao qua thư viện có đăng nhập, không gửi link file trong thư.
+  // Thư bị chuyển tiếp thì người nhận vẫn phải mở được hộp thư này mới vào được.
+  // o.quyen là kết quả ghiQuyen() — không ghi được quyền thì đừng hứa suông.
+  const daMoQuyen = o.quyen?.ok === true;
+
+  const phanUsb = o.package === 'usb'
+    ? `<p>Bộ USB bản cứng sẽ được FiTop gửi tới anh/chị. Nhân viên liên hệ trong
+       24 giờ làm việc để xác nhận địa chỉ nhận hàng.</p>`
+    : '';
+
+  const phanLink = daMoQuyen
+    ? `<p>Thư viện tài liệu của anh/chị đã mở. Vào bằng chính địa chỉ email này —
+       không cần mật khẩu, mỗi lần vào hệ thống gửi một link đăng nhập.</p>
+       ${nut('https://fitop.com.vn/tailieu', 'Mở thư viện tài liệu')}
+       <p style="font-size:12px;color:#6B6B6B">Đăng nhập bằng
+       <strong>${esc(to)}</strong>. Mỗi bản tải về có đóng dấu tên anh/chị, nên
+       đừng chuyển tiếp thư này hay chia tài khoản cho người ngoài.</p>
+       ${phanUsb}`
+    : `${phanUsb}<p>FiTop đang mở quyền xem tài liệu cho anh/chị và sẽ báo lại
+       trong 24 giờ làm việc. Cần gấp, anh/chị nhắn
+       <a href="${DN.zalo}" style="color:${GOLD_DK}">Zalo ${DN.tel}</a>.</p>`;
 
   const than = `
     <p style="margin:0 0 4px">Kính gửi <strong>${esc(o.customer_name || 'anh/chị')}</strong>,</p>
