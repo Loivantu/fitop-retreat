@@ -8,18 +8,24 @@
 // liên hệ khách xin email.
 
 // Gói trên đơn hàng  →  gói trong bảng phân quyền.
-// orders.package hiện dùng: online | usb | other
+//
+// Nút thanh toán trên web gửi đúng các mã dưới đây. Giữ bảng tra này thay vì
+// dùng thẳng orders.package, để sau đổi tên nút mà không phải sửa dữ liệu cũ.
+//
+//   bo-XX     250.000đ   một bộ phận
+//   tron    1.290.000đ   cả 6 bộ phận
+//   usb-goc 1.890.000đ   trọn bộ + file gốc Word/Excel sửa được
 const BANG_GOI = {
-  online: 'online',
-  usb: 'usb',
-  cuulo: 'cuulo',
-  'cuu-lo': 'cuulo',
-  nam: 'nam',
-  year: 'nam',
+  'bo-lt': 'bo-LT', 'bo-fb': 'bo-FB', 'bo-kd': 'bo-KD',
+  'bo-ns': 'bo-NS', 'bo-tc': 'bo-TC', 'bo-at': 'bo-AT',
+  tron: 'tron',
+  'tron-bo': 'tron',
+  'usb-goc': 'usb-goc',
 };
 
-// Gói năm hết hạn sau 12 tháng, các gói khác mua đứt
-const SO_THANG = { nam: 12 };
+// Mua đứt hết, không gói nào hết hạn. Lời hứa "cập nhật 12 tháng" là lời hứa
+// về nội dung, không phải hạn truy cập — khách trả tiền rồi thì vẫn xem được.
+const SO_THANG = {};
 
 /**
  * @param {import('@supabase/supabase-js').SupabaseClient} sb  client service_role
