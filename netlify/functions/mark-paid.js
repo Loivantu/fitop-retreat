@@ -8,6 +8,7 @@ import { admin, json } from './_lib/supabase.js';
 import { requireAdmin } from './_lib/adminauth.js';
 import { pushOrderToHubspot } from './_lib/hubspot.js';
 import { mailXacNhanDon } from './_lib/mail.js';
+import { ghiQuyen } from './_lib/quyen.js';
 
 export default async (req) => {
   if (req.method !== 'POST') return json(405, { error: 'method_not_allowed' });
@@ -59,16 +60,20 @@ export default async (req) => {
     { ...order, paid_amount: amount }, 'da_thanh_toan'
   );
 
-  // Luật 1: gửi email xác nhận kèm link tài liệu.
+  // Mở quyền xem tài liệu TRƯỚC khi gửi thư — thư mời vào thư viện mà thư viện
+  // chưa mở thì khách bấm vào chỉ thấy trống.
+  const quyen = await ghiQuyen(sb, order);
+
+  // Luật 1: gửi email xác nhận kèm lối vào thư viện.
   // Ghi mail_paid_at để luật nhắc đơn treo không gửi trùng.
-  const mail = await mailXacNhanDon({ ...order, paid_amount: amount });
+  const mail = await mailXacNhanDon({ ...order, paid_amount: amount, quyen });
   if (mail.ok) {
     await sb.from('orders')
       .update({ mail_paid_at: new Date().toISOString() })
       .eq('order_id', oid);
   }
 
-  return json(200, { ok: true, don: updated, crm, mail });
+  return json(200, { ok: true, don: updated, crm, quyen, mail });
 };
 
 export const config = { path: '/api/mark-paid' };

@@ -28,13 +28,10 @@ export default async (req) => {
     total: o.total,
     paid_at: o.paid_at,
     unlocked,
-    // Link tài liệu chỉ trả về khi đã trả tiền VÀ đúng token.
-    // Đặt DOC_URL_ONLINE / DOC_URL_USB trong biến môi trường Netlify.
-    download_url: unlocked
-      ? (o.package === 'usb'
-          ? process.env.DOC_URL_USB || null
-          : process.env.DOC_URL_ONLINE || null)
-      : null,
+    // Đã trả tiền VÀ đúng token thì đưa khách thẳng vào thư viện.
+    // Không còn link file tĩnh: tài liệu chỉ ra khỏi máy chủ qua /api/tai-file,
+    // sau khi khách đăng nhập bằng email trên đơn.
+    download_url: unlocked ? 'https://fitop.com.vn/tailieu' : null,
   });
 };
 
