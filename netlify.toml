@@ -29,3 +29,20 @@
   to = "https://fitop.com.vn/:splat"
   status = 301
   force = true
+
+# --- Thư viện tài liệu: /tailieu phục vụ tailieu.html, giữ nguyên đường dẫn ---
+# Supabase trả khách về đúng https://fitop.com.vn/tailieu sau khi bấm magic link,
+# nên đường dẫn phải đứng yên, không được đổi sang /tailieu.html.
+[[redirects]]
+  from = "/tailieu"
+  to = "/tailieu.html"
+  status = 200
+
+# Trang tài liệu không cho đặt trong khung của trang khác, và không để lọt
+# đường dẫn sang nơi thứ ba khi khách bấm link tải.
+[[headers]]
+  for = "/tailieu*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    Referrer-Policy = "no-referrer"
+    Cache-Control = "no-store"
