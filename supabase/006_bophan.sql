@@ -3,14 +3,14 @@
 -- Chạy SAU 005_tailieu.sql. Chạy lại nhiều lần không sao.
 --
 -- Vì sao đổi: catalog thật trên web chia theo bộ phận, không theo số La Mã.
---   LT Lễ tân · Buồng phòng      12 tài liệu
+--   LT Lễ tân · Buồng phòng      18 tài liệu (11 Lễ tân + 7 Buồng phòng — đã có thật)
 --   FB Nhà hàng · Bếp            16
 --   KD Kinh doanh · Marketing    10
 --   NS Nhân sự · Đào tạo          9
 --   TC Tài chính · Kiểm soát     11
 --   AT An toàn · Pháp lý          8
 --   -------------------------------
---                        tổng    66
+--                        tổng    72
 --
 -- Thang giá chốt 13/10/2026:
 --   bo-XX      250.000đ   một bộ phận, PDF đóng dấu mờ
@@ -42,7 +42,7 @@ create table if not exists public.bo_phan (
 );
 
 insert into public.bo_phan (ma, ten, ten_en, so_tai_lieu, thu_tu) values
-  ('LT','Lễ tân · Buồng phòng',    'Front Office & Housekeeping', 12, 1),
+  ('LT','Lễ tân · Buồng phòng',    'Front Office & Housekeeping', 18, 1),
   ('FB','Nhà hàng · Bếp',          'F&B Service & Kitchen',       16, 2),
   ('KD','Kinh doanh · Marketing',  'Sales & Marketing',           10, 3),
   ('NS','Nhân sự · Đào tạo',       'HR & Training',                9, 4),
