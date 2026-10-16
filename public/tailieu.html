@@ -120,7 +120,7 @@ input[type=email]:focus{outline:2px solid var(--gold);outline-offset:1px;border-
       Link có hiệu lực trong 1 giờ và chỉ dùng được một lần. Nếu không thấy thư,
       kiểm tra mục Quảng cáo hoặc Spam — thư gửi từ <strong>no-reply@email.fitop.com.vn</strong>.<br>
       Nhập sai email so với lúc đặt mua thì đăng nhập được nhưng không thấy tài liệu.
-      Lúc đó gọi <strong>0937 116 819</strong> để FiTop đổi email trên đơn.
+      Lúc đó nhắn <a href="https://zalo.me/645264228537648840" target="_blank" rel="noopener">Zalo</a> để FiTop đổi email trên đơn.
     </p>
   </div>
 </section>
@@ -144,7 +144,7 @@ input[type=email]:focus{outline:2px solid var(--gold);outline-offset:1px;border-
 <footer class="ft">
   <div class="wrap">
     <strong>CÔNG TY TNHH TƯ VẤN &amp; DỊCH VỤ FITOP</strong> · MST 0317740194<br>
-    Lầu 5, số 15 Trần Khắc Chân, phường Tân Định, TP. Hồ Chí Minh · Hotline 0937 116 819<br><br>
+    Lầu 5, số 15 Trần Khắc Chân, phường Tân Định, TP. Hồ Chí Minh · Liên hệ qua <a href="https://zalo.me/645264228537648840" target="_blank" rel="noopener">Zalo</a><br><br>
     Tài liệu trong thư viện này thuộc bản quyền FiTop, cấp cho một người mua.
     Mỗi bản tải về có đóng dấu tên người mua và được ghi nhật ký. Sao chép, bán lại
     hoặc phát tán cho bên thứ ba là vi phạm điều khoản sử dụng.
@@ -213,7 +213,7 @@ $('form-login').addEventListener('submit', async (e) => {
         'hoặc tìm lại thư đã gửi lúc nãy.');
     } else {
       bao('bao-login', 'err',
-        'Chưa gửi được. Thử lại sau ít phút, hoặc gọi 0937 116 819.');
+        'Chưa gửi được. Thử lại sau ít phút, hoặc nhắn <a href="https://zalo.me/645264228537648840" target="_blank" rel="noopener">Zalo</a>.');
     }
   } catch (err) {
     bao('bao-login', 'err', 'Không nối được máy chủ. Kiểm tra mạng rồi thử lại.');
@@ -259,12 +259,12 @@ async function tai(ma, nut) {
         bao('bao-thuvien', 'err',
           'Gói của anh/chị cho phép dùng trên <strong>' + (j.tran || '?') +
           ' thiết bị</strong>, hiện đã dùng đủ. Tải trên một trong những máy đã dùng, ' +
-          'hoặc gọi <strong>0937 116 819</strong> để FiTop mở thêm.');
+          'hoặc nhắn <a href="https://zalo.me/645264228537648840" target="_blank" rel="noopener">Zalo</a> để FiTop mở thêm.');
       } else if (j.error === 'khong_co_quyen_voi_tai_lieu_nay') {
         bao('bao-thuvien', 'info',
-          'Tài liệu này nằm ngoài gói hiện tại. Gọi 0937 116 819 để nâng gói.');
+          'Tài liệu này nằm ngoài gói hiện tại. Nhắn <a href="https://zalo.me/645264228537648840" target="_blank" rel="noopener">Zalo</a> để nâng gói.');
       } else {
-        bao('bao-thuvien', 'err', 'Chưa tải được tài liệu này. Thử lại, hoặc gọi 0937 116 819.');
+        bao('bao-thuvien', 'err', 'Chưa tải được tài liệu này. Thử lại, hoặc nhắn <a href="https://zalo.me/645264228537648840" target="_blank" rel="noopener">Zalo</a>.');
       }
     }
   } catch (err) {
@@ -309,7 +309,7 @@ function veThuVien(d) {
       '<div class="card trong">' +
       '<h3>Chưa có tài liệu nào cho email này</h3>' +
       '<p>Email <strong>' + esc(d.email) + '</strong> chưa gắn với đơn hàng nào đã thanh toán.<br>' +
-      'Nếu anh/chị đã mua rồi, có thể đơn ghi một email khác. Gọi <strong>0937 116 819</strong> ' +
+      'Nếu anh/chị đã mua rồi, có thể đơn ghi một email khác. Nhắn <a href="https://zalo.me/645264228537648840" target="_blank" rel="noopener">Zalo</a> ' +
       'để FiTop kiểm tra và gắn lại.</p></div>';
     return;
   }
@@ -372,7 +372,7 @@ async function moThuVien() {
     hien('man-cho', false);
     hien('man-thuvien', true);
     bao('bao-thuvien', 'err',
-      'Chưa mở được thư viện. Tải lại trang, hoặc gọi 0937 116 819.');
+      'Chưa mở được thư viện. Tải lại trang, hoặc nhắn <a href="https://zalo.me/645264228537648840" target="_blank" rel="noopener">Zalo</a>.');
   }
 }
 
