@@ -24,7 +24,6 @@ const DN = {
   ten:  'CÔNG TY TNHH TƯ VẤN & DỊCH VỤ FITOP',
   mst:  '0317740194',
   dchi: 'Lầu 5, số 15 Trần Khắc Chân, Phường Tân Định, TP. Hồ Chí Minh',
-  tel:  '0937 116 819',
   zalo: 'https://zalo.me/645264228537648840',
   web:  'https://fitop.com.vn',
 };
@@ -85,14 +84,13 @@ function khung(tieude, than) {
     <div>Mã số doanh nghiệp: ${DN.mst}</div>
     <div>${DN.dchi}</div>
     <div style="margin-top:6px">
-      Hotline <a href="tel:${DN.tel.replace(/\s/g, '')}" style="color:${GOLD_DK};text-decoration:none">${DN.tel}</a>
-      · <a href="${DN.zalo}" style="color:${GOLD_DK};text-decoration:none">Zalo</a>
+      <a href="${DN.zalo}" style="color:${GOLD_DK};text-decoration:none">Zalo</a>
       · <a href="${DN.web}" style="color:${GOLD_DK};text-decoration:none">fitop.com.vn</a>
     </div>
     <div style="margin-top:8px;color:#9A9A9A">
       Thư này được gửi tự động cho đơn hàng của anh/chị trên fitop.com.vn.
       Anh/chị có quyền yêu cầu xem, sửa, xoá thông tin đã gửi theo
-      Nghị định 13/2023/NĐ-CP qua hotline ở trên.
+      Nghị định 13/2023/NĐ-CP qua Zalo ở trên.
     </div>
   </td></tr>
 
@@ -194,15 +192,14 @@ export async function mailXacNhanDon(o) {
        ${phanUsb}`
     : `${phanUsb}<p>FiTop đang mở quyền xem tài liệu cho anh/chị và sẽ báo lại
        trong 24 giờ làm việc. Cần gấp, anh/chị nhắn
-       <a href="${DN.zalo}" style="color:${GOLD_DK}">Zalo ${DN.tel}</a>.</p>`;
+       <a href="${DN.zalo}" style="color:${GOLD_DK}">Zalo</a>.</p>`;
 
   const than = `
     <p style="margin:0 0 4px">Kính gửi <strong>${esc(o.customer_name || 'anh/chị')}</strong>,</p>
     <p>FiTop đã nhận được tiền cho đơn hàng dưới đây. Cảm ơn anh/chị đã tin dùng.</p>
     ${bangDon(o, them)}
     ${phanLink}
-    <p style="margin-top:20px">Mọi thắc mắc về đơn hàng, anh/chị nhắn Zalo hoặc
-       gọi hotline ${DN.tel} kèm mã đơn <strong>${esc(o.order_id)}</strong>
+    <p style="margin-top:20px">Mọi thắc mắc về đơn hàng, anh/chị nhắn Zalo kèm mã đơn <strong>${esc(o.order_id)}</strong>
        để FiTop tra nhanh nhất.</p>`;
 
   return send({
@@ -247,7 +244,7 @@ export async function mailNhacDonTreo(o) {
        đối soát tay, chậm hơn.</p>
     <p>Đơn đã thanh toán rồi mà vẫn nhận được thư này, hoặc anh/chị không còn
        nhu cầu, nhắn giúp FiTop qua
-       <a href="${DN.zalo}" style="color:${GOLD_DK}">Zalo ${DN.tel}</a>.</p>
+       <a href="${DN.zalo}" style="color:${GOLD_DK}">Zalo</a>.</p>
     <p style="font-size:12px;color:#9A9A9A">FiTop chỉ nhắc một lần duy nhất cho mỗi đơn.</p>`;
 
   return send({
