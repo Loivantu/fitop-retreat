@@ -3,11 +3,26 @@
 // Giá và mức giảm được TÍNH LẠI Ở ĐÂY, không tin số tiền do trình duyệt gửi lên.
 import { admin, json } from './_lib/supabase.js';
 
-// Giá niêm yết — sửa ở đây là nơi duy nhất
+// Giá niêm yết — sửa ở đây là nơi duy nhất.
+//
+// Khoá viết thường vì dòng 23 đã hạ chữ thường trước khi tra. Giá trị ghi vào
+// orders.package cũng là khoá viết thường này, và _lib/quyen.js có bảng tra
+// đưa về đúng tên gói trong goi_nhom ('bo-lt' → 'bo-LT'). Hai bảng phải khớp:
+// thêm gói ở đây thì thêm cả ở BANG_GOI trong _lib/quyen.js, nếu không khách
+// trả tiền xong mà không nhận được tài liệu nào.
+//
+// Hai mã cũ 'online' và 'usb' đã bỏ hẳn: chúng không có trong goi_nhom nên
+// đơn mang mã đó có thanh toán cũng không mở được tài liệu.
 const PRICES = {
-  online: { amount: 250000, label: 'Tài liệu bản Online' },
-  usb:    { amount: 299000, label: 'Tài liệu bản USB' },
-  other:  { amount: 0,      label: 'Gói dịch vụ tư vấn' }, // báo giá riêng
+  'bo-lt':   { amount:  250000, label: 'Bộ Lễ tân · Buồng phòng' },
+  'bo-fb':   { amount:  250000, label: 'Bộ Nhà hàng · Bếp' },
+  'bo-kd':   { amount:  250000, label: 'Bộ Kinh doanh · Marketing' },
+  'bo-ns':   { amount:  250000, label: 'Bộ Nhân sự · Đào tạo' },
+  'bo-tc':   { amount:  250000, label: 'Bộ Tài chính · Kiểm soát' },
+  'bo-at':   { amount:  250000, label: 'Bộ An toàn · Pháp lý' },
+  tron:      { amount: 1290000, label: 'Trọn thư viện 6 bộ phận' },
+  'usb-goc': { amount: 1890000, label: 'USB bản gốc sửa được' },
+  other:     { amount:       0, label: 'Gói dịch vụ tư vấn' }, // báo giá riêng
 };
 
 const newOrderId = () =>
