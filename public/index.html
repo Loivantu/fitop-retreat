@@ -1141,7 +1141,10 @@ new MutationObserver(ms=>{ const lang=window.__lang||'vi'; if(lang==='vi') retur
   var $=function(id){return document.getElementById(id);};
   if(!$('pm-pick')) return;
 
-  var pkg='online', wanted=250000, code='';
+  /* Phải trùng nút đang sáng sẵn ở #pm-pick (bo-LT). Để 'online' như trước
+     thì khách chưa bấm nút nào mà kéo tới khối thanh toán là đơn ghi gói
+     'online' — gói đã bỏ, trả tiền xong không mở được tài liệu nào. */
+  var pkg='bo-LT', wanted=250000, code='';
   var order=null, creating=false, timer=null, poll=null, pollUntil=0, seen=false, lanGoi=0, lanHong=0;
 
   function fmt(n){ return (n||0).toLocaleString('vi-VN')+'đ'; }
