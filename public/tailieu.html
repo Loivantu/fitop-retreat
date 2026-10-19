@@ -79,6 +79,17 @@ input[type=email]:focus{outline:2px solid var(--gold);outline-offset:1px;border-
 .trong{text-align:center;padding:44px 20px;color:var(--ink-2)}
 .trong h3{font-family:'Lora',serif;font-size:20px;color:var(--ink);margin-bottom:8px;font-weight:500}
 
+/* Khách vào bằng link riêng của một bộ phận: làm nổi đúng bộ đó, các bộ khác mờ đi */
+.loc-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  background:var(--gold-bg);border:1px solid #EBDCB4;border-radius:9px;
+  padding:11px 15px;margin-bottom:22px;font-size:14px;color:#7A5B12}
+.loc-bar b{color:var(--navy)}
+.loc-bar button{margin-left:auto;font-size:13px;font-weight:500;padding:6px 13px;
+  border-radius:7px;background:var(--white);color:var(--ink-2);border:1px solid var(--line)}
+.nhom.mo{opacity:.4}
+.nhom.ro .nhom-hd h3{color:var(--navy)}
+.nhom.ro .dl{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-bg)}
+
 .ft{border-top:1px solid var(--line);margin-top:52px;padding:26px 0 44px;font-size:13px;color:var(--ink-3);line-height:1.7}
 .ft strong{color:var(--ink-2)}
 
@@ -132,6 +143,7 @@ input[type=email]:focus{outline:2px solid var(--gold);outline-offset:1px;border-
     <p>Bấm <em>Tải về</em> để lấy từng tài liệu. Mỗi bản tải có đóng dấu tên người mua.</p>
   </div>
   <div class="goi-bar" id="goi-bar"></div>
+  <div id="loc-bar" class="an"></div>
   <div id="bao-thuvien"></div>
   <div id="danh-sach"></div>
 </section>
@@ -154,7 +166,27 @@ input[type=email]:focus{outline:2px solid var(--gold);outline-offset:1px;border-
 <script>
 const SB_URL  = 'https://kevmadvmqsqhaltznknq.supabase.co';
 const SB_KEY  = 'sb_publishable_xdMiANHLWt6isE5I9XbyxA_VWfzizFQ';
-const VE_LAI  = location.origin + '/tailieu';
+/* Bộ phận khách muốn xem, lấy từ link riêng dạng /tailieu?bo=LT
+   Nhận cả 'LT', 'lt' và 'bo-LT' để link cũ hay link gõ tay đều chạy. */
+const BO_HOP_LE = ['LT', 'FB', 'KD', 'NS', 'TC', 'AT'];
+
+function doc_bo() {
+  const raw = new URLSearchParams(location.search).get('bo') || '';
+  const ma  = raw.trim().toUpperCase().replace(/^BO-/, '');
+  return BO_HOP_LE.includes(ma) ? ma : null;
+}
+
+/* Giữ lại qua vòng gửi mail: khách bấm link trong thư là quay về /tailieu
+   kèm token ở sau dấu #, phần ?bo= có thể rụng. Nhớ sẵn ở đây cho chắc. */
+const boChon = (function () {
+  const b = doc_bo();
+  try {
+    if (b) sessionStorage.setItem('fitop_bo', b);
+    return b || sessionStorage.getItem('fitop_bo') || null;
+  } catch (e) { return b; }
+})();
+
+const VE_LAI  = location.origin + '/tailieu' + (boChon ? '?bo=' + boChon : '');
 
 const $ = (id) => document.getElementById(id);
 const hien = (id, co) => $(id).classList.toggle('an', !co);
@@ -336,6 +368,58 @@ function veThuVien(d) {
   for (const b of $('danh-sach').querySelectorAll('.btn-tai')) {
     b.addEventListener('click', () => tai(b.dataset.ma, b));
   }
+
+  locTheoBo(d);
+}
+
+/* ---------- Link riêng theo bộ phận ---------- */
+const TEN_BO = {
+  LT: 'Lễ tân · Buồng phòng', FB: 'Nhà hàng · Bếp', KD: 'Kinh doanh · Marketing',
+  NS: 'Nhân sự · Đào tạo',    TC: 'Tài chính · Kiểm soát', AT: 'An toàn · Pháp lý',
+};
+
+function boLoc() {
+  try { sessionStorage.removeItem('fitop_bo'); } catch (e) {}
+  history.replaceState(null, '', '/tailieu');
+  hien('loc-bar', false);
+  for (const el of $('danh-sach').querySelectorAll('.nhom')) {
+    el.classList.remove('mo', 'ro');
+  }
+}
+
+function locTheoBo(d) {
+  if (!boChon) return;
+  const ten = TEN_BO[boChon] || boChon;
+
+  // Khách chưa mua bộ này: nói thẳng, kèm lối mua, đừng để họ tưởng web hỏng
+  const co = (d.nhom || []).some((n) => n.nhom === boChon);
+  if (!co) {
+    $('loc-bar').innerHTML =
+      '<span>Link này dẫn tới bộ <b>' + esc(ten) + '</b>, nhưng gói hiện tại của anh/chị ' +
+      'chưa có bộ đó. <a href="/#thanhtoan">Xem gói</a> hoặc nhắn ' +
+      '<a href="https://zalo.me/645264228537648840" target="_blank" rel="noopener">Zalo</a>.</span>' +
+      '<button type="button" id="nut-bo-loc">Xem tất cả</button>';
+    hien('loc-bar', true);
+    $('nut-bo-loc').addEventListener('click', boLoc);
+    return;
+  }
+
+  $('loc-bar').innerHTML =
+    '<span>Đang mở bộ <b>' + esc(ten) + '</b> theo đường link anh/chị vừa bấm.</span>' +
+    '<button type="button" id="nut-bo-loc">Xem tất cả ' + ((d.nhom || []).length) + ' bộ</button>';
+  hien('loc-bar', true);
+  $('nut-bo-loc').addEventListener('click', boLoc);
+
+  const khoi = $('danh-sach').querySelectorAll('.nhom');
+  const ds = d.nhom || [];
+  let dich = null;
+  khoi.forEach((el, i) => {
+    if (ds[i] && ds[i].nhom === boChon) { el.classList.add('ro'); dich = el; }
+    else { el.classList.add('mo'); }
+  });
+  if (dich) {
+    requestAnimationFrame(() => dich.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  }
 }
 
 /* ---------- Điều hướng màn hình ---------- */
@@ -345,6 +429,13 @@ function veManDangNhap(ly_do) {
   hien('man-dangnhap', true);
   hien('thoat', false);
   $('ai').textContent = '';
+
+  // Vào bằng link riêng của một bộ: nói luôn họ sắp mở bộ nào
+  if (boChon && !ly_do) {
+    bao('bao-login', 'info',
+      'Anh/chị đang mở bộ <strong>' + esc(TEN_BO[boChon] || boChon) +
+      '</strong>. Đăng nhập bằng email đã đặt mua để xem.');
+  }
   if (ly_do === 'het-han') {
     bao('bao-login', 'info', 'Phiên đăng nhập đã hết hạn. Nhập lại email để nhận link mới.');
   } else if (ly_do === 'link-hong') {
@@ -383,13 +474,16 @@ async function moThuVien() {
   const tk = h.get('access_token');
   const loi = h.get('error_description') || h.get('error');
 
+  // Xoá token khỏi thanh địa chỉ, nhưng giữ ?bo= để tải lại trang vẫn đúng bộ
+  const sach = location.pathname + (boChon ? '?bo=' + boChon : '');
+
   if (tk) {
     kho.dat(tk);
-    history.replaceState(null, '', location.pathname);  // xoá token khỏi thanh địa chỉ
+    history.replaceState(null, '', sach);
     return moThuVien();
   }
   if (loi) {
-    history.replaceState(null, '', location.pathname);
+    history.replaceState(null, '', sach);
     hien('man-cho', false);
     return veManDangNhap('link-hong');
   }
