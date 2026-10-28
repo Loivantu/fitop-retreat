@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Nhận tài liệu mẫu — FiTop Retreat</title>
+<meta name="description" content="Chọn một bộ phận, để lại email, nhận ngay một quy trình thật của FiTop qua thư. Miễn phí, không cần đăng ký.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#16202E;--gold:#C69A3A;--gold-lt:#E3C77A;--gold-bg:#FBF3E2;
+  --sand:#F7F4EE;--white:#fff;--ink:#1A1F26;--ink-2:#56606C;--ink-3:#8A929C;--line:#E2DED6;
+  --red:#B8433A;--red-bg:#FBEDEC;--green:#357254;--green-bg:#EAF3EE;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Be Vietnam Pro',system-ui,sans-serif;color:var(--ink);background:var(--sand);
+     font-size:16px;line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font-family:inherit;cursor:pointer}
+.wrap{max-width:780px;margin:0 auto;padding:0 22px}
+
+.nav{background:var(--navy);border-bottom:1px solid rgba(198,154,58,.2)}
+.nav-in{max-width:780px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:16px}
+.logo{display:flex;align-items:center;gap:7px;font-size:20px;font-weight:700;color:#fff;
+      letter-spacing:-.02em;text-decoration:none}
+.logo span{color:var(--gold);font-weight:300}
+.logo img{width:28px;border-radius:6px;background:#fff;padding:2px}
+
+.hd{padding:44px 0 26px}
+.hd h1{font-family:'Lora',serif;font-size:33px;font-weight:500;letter-spacing:-.015em;line-height:1.2}
+.hd p{color:var(--ink-2);margin-top:11px;max-width:58ch}
+
+.card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:26px}
+
+.lab{display:block;font-size:13.5px;font-weight:600;letter-spacing:.02em;
+     text-transform:uppercase;color:var(--gold);margin-bottom:12px}
+
+.bo-luoi{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-bottom:26px}
+.bo{display:flex;flex-direction:column;gap:3px;text-align:left;background:var(--white);
+    border:1px solid var(--line);border-radius:10px;padding:14px 16px;transition:.14s}
+.bo:hover{border-color:var(--gold-lt)}
+.bo.chon{border-color:var(--gold);background:var(--gold-bg);box-shadow:0 0 0 3px var(--gold-bg)}
+.bo b{font-size:15px;font-weight:600;color:var(--ink)}
+.bo i{font-style:normal;font-size:12.5px;color:var(--ink-3)}
+.bo.chon i{color:#7A5B12}
+
+label[for=email]{display:block;font-size:13.5px;font-weight:500;margin-bottom:7px}
+input[type=email]{width:100%;font-family:inherit;font-size:16px;padding:12px 14px;
+  border:1px solid var(--line);border-radius:8px;background:#fff}
+input[type=email]:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
+
+.btn{font-size:15px;font-weight:500;padding:13px 24px;border-radius:8px;border:1px solid transparent;
+     background:var(--gold);color:var(--navy);width:100%;margin-top:16px;transition:background .15s}
+.btn:hover{background:var(--gold-lt)}
+.btn:disabled{background:#D9D3C6;color:var(--ink-3);cursor:default}
+
+.msg{border-radius:9px;padding:13px 15px;font-size:14px;margin-top:16px;line-height:1.6}
+.msg-ok{background:var(--green-bg);color:var(--green);border:1px solid #CADFD3}
+.msg-err{background:var(--red-bg);color:var(--red);border:1px solid #F0CFCC}
+.msg-info{background:var(--gold-bg);color:#7A5B12;border:1px solid #EBDCB4}
+
+.hint{font-size:13px;color:var(--ink-3);margin-top:14px;line-height:1.6}
+
+.xong{text-align:center;padding:30px 10px}
+.xong h2{font-family:'Lora',serif;font-size:25px;font-weight:500;margin-bottom:10px}
+.xong p{color:var(--ink-2);max-width:48ch;margin:0 auto 10px}
+
+.ft{border-top:1px solid var(--line);margin-top:52px;padding:26px 0 44px;
+    font-size:13px;color:var(--ink-3);line-height:1.7}
+.ft strong{color:var(--ink-2)}
+
+.an{display:none}
+@media(max-width:560px){
+  .hd h1{font-size:27px}
+  .bo-luoi{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="logo" href="/"><img src="logo-fitop.png" alt="">FiTop<span>Retreat</span></a>
+  </div>
+</nav>
+
+<!-- ======================= MÀN CHỌN BỘ ======================= -->
+<section id="man-chon" class="wrap">
+  <div class="hd">
+    <h1>Nhận một quy trình thật, miễn phí</h1>
+    <p>Chọn bộ phận anh/chị đang cần, để lại email. Chúng tôi gửi ngay một tài liệu
+       trong thư viện FiTop — bản đầy đủ, dùng được luôn, không phải bản rút gọn.</p>
+  </div>
+
+  <div class="card">
+    <form id="form-mau" autocomplete="on">
+      <span class="lab">1 · Chọn bộ phận</span>
+      <div class="bo-luoi" id="bo-luoi"></div>
+
+      <span class="lab">2 · Email nhận tài liệu</span>
+      <label for="email">Chúng tôi gửi file đính kèm thẳng vào hộp thư này</label>
+      <input type="email" id="email" name="email" required placeholder="ten@congty.com"
+             autocomplete="email" inputmode="email">
+
+      <button class="btn" type="submit" id="nut" disabled>Chọn một bộ phận trước</button>
+    </form>
+
+    <div id="bao"></div>
+
+    <p class="hint">
+      Mỗi email nhận tối đa 6 tài liệu mẫu trong 24 giờ. Thư gửi từ
+      <strong>no-reply@fitop.com.vn</strong> — không thấy thì kiểm tra mục Quảng cáo hoặc Spam.<br>
+      File có đóng dấu tên người nhận ở chân trang. Anh/chị cứ dùng trong nội bộ cơ sở của mình.
+    </p>
+  </div>
+</section>
+
+<!-- ======================= MÀN ĐÃ GỬI ======================= -->
+<section id="man-xong" class="wrap an">
+  <div class="hd"><h1>Đã gửi</h1></div>
+  <div class="card xong">
+    <h2 id="xong-ten"></h2>
+    <p id="xong-mo"></p>
+    <p>Chưa thấy thư sau vài phút thì kiểm tra mục Quảng cáo hoặc Spam, hoặc nhắn
+       <a href="https://zalo.me/645264228537648840" target="_blank" rel="noopener">Zalo</a>
+       để FiTop gửi lại.</p>
+    <button class="btn" type="button" id="nut-them" style="max-width:280px;margin:20px auto 0">
+      Nhận thêm bộ khác
+    </button>
+  </div>
+</section>
+
+<footer class="ft">
+  <div class="wrap">
+    <strong>CÔNG TY TNHH TƯ VẤN &amp; DỊCH VỤ FITOP</strong> · MST 0317740194<br>
+    Lầu 5, số 15 Trần Khắc Chân, phường Tân Định, TP. Hồ Chí Minh ·
+    <a href="https://zalo.me/645264228537648840" target="_blank" rel="noopener">Zalo</a><br><br>
+    Email anh/chị để lại chỉ dùng để gửi tài liệu mẫu và thông tin về thư viện FiTop.
+    Anh/chị có quyền yêu cầu xem, sửa hoặc xoá thông tin này theo Nghị định 13/2023/NĐ-CP —
+    nhắn qua Zalo ở trên.
+  </div>
+</footer>
+
+<script>
+const BO = [
+  ['LT','Lễ tân · Buồng phòng','Quy trình check-in đoàn'],
+  ['FB','Nhà hàng · Bếp','Quy trình mở cửa bếp'],
+  ['KD','Kinh doanh · Marketing','Quy trình nhận tiệc'],
+  ['NS','Nhân sự · Đào tạo','Quy trình tuyển dụng và đào tạo'],
+  ['TC','Tài chính · Kiểm soát','Quy trình kiểm soát tiền mặt'],
+  ['AT','An toàn · Pháp lý','Danh mục hồ sơ pháp lý (Excel)'],
+];
+
+const $ = (id) => document.getElementById(id);
+const hien = (id, co) => $(id).classList.toggle('an', !co);
+const esc = (s) => String(s == null ? '' : s)
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+function bao(loai, html) {
+  $('bao').innerHTML = html ? '<div class="msg msg-' + loai + '">' + html + '</div>' : '';
+}
+
+/* Link riêng ?bo=LT đưa thẳng tới một bộ — dùng cho sáu video tầng B,
+   mỗi video dẫn về đúng bộ nó vừa nói. */
+let boChon = (function () {
+  const raw = new URLSearchParams(location.search).get('bo') || '';
+  const ma = raw.trim().toUpperCase().replace(/^BO-/, '');
+  return BO.some((b) => b[0] === ma) ? ma : null;
+})();
+
+function veLuoi() {
+  $('bo-luoi').innerHTML = BO.map(([ma, ten, mo]) =>
+    '<button type="button" class="bo' + (ma === boChon ? ' chon' : '') + '" data-ma="' + ma + '">' +
+    '<b>' + esc(ten) + '</b><i>' + esc(mo) + '</i></button>'
+  ).join('');
+
+  for (const b of $('bo-luoi').querySelectorAll('.bo')) {
+    b.addEventListener('click', () => { boChon = b.dataset.ma; veLuoi(); });
+  }
+  capNhatNut();
+}
+
+function capNhatNut() {
+  const nut = $('nut');
+  nut.disabled = !boChon;
+  nut.textContent = boChon ? 'Gửi tài liệu mẫu cho tôi' : 'Chọn một bộ phận trước';
+}
+
+$('form-mau').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = $('email').value.trim().toLowerCase();
+  if (!boChon || !email.includes('@')) return;
+
+  const nut = $('nut');
+  nut.disabled = true;
+  nut.textContent = 'Đang gửi…';
+  bao('', '');
+
+  try {
+    const r = await fetch('/api/nhan-mau', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, bo: boChon }),
+    });
+    const d = await r.json().catch(() => ({}));
+
+    if (r.ok && d.ok) {
+      $('xong-ten').textContent = d.tai_lieu || 'Tài liệu mẫu';
+      $('xong-mo').innerHTML =
+        'Đã gửi tới <strong>' + esc(email) + '</strong>, bộ <strong>' +
+        esc(d.ten_bo || '') + '</strong>. File đính kèm ngay trong thư.';
+      hien('man-chon', false);
+      hien('man-xong', true);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
+    if (r.status === 429) {
+      bao('info', 'Email này đã nhận đủ 6 tài liệu mẫu trong 24 giờ qua. ' +
+        'Anh/chị thử lại ngày mai, hoặc nhắn ' +
+        '<a href="https://zalo.me/645264228537648840" target="_blank" rel="noopener">Zalo</a> ' +
+        'để FiTop gửi thêm.');
+    } else if (d.error === 'email_khong_hop_le') {
+      bao('err', 'Email chưa đúng định dạng. Anh/chị kiểm tra lại giúp.');
+    } else {
+      bao('err', 'Chưa gửi được. Thử lại sau ít phút, hoặc nhắn ' +
+        '<a href="https://zalo.me/645264228537648840" target="_blank" rel="noopener">Zalo</a>.');
+    }
+  } catch (err) {
+    bao('err', 'Không nối được máy chủ. Kiểm tra mạng rồi thử lại.');
+  }
+
+  nut.disabled = false;
+  capNhatNut();
+});
+
+$('nut-them').addEventListener('click', () => {
+  boChon = null;
+  $('form-mau').reset();
+  veLuoi();
+  bao('', '');
+  hien('man-xong', false);
+  hien('man-chon', true);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+veLuoi();
+</script>
+</body>
+</html>
