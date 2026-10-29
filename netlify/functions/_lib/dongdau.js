@@ -50,14 +50,17 @@ export async function dongDau(bytes, email, ghiChu) {
       rotate: degrees(30),
     });
 
-    // Dòng chân trang: nhỏ, rõ, để truy ra người tải
+    // Dòng chân trang: để truy ra người tải, và để chính người tải đọc được.
+    // Bản đầu dùng cỡ 7 màu xám nhạt ở y=14 — kiểm tra ngày 29/10/2026 cho thấy
+    // nó có thật trên cả 5 trang nhưng không ai đọc nổi trên điện thoại. Một con
+    // dấu không đọc được thì không răn đe được ai, nên đậm và cao lên.
     trang.drawText(chan, {
       x: 28,
-      y: 14,
-      size: 7,
+      y: 22,
+      size: 8.5,
       font,
-      color: rgb(0.45, 0.45, 0.45),
-      opacity: 0.85,
+      color: rgb(0.28, 0.28, 0.28),
+      opacity: 1,
     });
   }
 
