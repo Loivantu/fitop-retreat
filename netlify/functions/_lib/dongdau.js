@@ -8,6 +8,7 @@
 // Chưa gộp ở lần này vì sửa tai-file.js là động vào đường thanh toán đang
 // chạy — để riêng một lần làm, có kiểm thử đàng hoàng.
 import { PDFDocument, StandardFonts, rgb, degrees } from 'pdf-lib';
+import { QR_OA } from './qr.js';
 
 // pdf-lib dùng phông chuẩn WinAnsi, không vẽ được dấu tiếng Việt.
 // Bỏ dấu để dòng chữ hiện đúng thay vì ném lỗi giữa chừng.
@@ -26,6 +27,16 @@ export const BO_DAU = (s) =>
 export async function dongDau(bytes, email, ghiChu) {
   const pdf = await PDFDocument.load(bytes, { ignoreEncryption: true });
   const font = await pdf.embedFont(StandardFonts.Helvetica);
+
+  // Mã QR Zalo OA, nhúng một lần rồi vẽ lại trên mọi trang.
+  // Mỗi file phát đi là một tờ rơi: người cầm nó đang làm đúng nghề mình bán,
+  // nên chân trang phải có đường quay về OA, không chỉ có dấu chống phát tán.
+  let anhQr = null;
+  try {
+    anhQr = await pdf.embedPng(QR_OA);
+  } catch (e) {
+    anhQr = null; // hỏng QR thì vẫn đóng dấu như cũ, không chặn việc gửi file
+  }
 
   const ngay = new Date().toLocaleDateString('en-GB', { timeZone: 'Asia/Ho_Chi_Minh' });
   const cheo = BO_DAU(email);
@@ -62,6 +73,24 @@ export async function dongDau(bytes, email, ghiChu) {
       color: rgb(0.28, 0.28, 0.28),
       opacity: 1,
     });
+
+    // Mã QR Zalo OA ở góc dưới phải, kèm hai dòng chữ nhỏ bên trái nó.
+    // Đặt cao hơn dòng chân trang để không đè lên, và đủ nhỏ để không chiếm chỗ
+    // nội dung: 46pt vẫn quét được bằng điện thoại ở khoảng cách đọc bình thường.
+    if (anhQr) {
+      const canh = 46;
+      const x = width - canh - 28;
+      const y = 18;
+      trang.drawImage(anhQr, { x, y, width: canh, height: canh, opacity: 0.95 });
+      trang.drawText('Quet de theo doi', {
+        x: x - 104, y: y + 28, size: 7, font,
+        color: rgb(0.45, 0.45, 0.45),
+      });
+      trang.drawText('Zalo OA FiTop', {
+        x: x - 104, y: y + 17, size: 7, font,
+        color: rgb(0.45, 0.45, 0.45),
+      });
+    }
   }
 
   return Buffer.from(await pdf.save());

@@ -107,7 +107,22 @@ export async function mailBanMau(p) {
       Bộ ${esc(p.tenBo)} gồm trọn các quy trình và biểu mẫu của bộ phận này.
       Khi nào anh/chị thấy tài liệu mẫu dùng được thì xem thêm ở đây.
     </p>
-    ${nut(p.link, 'Xem bộ đầy đủ')}`;
+    ${nut(p.link, 'Xem bộ đầy đủ')}
+    <table role="presentation" cellpadding="0" cellspacing="0" border="0"
+      style="width:100%;margin:26px 0 0;border-top:1px solid #E2DACB">
+      <tr>
+        <td style="padding:20px 0 0;vertical-align:top">
+          <p style="margin:0 0 6px;font-weight:700">Theo dõi FiTop trên Zalo</p>
+          <p style="margin:0 0 12px;color:#5D6775;font-size:14px;line-height:1.55">
+            Mỗi tuần một quy trình thật, rút từ thư viện 66 tài liệu.
+            Cần hỏi gì về vận hành, anh/chị nhắn thẳng ở đó.
+          </p>
+          <a href="${DN.zalo}" style="display:inline-block;padding:10px 20px;
+            background:#16202E;color:#FFFFFF;border-radius:4px;
+            font-weight:700;font-size:14px;text-decoration:none">Quan tâm Zalo OA</a>
+        </td>
+      </tr>
+    </table>`;
 
   const body = {
     from: FROM,
