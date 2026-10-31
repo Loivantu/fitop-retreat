@@ -1,9 +1,43 @@
 // Ma QR Zalo OA FiTop Retreat — https://zalo.me/645264228537648840
 //
-// Nhung thang vao ma nguon thay vi doc tu dia, vi Netlify Function khong
-// chac chan mang theo file tinh khi dong goi. 2.5KB, khong dang ke.
+// Luu duoi dang ma tran 25x25 dong goi hex, khong phai anh PNG.
 //
-// Sinh lai khi doi OA: npx qrcode -o oa.png -w 420 'https://zalo.me/<id>'
-export const QR_OA_B64 = 'iVBORw0KGgoAAAANSUhEUgAAAaQAAAGkCAYAAAB+TFE1AAAAAklEQVR4AewaftIAAAlnSURBVO3BwZEkt5IFwMew1gFnSAD9xYAEOEMK7heBU2k7GWXt7v/8+z8BgJdVAKCBCgA0UAGABioA0EAFABqoAEADFQBooAIADVQAoIEKADRQAYAGKgDQQAUAGqgAQAMVAGjgJw+NucJ3uWfnW4258hvds/OpMVfecs/OE2Ou8F3u2flUBQAaqABAAxUAaKACAA1UAKCBCgA0UAGABioA0EAFABqoAEADFQBooAIADVQAoIEKADRQAYAGfvKye3b4M2OuwN9yz863umeHPzPmylsqANBABQAaqABAAxUAaKACAA1UAKCBCgA0UAGABioA0EAFABqoAEADFQBooAIADVQAoIGffLExV77VPTvfaMyVJ+7Zecs9O0+MucLvMebKt7pn5xtVAKCBCgA0UAGABioA0EAFABqoAEADFQBooAIADVQAoIEKADRQAYAGKgDQQAUAGqgAQAMVAGjgJ/AXjbnyxD07nxpz5S337HyrMVc+dc8O/FcVAGigAgANVACggQoANFABgAYqANBABQAaqABAAxUAaKACAA1UAKCBCgA0UAGABioA0MBP4C+6Z+eJMVfecs/Ob3TPDvwNFQBooAIADVQAoIEKADRQAYAGKgDQQAUAGqgAQAMVAGigAgANVACggQoANFABgAYqANBABQAa+MkXu2eH3+WenbeMufKpe3aeGHPlLWOufOqenW91zw5/VwUAGqgAQAMVAGigAgANVACggQoANFABgAYqANBABQAaqABAAxUAaKACAA1UAKCBCgA08JOXjbkC/9WYK5+6Z+c3umfniTFXvtWYK3yPCgA0UAGABioA0EAFABqoAEADFQBooAIADVQAoIEKADRQAYAGKgDQQAUAGqgAQAMVAGigAgAN/OShe3bgvxpz5Yl7dj415soT9+zwd92zw+9RAYAGKgDQQAUAGqgAQAMVAGigAgANVACggQoANFABgAYqANBABQAaqABAAxUAaKACAA385KExV564Z+dTY67w5+7Z+dQ9O28ac4W/656dt4y5wp+7Z+cbVQCggQoANFABgAYqANBABQAaqABAAxUAaKACAA1UAKCBCgA0UAGABioA0EAFABqoAEADFQBo4Ce84p6d32jMFf7cPTu/0T07T4y58ql7dr7VmCufumfnLRUAaKACAA1UAKCBCgA0UAGABioA0EAFABqoAEADFQBooAIADVQAoIEKADRQAYAGKgDQQAUAGvjJQ/fsPDHmyqfu2XnLmCtvGXPliXt2PjXmypvu2flGY648cc/Op8Zcecs9O0+MufLEPTufGnPlLffsvGXMlSfu2flUBQAaqABAAxUAaKACAA1UAKCBCgA0UAGABioA0EAFABqoAEADFQBooAIADVQAoIEKADTwk4fGXPlWY6586p6dt9yz88SYK2+5Z+eJMVe+0T07v9GYK7/VPTtvuWfnU2OuvKUCAA1UAKCBCgA0UAGABioA0EAFABqoAEADFQBooAIADVQAoIEKADRQAYAGKgDQQAUAGqgAQAM/eeienSfGXPnUmCtP3LPzljFX3nLPzlvGXHninp23jLnyG92z86kxV9405so3GnPlN6oAQAMVAGigAgANVACggQoANFABgAYqANBABQAaqABAAxUAaKACAA1UAKCBCgA0UAGABn7y0JgrT9yz86kxV94y5spb7tl5y5grT9yz8xuNufLEPTufumfniTFXPnXPzpvGXPnUPTtPjLnyqXt2nhhz5VP37LylAgANVACggQoANFABgAYqANBABQAaqABAAxUAaKACAA1UAKCBCgA0UAGABioA0EAFABqoAEADP/nFxlx5yz07nxpz5S337LxpzJVP3bPzrcZc+UZjrjxxz85bxlz5jcZceeKenU9VAKCBCgA0UAGABioA0EAFABqoAEADFQBooAIADVQAoIEKADRQAYAGKgDQQAUAGqgAQAM/+cXu2fnUmCtvuWfnLWOuvOmenW90z85bxlx5yz07T4y58q3u2XnLPTufGnPlLRUAaKACAA1UAKCBCgA0UAGABioA0EAFABqoAEADFQBooAIADVQAoIEKADRQAYAGKgDQQAUAGvgJH7ln5y1jrjxxz85b7tnhz4258ql7dp4Yc+VTY67w58ZceeKenU/ds/OWCgA0UAGABioA0EAFABqoAEADFQBooAIADVQAoIEKADRQAYAGKgDQQAUAGqgAQAMVAGjgn3//J/Afjbnyre7ZeWLMlbfcs/OpMVfecs/Otxpz5S337PxGFQBooAIADVQAoIEKADRQAYAGKgDQQAUAGqgAQAMVAGigAgANVACggQoANFABgAYqANBABQAa+MlDY67wXe7Z+dQ9O/y5e3becs/OE2OuvGXMlSfu2XnLPTufGnPlW92z86kKADRQAYAGKgDQQAUAGqgAQAMVAqoAEADFQBooAIADVQAoIEKADRQAYAGKgDQQAUAGqgAQAM385GX37PBnxlx5y5gr8Lfcs/Otxlz51D07bxlz5S0VAGigAgANVACggQoANFABgAYqANBABQAaqABAAxUAaKACAA1UAKCBCgA0UAGABioA0MBPvtiYK9/qnp3f6J6d32jMld9ozJXf6p6dT4258sQ9O9+oAgANVACggQoANFABgAYqANBABQAaqABAAxUAaKACAA1UAKCBCgA0UAGABioA0EAFABqoAEADPwH+392z85YxV36re3Y+NebKE2OuvGXMlW9UAYAGKgDQQAUAGqgAQAMVAGigAgANVACggQoANFABgAYqANBABQAaqABAAxUAaKACAA38BP6iMVf4u+7ZeWLMlU/ds/Ot7tl5YsyVt9yz86kxV95SAYAGKgDQQAUAGqgAQAMVAGigAgANVACggQoANFABgAYqANBABQAaqABAAxUAaKACAA1UAKCBn3yxe3b4u+7Z+a3GXHnLPTufGnPlLWOuPHHPzhNjrnyje3Z+owoANFABgAYqANBABQAaqABAAxUAaKACAA1UAKCBCgA0UAGABioA0EAFABqoAEADFQBo4CcvG3OF7zHmCn/unp1vdc/Op8Zc4c+NufIbVQCggQoANFABgAYqANBABQAaqABAAxUAaKACAA1UAKCBCgA0UAGABioA0EAFABqoAEADFQBo4J9//ycA8LIKADRQAYAGKgDQQAUAGqgAQAMVAGigAgANVACggQoANFABgAYqANBABQAaqABAAxUAaOD/ALjAaXbFXGhfAAAAAElFTkSuQmCC';
-export const QR_OA = Buffer.from(QR_OA_B64, 'base64');
+// VI SAO: ban dau file nay chua PNG base64 4.9KB. Khi chuyen qua trinh duyet
+// de day len GitHub, chuoi bi sai o giua ma hai phep kiem — so byte va chu ky
+// PNG — deu khong bat duoc, vi base64 sai van giai ma ra dung so byte va bon
+// byte dau van la chu ky PNG. Ket qua: PDF phat di khong co QR suot mot luc.
+//
+// Chuoi hex duoi day chi 157 ky tu va co ham kiem tra di kem, sai mot ky tu la
+// maKiemTra() tra ve khac MA_KIEM_TRA. Doi QR thi chay lai ca hai so.
+//
+// Sinh lai khi doi OA:
+//   const q = require('qrcode').create(url, { errorCorrectionLevel: 'M' });
+//   // roi dong goi q.modules.data thanh hex theo dung thu tu tren xuong, trai sang phai
+
 export const LINK_OA = 'https://zalo.me/645264228537648840';
+export const QR_SIZE = 25;
+export const QR_HEX =
+  'fe3dbfc11e906eab4bb75b35dbab12ec145d07faaafe01a500be323e5c380892b16b7a373d166497bd6464aaecbf77519371a28afa0076c63f822af0' +
+  '5f119ba87fadd40f7eebfa1b041bb9fef95f8';
+export const MA_KIEM_TRA = 196809108;
+
+/** Bam chuoi hex de phat hien sai lech khi sao chep. */
+export function maKiemTra(s = QR_HEX) {
+  let t = 0;
+  for (const c of s) t = (t * 31 + c.charCodeAt(0)) >>> 0;
+  return t;
+}
+
+/**
+ * Tra ve mang 0/1 dai QR_SIZE * QR_SIZE, doc tu tren xuong, trai sang phai.
+ * Nem loi neu chuoi hex sai — tha khong co QR con hon in ra mot ma vo nghia.
+ */
+export function oQr() {
+  if (maKiemTra() !== MA_KIEM_TRA) throw new Error('QR_HEX sai ma kiem tra');
+  const o = [];
+  for (const c of QR_HEX) {
+    const v = parseInt(c, 16);
+    o.push((v >> 3) & 1, (v >> 2) & 1, (v >> 1) & 1, v & 1);
+  }
+  return o.slice(0, QR_SIZE * QR_SIZE);
+}
