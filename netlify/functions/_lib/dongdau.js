@@ -87,37 +87,83 @@ export async function dongDau(bytes, email, ghiChu) {
       opacity: 1,
     });
 
-    // Mã QR Zalo OA ở góc dưới phải, kèm hai dòng chữ nhỏ bên trái nó.
-    // Đặt cao hơn dòng chân trang để không đè lên, và đủ nhỏ để không chiếm chỗ
-    // nội dung: 46pt vẫn quét được bằng điện thoại ở khoảng cách đọc bình thường.
-    if (hangQr) {
-      const canh = 46;
-      const x = width - canh - 28;
-      const y = 18;
-      const b = canh / QR_SIZE;
-      // Nền trắng quanh mã: máy quét cần vùng lặng, và trang PDF có thể có nền.
-      trang.drawRectangle({
-        x: x - 5, y: y - 5, width: canh + 10, height: canh + 10,
-        color: rgb(1, 1, 1),
-      });
-      for (const [h, c, rong] of hangQr) {
-        trang.drawRectangle({
-          x: x + c * b,
-          y: y + (QR_SIZE - 1 - h) * b,
-          width: rong * b,
-          height: b,
-          color: rgb(0.086, 0.125, 0.18),
-        });
-      }
-      trang.drawText('Quet de theo doi', {
-        x: x - 104, y: y + 28, size: 7, font,
-        color: rgb(0.45, 0.45, 0.45),
-      });
-      trang.drawText('Zalo OA FiTop', {
-        x: x - 104, y: y + 17, size: 7, font,
-        color: rgb(0.45, 0.45, 0.45),
+  }
+
+  // Trang cuối cho mã QR.
+  //
+  // Bản trước vẽ QR vào góc dưới phải MỌI trang, và nó đè lên nội dung thật:
+  // tài liệu FT-KD-06 in "Trang 1 / 4" ở x 520-570 cách đáy 15pt — đúng chỗ đó.
+  // Đo lại cả bốn trang thì khoảng trống an toàn bên phải chỉ còn khoảng 20pt,
+  // không đủ cho một mã quét được. Mỗi tài liệu lại có bố cục khác nhau, nên
+  // không có toạ độ nào an toàn cho tất cả. Thêm hẳn một trang là cách duy nhất
+  // chắc chắn không bao giờ che chữ của người ta.
+  //
+  // Chữ trên trang này cố tình chỉ dùng ký tự ASCII: phông Helvetica chuẩn của
+  // pdf-lib không có dấu tiếng Việt, mà một trang bán hàng viết tiếng Việt
+  // không dấu thì trông rẻ tiền. Tên thương hiệu và địa chỉ web thì vốn không dấu.
+  if (hangQr && pdf.getPageCount() > 0) {
+    const dam = await pdf.embedFont(StandardFonts.HelveticaBold);
+    const { width: w0, height: h0 } = pdf.getPage(0).getSize();
+    const t = pdf.addPage([w0, h0]);
+    const giua = w0 / 2;
+
+    const ten = 'FiTop Retreat';
+    const coTen = 26;
+    t.drawText(ten, {
+      x: giua - dam.widthOfTextAtSize(ten, coTen) / 2,
+      y: h0 - 150, size: coTen, font: dam, color: rgb(0.086, 0.125, 0.18),
+    });
+
+    const phu = 'HOSPITALITY OPERATIONS CONSULTING';
+    const coPhu = 9;
+    t.drawText(phu, {
+      x: giua - font.widthOfTextAtSize(phu, coPhu) / 2,
+      y: h0 - 172, size: coPhu, font, color: rgb(0.66, 0.52, 0.20),
+    });
+
+    t.drawRectangle({
+      x: giua - 26, y: h0 - 198, width: 52, height: 3,
+      color: rgb(0.78, 0.60, 0.23),
+    });
+
+    const canh = 168;
+    const x = giua - canh / 2;
+    const y = h0 - 420;
+    const b = canh / QR_SIZE;
+    for (const [hg, c, rong] of hangQr) {
+      t.drawRectangle({
+        x: x + c * b,
+        y: y + (QR_SIZE - 1 - hg) * b,
+        width: rong * b,
+        height: b,
+        color: rgb(0.086, 0.125, 0.18),
       });
     }
+
+    const moi = 'Quet ma de theo doi Zalo OA';
+    const coMoi = 13;
+    t.drawText(moi, {
+      x: giua - dam.widthOfTextAtSize(moi, coMoi) / 2,
+      y: y - 46, size: coMoi, font: dam, color: rgb(0.086, 0.125, 0.18),
+    });
+
+    const web = 'fitop.com.vn/mau';
+    const coWeb = 12;
+    t.drawText(web, {
+      x: giua - font.widthOfTextAtSize(web, coWeb) / 2,
+      y: y - 68, size: coWeb, font, color: rgb(0.66, 0.52, 0.20),
+    });
+
+    const cty = 'CONG TY TNHH TU VAN & DICH VU FITOP  ·  MST 0317740194';
+    const coCty = 8;
+    t.drawText(cty, {
+      x: giua - font.widthOfTextAtSize(cty, coCty) / 2,
+      y: 48, size: coCty, font, color: rgb(0.55, 0.55, 0.55),
+    });
+
+    t.drawText(chan, {
+      x: 28, y: 22, size: 8.5, font, color: rgb(0.28, 0.28, 0.28),
+    });
   }
 
   return Buffer.from(await pdf.save());
