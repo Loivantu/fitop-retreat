@@ -32,6 +32,7 @@ button{font-family:inherit;cursor:pointer}
 .hd{padding:44px 0 26px}
 .hd h1{font-family:'Lora',serif;font-size:33px;font-weight:500;letter-spacing:-.015em;line-height:1.2}
 .hd p{color:var(--ink-2);margin-top:11px;max-width:58ch}
+.hd p.gach{margin-top:13px;font-size:14px;font-weight:500;color:#7A5B12}
 
 .card{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:26px}
 
@@ -39,10 +40,23 @@ button{font-family:inherit;cursor:pointer}
      text-transform:uppercase;color:var(--gold);margin-bottom:12px}
 
 .bo-luoi{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-bottom:26px}
-.bo{display:flex;flex-direction:column;gap:3px;text-align:left;background:var(--white);
-    border:1px solid var(--line);border-radius:10px;padding:14px 16px;transition:.14s}
-.bo:hover{border-color:var(--gold-lt)}
+/* Ô bộ phận phải trông ra ô bấm được ngay từ cái nhìn đầu.
+   Bản đầu chỉ là khung trắng viền mảnh — người vào không biết phải bấm,
+   nên đứng nhìn rồi thoát. Chấm tròn bên trái là tín hiệu quen thuộc nhất:
+   ai cũng biết chấm tròn nghĩa là chọn một trong nhiều. */
+.bo{position:relative;display:flex;flex-direction:column;gap:3px;text-align:left;
+    background:var(--white);cursor:pointer;
+    border:1px solid var(--line);border-radius:10px;padding:14px 16px 14px 46px;transition:.14s}
+.bo::before{content:'';position:absolute;left:16px;top:18px;width:18px;height:18px;
+    border-radius:50%;border:2px solid #CBC4B6;background:#fff;transition:.14s}
+.bo:hover{border-color:var(--gold-lt);background:#FEFCF7}
+.bo:hover::before{border-color:var(--gold)}
 .bo.chon{border-color:var(--gold);background:var(--gold-bg);box-shadow:0 0 0 3px var(--gold-bg)}
+.bo.chon::before{border-color:var(--gold);background:var(--gold);box-shadow:inset 0 0 0 3px #fff}
+/* Nhắc khi bấm Gửi mà chưa chọn bộ nào */
+@keyframes nhacnho{0%,100%{box-shadow:0 0 0 0 rgba(184,67,58,0)}
+                   35%{box-shadow:0 0 0 4px rgba(184,67,58,.18)}}
+.bo-luoi.nhac .bo{animation:nhacnho .9s ease-out}
 .bo b{font-size:15px;font-weight:600;color:var(--ink)}
 .bo i{font-style:normal;font-size:12.5px;color:var(--ink-3)}
 .bo.chon i{color:#7A5B12}
@@ -93,10 +107,14 @@ input[type=email]:focus{outline:2px solid var(--gold);outline-offset:1px;border-
     <h1>Nhận một quy trình thật, miễn phí</h1>
     <p>Chọn bộ phận anh/chị đang cần, để lại email. Chúng tôi gửi ngay một tài liệu
        trong thư viện FiTop — bản đầy đủ, dùng được luôn, không phải bản rút gọn.</p>
+    <p class="gach">Miễn phí · Không cần đăng ký tài khoản · File về hộp thư trong khoảng một phút</p>
   </div>
 
   <div class="card">
-    <form id="form-mau" autocomplete="on">
+    <!-- novalidate: để thông báo của trang tự quyết thứ tự nhắc.
+         Nếu để trình duyệt tự kiểm, nó bắt lỗi ô email trước, trong khi bước
+         thật sự còn thiếu là chọn bộ phận ở trên. -->
+    <form id="form-mau" autocomplete="on" novalidate>
       <span class="lab">1 · Chọn bộ phận</span>
       <div class="bo-luoi" id="bo-luoi"></div>
 
@@ -105,7 +123,7 @@ input[type=email]:focus{outline:2px solid var(--gold);outline-offset:1px;border-
       <input type="email" id="email" name="email" required placeholder="ten@congty.com"
              autocomplete="email" inputmode="email">
 
-      <button class="btn" type="submit" id="nut" disabled>Chọn một bộ phận trước</button>
+      <button class="btn" type="submit" id="nut">Gửi tài liệu mẫu cho tôi</button>
     </form>
 
     <div id="bao"></div>
@@ -178,21 +196,36 @@ function veLuoi() {
   ).join('');
 
   for (const b of $('bo-luoi').querySelectorAll('.bo')) {
-    b.addEventListener('click', () => { boChon = b.dataset.ma; veLuoi(); });
+    b.addEventListener('click', () => { boChon = b.dataset.ma; bao('', ''); veLuoi(); });
   }
   capNhatNut();
 }
 
+/* Nút luôn sáng và luôn mang đúng một câu.
+   Bản đầu để nút xám với chữ "Chọn một bộ phận trước" — đặt lời hướng dẫn lên
+   chính cái nút, nên người vào đọc ra là "trang hỏng", không đọc ra là "làm bước
+   một đi". Giờ nút luôn bấm được; bấm mà chưa chọn thì lưới bộ phận nháy lên và
+   có một dòng nhắc, tức là chỉ thẳng vào chỗ cần làm. */
 function capNhatNut() {
   const nut = $('nut');
-  nut.disabled = !boChon;
-  nut.textContent = boChon ? 'Gửi tài liệu mẫu cho tôi' : 'Chọn một bộ phận trước';
+  nut.disabled = false;
+  nut.textContent = 'Gửi tài liệu mẫu cho tôi';
+}
+
+function nhacChonBo() {
+  const luoi = $('bo-luoi');
+  luoi.classList.remove('nhac');
+  void luoi.offsetWidth;            // ép trình duyệt chạy lại hiệu ứng
+  luoi.classList.add('nhac');
+  bao('err', 'Anh/chị chọn giúp một bộ phận ở trên — FiTop gửi đúng tài liệu của bộ đó.');
+  luoi.scrollIntoView({ block: 'center', behavior: 'smooth' });
 }
 
 $('form-mau').addEventListener('submit', async (e) => {
   e.preventDefault();
   const email = $('email').value.trim().toLowerCase();
-  if (!boChon || !email.includes('@')) return;
+  if (!boChon) { nhacChonBo(); return; }
+  if (!email.includes('@')) { bao('err', 'Anh/chị nhập giúp email để FiTop gửi file.'); $('email').focus(); return; }
 
   const nut = $('nut');
   nut.disabled = true;
