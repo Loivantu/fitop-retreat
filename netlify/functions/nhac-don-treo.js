@@ -61,6 +61,8 @@ export default async () => {
   });
 };
 
-// Mỗi giờ một lần. Đơn tạo lúc 10h sáng sẽ được nhắc trong khoảng 10–11h
-// sáng hôm sau. Không cần sát phút.
-export const config = { schedule: '@hourly' };
+// Ba lần một ngày: 02:00 · 09:00 · 15:00 giờ UTC — tức 09:00 · 16:00 · 22:00
+// giờ Việt Nam. Trước đây chạy mỗi giờ, 24 lần/ngày, và gần như lần nào cũng
+// không có đơn treo nào để nhắc. Đơn treo không gấp đến mức phải soi từng giờ;
+// hàm vẫn tự bỏ qua đơn đã nhắc đủ số lần nên đổi nhịp không làm sai luật.
+export const config = { schedule: '0 2,9,15 * * *' };

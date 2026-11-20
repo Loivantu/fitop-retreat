@@ -101,6 +101,30 @@ export default async (req) => {
     link: `https://fitop.com.vn/tailieu?bo=${bo}`,
   });
 
+  // --- vào sổ khách ---
+  // Người xin bản mẫu đã nói ra họ cần bộ phận nào. Đó là thông tin bán hàng
+  // quý nhất trên cả trang web, nên nó phải nằm trong bảng leads chứ không chỉ
+  // trong mau_yeu_cau — bảng đó không màn hình nào mở ra xem.
+  // Cùng email trong 24 giờ thì không tạo lead thứ hai.
+  try {
+    const { data: daCo } = await sb.from('leads')
+      .select('id').eq('email', email).eq('source', 'mau')
+      .gte('created_at', tu).limit(1).maybeSingle();
+
+    if (!daCo) {
+      await sb.from('leads').insert({
+        source: 'mau',
+        email,
+        property_type: dinh.ten,
+        message: `Xin bản mẫu: ${dinh.ten} (${dinh.ma})`,
+        stage: 'moi',
+      });
+    }
+  } catch (e) {
+    // Lead hỏng thì vẫn phải gửi được tài liệu cho khách
+    console.error('nhan-mau: khong ghi duoc lead —', e.message);
+  }
+
   // Ghi lại dù thư có gửi được hay không — đây là danh sách khách, đừng để mất
   await sb.from('mau_yeu_cau').insert({
     email,

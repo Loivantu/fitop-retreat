@@ -15,9 +15,20 @@
 import { admin, json } from './_lib/supabase.js';
 import { mailLeadMoi } from './_lib/mail.js';
 
-// Form trên web  →  giá trị cột source (giữ đúng quy ước 001_schema.sql:
-// web | zalo-oa | ctv | facebook)
-const NGUON = { datlich: 'web', ctv: 'ctv' };
+// Form trên web  →  giá trị cột source.
+// Mỗi cửa thu lead một giá trị riêng, để sau này biết kênh nào ra tiền.
+// Dòng cũ trong bảng mang 'web' và 'ctv' — giữ nguyên, không sửa lịch sử.
+const NGUON = {
+  datlich:  'web-datlich',   // form Đặt lịch đánh giá
+  ctv:      'web-ctv',       // form Đăng ký cộng tác viên
+  mau:      'mau',           // trang /mau xin bản mẫu
+  dangky:   'dangky',        // vừa tạo tài khoản trên web
+  chamdiem: 'chamdiem',      // tự chấm điểm xong, chủ động xin nhận xét
+};
+
+// Hai cửa chỉ có email, không có số: trang /mau và lúc tạo tài khoản.
+// Bắt buộc số điện thoại ở đó là chặn mất lead thật.
+const CHO_PHEP_CHI_EMAIL = new Set(['mau', 'dangky']);
 
 const cat = (s, n) => String(s == null ? '' : s).trim().slice(0, n);
 
@@ -42,25 +53,32 @@ export default async (req) => {
 
   const full_name = cat(b.name, 120);
   const phone = chuanSdt(b.phone);
-  if (!full_name) return json(400, { error: 'thieu_ho_ten' });
-  if (!phone) return json(400, { error: 'so_dien_thoai_khong_hop_le' });
+  const email = cat(b.email, 160);
 
-  const email         = cat(b.email, 160);
+  const chiEmail = CHO_PHEP_CHI_EMAIL.has(form);
+  if (!full_name && !chiEmail) return json(400, { error: 'thieu_ho_ten' });
+  if (!phone && !(chiEmail && email)) {
+    return json(400, { error: 'so_dien_thoai_khong_hop_le' });
+  }
+
   const property_type = cat(b.business, 120);
   const message       = cat(b.note, 1000);
   const ctv_code      = cat(b.ctv_code, 40).toUpperCase();
 
   const sb = admin();
 
-  // Chặn gửi trùng do khách bấm hai lần hoặc mạng gửi lại
+  // Chặn gửi trùng do khách bấm hai lần hoặc mạng gửi lại.
+  // Lead chỉ có email thì so theo email — so theo cột rỗng là không chặn được gì.
   const mocTrung = new Date(Date.now() - 10 * 60_000).toISOString();
-  const { data: trung } = await sb.from('leads')
-    .select('id').eq('phone', phone).eq('source', source)
-    .gte('created_at', mocTrung).limit(1).maybeSingle();
+  let qTrung = sb.from('leads').select('id').eq('source', source).gte('created_at', mocTrung);
+  qTrung = phone ? qTrung.eq('phone', phone) : qTrung.eq('email', email);
+  const { data: trung } = await qTrung.limit(1).maybeSingle();
   if (trung) return json(200, { ok: true, trung_lap: true });
 
   const { data: lead, error } = await sb.from('leads').insert({
-    source, full_name, phone,
+    source,
+    full_name: full_name || null,
+    phone: phone || null,
     email: email || null,
     property_type: property_type || null,
     message: message || null,
