@@ -100,6 +100,43 @@ tr:last-child td{border-bottom:none}
 .srcrow .n{width:52px;text-align:right;color:var(--grey);font-size:12.5px}
 .foot{margin-top:22px;font-size:12px;color:var(--grey);text-align:center}
 .hide{display:none!important}
+
+/* ---- thanh chuyển màn ---- */
+.tabs{display:flex;gap:6px;margin-top:20px;border-bottom:1px solid var(--line)}
+.tab{font:inherit;font-size:14px;font-weight:600;padding:11px 18px;border:0;background:none;
+  color:var(--grey);cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-1px}
+.tab.on{color:var(--ink);border-bottom-color:var(--gold)}
+.tab .n{font-size:11.5px;background:var(--gold);color:#16202E;border-radius:999px;
+  padding:1px 7px;margin-left:7px;font-weight:700}
+
+/* ---- phễu khách ---- */
+.lrow{display:grid;grid-template-columns:1.6fr .8fr 1.3fr 1.1fr 1fr auto;gap:10px;
+  align-items:center;padding:11px 10px;border-bottom:1px solid var(--line);font-size:13.5px}
+.lrow:last-child{border-bottom:none}
+@media(max-width:900px){.lrow{grid-template-columns:1fr 1fr;row-gap:8px}}
+.lname{font-weight:600}
+.lsub{color:var(--grey);font-size:12px}
+.sel,.dt,.inp{font:inherit;font-size:13px;padding:7px 9px;border:1px solid var(--line);
+  border-radius:8px;background:var(--card);color:var(--ink);width:100%}
+.inp:focus,.sel:focus,.dt:focus{outline:2px solid var(--gold-2);outline-offset:-1px}
+.src{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;
+  background:var(--bg);color:var(--grey);white-space:nowrap}
+.s-mau{background:#FEF3C7;color:var(--warn)}
+.s-chamdiem{background:#DCFCE7;color:var(--ok)}
+.s-zalo{background:#DBEAFE;color:#1D4ED8}
+.st-moi{background:#FEF3C7;color:var(--warn)}
+.st-chot{background:#DCFCE7;color:var(--ok)}
+.st-mat{background:#FEE2E2;color:var(--bad)}
+.late{color:var(--bad);font-weight:600}
+.drawer{background:var(--bg);border:1px solid var(--line);border-radius:10px;
+  padding:14px;margin:0 10px 12px}
+.hist{margin-top:11px;font-size:13px}
+.hist .h{padding:8px 0;border-top:1px dashed var(--line)}
+.hist .h .t{color:var(--grey);font-size:11.5px}
+.filt{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:13px}
+.chip{font:inherit;font-size:12.5px;font-weight:600;padding:6px 13px;border-radius:999px;
+  border:1px solid var(--line);background:var(--card);color:var(--grey);cursor:pointer}
+.chip.on{background:var(--navy);color:#fff;border-color:var(--navy)}
 </style>
 </head>
 <body>
@@ -117,7 +154,7 @@ tr:last-child td{border-bottom:none}
     <div class="wrap">
       <div>
         <h1>FiTop Retreat</h1>
-        <div class="sub">Bảng theo dõi lượt truy cập &amp; đơn hàng</div>
+        <div class="sub">Khách · Lượt truy cập · Đơn hàng</div>
       </div>
       <div class="spacer"></div>
       <span class="pill" id="who"></span>
@@ -127,6 +164,44 @@ tr:last-child td{border-bottom:none}
   </header>
 
   <div class="wrap">
+    <nav class="tabs">
+      <button class="tab on" data-tab="khach">Khách<span class="n hide" id="tab-n"></span></button>
+      <button class="tab" data-tab="so">Số liệu &amp; đơn hàng</button>
+    </nav>
+
+    <!-- =============== MÀN KHÁCH =============== -->
+    <div id="pan-khach">
+      <div class="grid g5" id="crm-cards"></div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>Hôm nay <span class="tag">lead mới chưa ai chạm &amp; lead đến hạn gọi lại</span></h3>
+        <div id="hom-nay"></div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>Tất cả khách</h3>
+        <div class="filt" id="chips"></div>
+        <input class="inp" id="tim" placeholder="Tìm theo tên, số điện thoại hoặc email" style="max-width:360px;margin-bottom:13px">
+        <div id="ds"></div>
+      </div>
+
+      <div class="card" style="margin-top:14px">
+        <h3>Thêm khách nhắn qua Zalo <span class="tag">nhập tay, 20 giây</span></h3>
+        <div class="grid g3" style="margin-top:0">
+          <input class="inp" id="z-ten" placeholder="Họ tên">
+          <input class="inp" id="z-sdt" placeholder="Số điện thoại" inputmode="tel">
+          <input class="inp" id="z-loai" placeholder="Loại hình (khách sạn / F&amp;B / spa…)">
+        </div>
+        <input class="inp" id="z-ghi" placeholder="Họ nhắn gì — ví dụ: nhắn #DANHGIA, chuỗi 3 điểm ở Bảo Lộc" style="margin-top:10px">
+        <div style="margin-top:11px;display:flex;gap:10px;align-items:center">
+          <button class="btn sm" id="z-luu">Thêm vào sổ</button>
+          <span class="lsub" id="z-msg"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- =============== MÀN SỐ LIỆU =============== -->
+    <div id="pan-so" class="hide">
     <div class="grid g5" id="cards"></div>
 
     <div class="grid g2">
@@ -170,6 +245,8 @@ tr:last-child td{border-bottom:none}
       </div>
     </div>
 
+    </div>
+
     <div class="foot">
       Tự làm mới mỗi 60 giây · Cập nhật lúc <span id="ts">—</span><br>
       CÔNG TY TNHH TƯ VẤN &amp; DỊCH VỤ FITOP · MST 0317740194
@@ -182,7 +259,7 @@ tr:last-child td{border-bottom:none}
   var $ = function(id){ return document.getElementById(id); };
   var fmt = function(n){ return (Number(n)||0).toLocaleString('vi-VN'); };
   var money = function(n){ return fmt(n) + 'đ'; };
-  var lastPaid = null, timer = null;
+  var lastPaid = null, timer = null, daNoi = false;
 
   /* ---------------- đăng nhập ---------------- */
   function msg(t, ok){
@@ -210,7 +287,10 @@ tr:last-child td{border-bottom:none}
     $('pass').value = ''; msg('', true);
     $('app').classList.add('hide'); $('login').classList.remove('hide');
   };
-  $('reload').onclick = function(){ load(); };
+  $('reload').onclick = function(){
+    load();
+    if(!$('pan-khach').classList.contains('hide')) napKhach();
+  };
 
   /* ---------------- vẽ ---------------- */
   function bars(elBar, elAx, rows, keyLabel, keyVal, labeller){
@@ -345,14 +425,264 @@ tr:last-child td{border-bottom:none}
     var ok = await load();
     if(!ok) return false;
     $('login').classList.add('hide'); $('app').classList.remove('hide');
+    // Màn Khách nối ở đây chứ không ở start(): start() chạy lúc mở trang, khi
+    // chưa có mã thì nó dừng sớm, nên đăng nhập bằng nút sẽ không nối được gì.
+    if(!daNoi){ daNoi = true; noiTab(); noiZalo(); }
+    napKhach();
     try{ if(window.Notification && Notification.permission === 'default') Notification.requestPermission(); }catch(e){}
-    clearInterval(timer); timer = setInterval(load, 60000);
+    clearInterval(timer);
+    timer = setInterval(function(){
+      load();
+      // Màn Khách cũng phải tươi: lead mới về trong lúc đang mở trang
+      if(!$('pan-khach').classList.contains('hide') && !dangMo) napKhach();
+    }, 60000);
     return true;
   }
 
   function showLogin(){
     clearInterval(timer);
     $('app').classList.add('hide'); $('login').classList.remove('hide');
+  }
+
+  /* ================= MÀN KHÁCH =================
+     Một chỗ duy nhất trả lời "hôm nay gọi ai". Lead đổ về từ sáu cửa:
+     form Đặt lịch, form CTV, trang /mau, lúc tạo tài khoản, sau khi tự chấm
+     điểm, và Zalo nhập tay. Trước đây sáu cửa đổ vào sáu chỗ, không chỗ nào
+     mở ra xem được. */
+
+  var BUOC = [
+    ['moi','Mới'], ['da_lien_he','Đã liên hệ'], ['hen_danh_gia','Hẹn đánh giá'],
+    ['da_bao_gia','Đã báo giá'], ['chot','Chốt'], ['mat','Mất']
+  ];
+  var TEN_BUOC = {}; BUOC.forEach(function(b){ TEN_BUOC[b[0]] = b[1]; });
+
+  var TEN_NGUON = {
+    'web-datlich':'Đặt lịch', 'web-ctv':'Đăng ký CTV', 'mau':'Xin bản mẫu',
+    'dangky':'Tạo tài khoản', 'chamdiem':'Tự chấm điểm', 'zalo':'Zalo',
+    'facebook':'Facebook', 'web':'Web (cũ)', 'ctv':'CTV (cũ)'
+  };
+
+  var locBuoc = '', timLast = '', dangMo = '';
+
+  function esc(t){
+    return String(t == null ? '' : t)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function ngay(iso){
+    if(!iso) return '';
+    var d = new Date(iso);
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+
+  async function crmGet(qs){
+    var r = await fetch('/api/crm?'+qs, { headers:{ 'x-admin-pass': getPass() } });
+    if(r.status === 401 || r.status === 403){ showLogin(); return null; }
+    if(!r.ok) return null;
+    return r.json();
+  }
+
+  async function crmPost(body){
+    var r = await fetch('/api/crm', {
+      method:'POST',
+      headers:{ 'content-type':'application/json', 'x-admin-pass': getPass() },
+      body: JSON.stringify(body)
+    });
+    if(r.status === 401 || r.status === 403){ showLogin(); return null; }
+    return r.json().catch(function(){ return null; });
+  }
+
+  // Một dòng khách. Đổi bước và hẹn gọi lại ghi thẳng, không cần bấm Lưu —
+  // thao tác càng ít bước thì sổ càng có cơ hội được cập nhật thật.
+  function dongLead(l, khu){
+    var tre = l.next_action_at && new Date(l.next_action_at) < new Date();
+    var sel = '<select class="sel" data-stage="'+l.id+'">' + BUOC.map(function(b){
+      return '<option value="'+b[0]+'"'+(l.stage===b[0]?' selected':'')+'>'+b[1]+'</option>';
+    }).join('') + '</select>';
+
+    return '<div class="lrow">' +
+      '<div><div class="lname">'+esc(l.full_name || '(chưa có tên)')+'</div>' +
+        '<div class="lsub">'+esc(l.phone || l.email || '')+'</div></div>' +
+      '<div><span class="src s-'+esc(l.source||'')+'">'+esc(TEN_NGUON[l.source] || l.source || '—')+'</span></div>' +
+      '<div class="lsub">'+esc(l.property_type || l.message || '—').slice(0,90)+'</div>' +
+      '<div>'+sel+'</div>' +
+      '<div><input class="dt'+(tre?' late':'')+'" type="date" data-hen="'+l.id+'" value="'+ngay(l.next_action_at)+'"></div>' +
+      '<div><button class="btn sm ghost" data-mo="'+khu+'|'+l.id+'">Ghi chú</button></div>' +
+    '</div>' +
+    '<div id="dr-'+khu+'-'+l.id+'" class="drawer hide"></div>';
+  }
+
+  function nhomLead(ten, ds, rong, khu){
+    if(!ds.length) return '<h3 style="margin-top:14px">'+ten+'</h3><div class="empty">'+rong+'</div>';
+    return '<h3 style="margin-top:14px">'+ten+' <span class="tag">'+ds.length+'</span></h3>' +
+           ds.map(function(l){ return dongLead(l, khu); }).join('');
+  }
+
+  function noiDay(){
+    // Đổi bước
+    Array.prototype.forEach.call(document.querySelectorAll('[data-stage]'), function(el){
+      el.onchange = async function(){
+        var id = el.getAttribute('data-stage'), v = el.value, ly = null;
+        if(v === 'mat'){
+          ly = prompt('Mất vì lý do gì? (giá · thời điểm · không đúng người · khác)');
+          if(ly === null){ await napKhach(); return; }
+        }
+        el.disabled = true;
+        await crmPost({ viec:'doi_buoc', id:id, stage:v, lost_reason: ly });
+        await napKhach();
+      };
+    });
+    // Hẹn gọi lại
+    Array.prototype.forEach.call(document.querySelectorAll('[data-hen]'), function(el){
+      el.onchange = async function(){
+        el.disabled = true;
+        // Hẹn vào 9 giờ sáng ngày đó, không phải nửa đêm
+        await crmPost({ viec:'hen_lai', id: el.getAttribute('data-hen'),
+                        ngay: el.value ? (el.value + 'T09:00:00') : '' });
+        await napKhach();
+      };
+    });
+    // Mở ngăn ghi chú
+    Array.prototype.forEach.call(document.querySelectorAll('[data-mo]'), function(el){
+      el.onclick = function(){
+        var khoa = el.getAttribute('data-mo');
+        var cu = dangMo;
+        dangMo = (dangMo === khoa) ? '' : khoa;
+        if(cu && cu !== khoa) dongNgan(cu);
+        moNgan(khoa);
+      };
+    });
+  }
+
+  function dongNgan(khoa){
+    var b = $('dr-' + khoa.replace('|', '-'));
+    if(b){ b.classList.add('hide'); b.innerHTML = ''; }
+  }
+
+  async function moNgan(khoa){
+    var id = khoa.split('|')[1];
+    var box = $('dr-' + khoa.replace('|', '-'));
+    if(!box) return;
+    if(dangMo !== khoa){ box.classList.add('hide'); box.innerHTML = ''; return; }
+
+    box.classList.remove('hide');
+    box.innerHTML = '<div class="lsub">Đang mở…</div>';
+    var d = await crmGet('view=chi_tiet&id='+encodeURIComponent(id));
+    if(!d){ box.innerHTML = '<div class="lsub">Không đọc được.</div>'; return; }
+
+    var l = d.lead;
+    box.innerHTML =
+      '<div class="lsub">' + esc(l.email || '') + (l.ctv_code ? ' · CTV: '+esc(l.ctv_code) : '') +
+        (l.message ? ' · ' + esc(l.message) : '') + '</div>' +
+      '<div style="display:flex;gap:9px;margin-top:11px">' +
+        '<input class="inp" id="gc-'+box.id+'" placeholder="Gọi lúc 10h, hẹn gửi báo giá thứ Sáu…">' +
+        '<button class="btn sm" id="gl-'+box.id+'">Lưu</button></div>' +
+      '<div class="hist">' + (d.ghi_chu.length
+        ? d.ghi_chu.map(function(g){
+            return '<div class="h"><div>'+esc(g.noi_dung)+'</div>' +
+                   '<div class="t">'+when(g.created_at)+(g.nguoi_ghi?' · '+esc(g.nguoi_ghi):'')+'</div></div>';
+          }).join('')
+        : '<div class="h t">Chưa có ghi chú nào.</div>') + '</div>';
+
+    var o = $('gc-'+box.id), nut = $('gl-'+box.id);
+    nut.onclick = async function(){
+      var t = (o.value || '').trim();
+      if(!t) return;
+      o.disabled = true;
+      await crmPost({ viec:'ghi_chu', id:id, ghi_chu:t });
+      await moNgan(khoa);
+    };
+    o.onkeydown = function(e){ if(e.key === 'Enter') nut.click(); };
+  }
+
+  async function napKhach(){
+    var d = await crmGet('view=hom_nay');
+    if(!d) return;
+    var t = d.tong_quan || {};
+
+    $('crm-cards').innerHTML = [
+      ['Lead mới chưa chạm', fmt(t.moi), 'cần gọi đầu tiên'],
+      ['Đến hạn gọi lại', fmt(t.den_han), (Number(t.qua_han)||0) ? fmt(t.qua_han)+' đã quá hạn' : 'không có cái nào quá hạn'],
+      ['Đang theo', fmt(t.dang_theo), 'từ liên hệ tới báo giá'],
+      ['Lead mới 7 ngày', fmt(t.moi_7n), 'mọi nguồn'],
+      ['Chốt 30 ngày', fmt(t.chot_30n), 'khách đã đồng ý']
+    ].map(function(c,i){
+      return '<div class="card stat"><div class="lbl">'+c[0]+'</div>'+
+             '<div class="num'+(i<2?' gold':'')+'">'+c[1]+'</div>'+
+             '<div class="sub">'+c[2]+'</div></div>';
+    }).join('');
+
+    var canLam = (Number(t.moi)||0) + (Number(t.den_han)||0);
+    var n = $('tab-n');
+    n.textContent = canLam; n.classList.toggle('hide', !canLam);
+
+    $('hom-nay').innerHTML =
+      nhomLead('Mới — chưa ai chạm', d.moi, 'Không có lead mới. Nếu nhiều ngày liền trống thì vấn đề nằm ở đầu vào, không nằm ở sổ này.', 'hn') +
+      nhomLead('Đến hạn gọi lại', d.den_han, 'Không có ai đến hạn hôm nay.', 'dh');
+
+    await napDanhSach();
+  }
+
+  async function napDanhSach(){
+    var qs = 'view=danh_sach' + (locBuoc ? '&stage='+locBuoc : '') +
+             (timLast ? '&tim='+encodeURIComponent(timLast) : '');
+    var d = await crmGet(qs);
+    if(!d) return;
+    $('chips').innerHTML = [['','Tất cả']].concat(BUOC).map(function(b){
+      return '<button class="chip'+(locBuoc===b[0]?' on':'')+'" data-loc="'+b[0]+'">'+b[1]+'</button>';
+    }).join('');
+    Array.prototype.forEach.call(document.querySelectorAll('[data-loc]'), function(el){
+      el.onclick = function(){ locBuoc = el.getAttribute('data-loc'); napDanhSach(); };
+    });
+    $('ds').innerHTML = d.danh_sach.length
+      ? d.danh_sach.map(function(l){ return dongLead(l, 'ds'); }).join('')
+      : '<div class="empty">Chưa có khách nào ở mục này.</div>';
+    // Nối lại sự kiện cho cả khối "Hôm nay" lẫn danh sách — cả hai vừa vẽ lại
+    noiDay();
+    if(dangMo) moNgan(dangMo);
+  }
+
+  // Thêm lead Zalo bằng tay — cửa duy nhất mà mã nguồn không với tới được,
+  // mà lại là cửa toàn bộ video tầng D đang dẫn về (#DANHGIA).
+  function noiZalo(){
+    var tim = $('tim');
+    var hoan = null;
+    tim.oninput = function(){
+      clearTimeout(hoan);
+      hoan = setTimeout(function(){ timLast = tim.value.trim(); napDanhSach(); }, 350);
+    };
+
+    $('z-luu').onclick = async function(){
+      var ten = $('z-ten').value.trim(), sdt = $('z-sdt').value.trim();
+      var m = $('z-msg');
+      if(!ten || !sdt){ m.textContent = 'Cần họ tên và số điện thoại.'; return; }
+      $('z-luu').disabled = true; m.textContent = 'Đang lưu…';
+      var kq = await crmPost({ viec:'them_zalo', name:ten, phone:sdt,
+                               business: $('z-loai').value.trim(), note: $('z-ghi').value.trim() });
+      $('z-luu').disabled = false;
+      if(!kq || kq.error){
+        m.textContent = kq && kq.error === 'so_dien_thoai_khong_hop_le'
+          ? 'Số điện thoại không hợp lệ.' : 'Chưa lưu được, thử lại.';
+        return;
+      }
+      m.textContent = kq.da_co ? ('Số này đã có trong sổ — đã ghi thêm một lần chạm.') : 'Đã thêm vào sổ.';
+      ['z-ten','z-sdt','z-loai','z-ghi'].forEach(function(i){ $(i).value = ''; });
+      napKhach();
+    };
+  }
+
+  function noiTab(){
+    Array.prototype.forEach.call(document.querySelectorAll('.tab'), function(b){
+      b.onclick = function(){
+        var t = b.getAttribute('data-tab');
+        Array.prototype.forEach.call(document.querySelectorAll('.tab'), function(x){
+          x.classList.toggle('on', x === b);
+        });
+        $('pan-khach').classList.toggle('hide', t !== 'khach');
+        $('pan-so').classList.toggle('hide', t !== 'so');
+        if(t === 'khach') napKhach();
+      };
+    });
   }
 
   async function start(){

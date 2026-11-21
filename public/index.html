@@ -1008,7 +1008,18 @@ function adviseHTML(){ var s=totalScore(); var r=rankOf(s); var w=weakestDim(); 
     '<p class="advz-msg">'+adviceMsg(s)+'</p>'+
     '<div class="advz-pkg"><div class="advz-tag">Gói phù hợp cho anh chị</div><h4>'+P.name+'</h4><p>'+P.desc+'</p>'+
     (w?'<p class="advz-svc advz-pkg-p">Việc cần làm trước — '+w.dim+': <b>'+DIMSVC[w.dim]+'</b></p>':'')+
-    '<p class="advz-price advz-pkg-p">'+P.price+'</p><div class="advz-cta">'+ctaHTML(P.cta)+'</div></div></div>'; }
+    '<p class="advz-price advz-pkg-p">'+P.price+'</p><div class="advz-cta"><button class="btn-sm" onclick="xinNhanXet()">Gửi điểm này cho chuyên gia FiTop</button>'+ctaHTML(P.cta)+'</div></div></div>'; }
+
+/* Điểm tự chấm nằm trên máy khách, không gửi về máy chủ — đúng như chính sách
+   bảo mật của trang. Nút này KHÔNG gửi gì cả: nó chỉ điền sẵn điểm vào ô ghi
+   chú của form Đặt lịch để anh chị đọc lại rồi tự bấm gửi. Lead vào sổ với
+   nguồn 'chamdiem' — người tự chấm xong còn muốn nghe nhận xét là lead nóng
+   nhất trên trang. */
+window.xinNhanXet=function(){ try{ var s=totalScore(), w=weakestDim();
+    var g=document.getElementById('ghichu');
+    if(g && !g.value.trim()){ g.value='Điểm tự chấm: '+s+'/100'+(w?' · yếu nhất: '+w.dim+' ('+w.pct+'%)':''); }
+    window.__nguonLead='chamdiem';
+  }catch(_e){} go('dangky'); };
 /* ---- CHAT ---- */
 const REPLY={'Điểm dưới 75, làm gì trước':'Nhìn kế hoạch hành động: ba việc đứng đầu là ba việc kéo điểm nhiều nhất. Việc nào có gắn dịch vụ FiTop thì em có thể hỗ trợ, việc còn lại anh chị tự làm được.',
  'Đặt lịch đánh giá tại chỗ':'FiTop đến cơ sở, đánh giá cùng anh chị và đối chiếu với số tự đánh giá. Anh chị để lại số điện thoại ở form Đặt lịch đánh giá, em sắp lịch trong 24 giờ.',
@@ -1031,7 +1042,7 @@ frm.addEventListener('submit',e=>{e.preventDefault();const ten=document.getEleme
   if(!ten){err('ten',true);bad=true}if(!/^[0-9\s+().-]{9,}$/.test(sdt)){err('sdt',true);bad=true}if(!nc){err('nhucau',true);bad=true}if(bad)return;const btn=document.getElementById('btnDat');btn.disabled=true;btn.textContent='Đang gửi...';
   var _em=(document.getElementById('email')||{}).value||'', _gc=(document.getElementById('ghichu')||{}).value||'—';
   try{ if(window.hsLead){ hsLead('datlich',{firstname:ten,phone:sdt,email:_em,message:'Đặt lịch đánh giá · Loại hình: '+nc+' · Ghi chú: '+_gc}); } }catch(_e){}
-  try{ if(window.fiLead){ fiLead('datlich',{name:ten,phone:sdt,email:_em,business:nc,note:_gc}); } }catch(_e){}
+  try{ if(window.fiLead){ fiLead(window.__nguonLead||'datlich',{name:ten,phone:sdt,email:_em,business:nc,note:_gc}); } }catch(_e){} window.__nguonLead='';
   fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(new FormData(frm)).toString()})
   .catch(()=>{}).finally(()=>{frm.style.display='none';document.getElementById('ok').classList.add('show')})});
 document.getElementById('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeAdd()});
@@ -1102,7 +1113,7 @@ new MutationObserver(ms=>{ const lang=window.__lang||'vi'; if(lang==='vi') retur
   function busy(id,on){ var b=document.getElementById(id); if(b){ b.disabled=on; b.style.opacity=on?0.6:1; } }
   function mapErr(m){ m=(m||'').toLowerCase(); if(m.indexOf('invalid login')>=0) return 'Email hoặc mật khẩu không đúng.'; if(m.indexOf('already registered')>=0||m.indexOf('already been registered')>=0||m.indexOf('user already')>=0) return 'Email này đã có tài khoản. Hãy đăng nhập.'; if(m.indexOf('not confirmed')>=0) return 'Email chưa xác nhận. Kiểm tra hộp thư rồi đăng nhập.'; if(m.indexOf('password')>=0&&m.indexOf('6')>=0) return 'Mật khẩu tối thiểu 6 ký tự.'; return m; }
   window.doLogin=function(){ if(!sb){ autherr('Chưa kết nối được máy chủ. Thử lại sau.'); return; } var em=document.getElementById('li-email').value.trim(); var pw=document.getElementById('li-pass').value; if(!em||!pw){ autherr('Nhập email và mật khẩu.'); return; } autherr(''); busy('btn-login',true); sb.auth.signInWithPassword({email:em,password:pw}).then(function(res){ busy('btn-login',false); if(res.error){ autherr(mapErr(res.error.message)); return; } closeAuth(); },function(){ busy('btn-login',false); autherr('Có lỗi, thử lại.'); }); };
-  window.doRegister=function(){ if(!sb){ autherr('Chưa kết nối được máy chủ. Thử lại sau.'); return; } var nm=document.getElementById('rg-name').value.trim(); var ph=document.getElementById('rg-phone').value.trim(); var em=document.getElementById('rg-email').value.trim(); var pw=document.getElementById('rg-pass').value; if(!em||!pw){ autherr('Nhập email và mật khẩu.'); return; } if(pw.length<6){ autherr('Mật khẩu tối thiểu 6 ký tự.'); return; } autherr(''); busy('btn-reg',true); sb.auth.signUp({email:em,password:pw,options:{data:{ho_ten:nm,dien_thoai:ph}}}).then(function(res){ busy('btn-reg',false); if(res.error){ autherr(mapErr(res.error.message)); return; } if(res.data&&res.data.session){ closeAuth(); } else { autherr('Tài khoản đã tạo. Vui lòng kiểm tra email để xác nhận rồi đăng nhập.'); switchAuth('login'); } },function(){ busy('btn-reg',false); autherr('Có lỗi, thử lại.'); }); };
+  window.doRegister=function(){ if(!sb){ autherr('Chưa kết nối được máy chủ. Thử lại sau.'); return; } var nm=document.getElementById('rg-name').value.trim(); var ph=document.getElementById('rg-phone').value.trim(); var em=document.getElementById('rg-email').value.trim(); var pw=document.getElementById('rg-pass').value; if(!em||!pw){ autherr('Nhập email và mật khẩu.'); return; } if(pw.length<6){ autherr('Mật khẩu tối thiểu 6 ký tự.'); return; } autherr(''); busy('btn-reg',true); sb.auth.signUp({email:em,password:pw,options:{data:{ho_ten:nm,dien_thoai:ph}}}).then(function(res){ busy('btn-reg',false); if(res.error){ autherr(mapErr(res.error.message)); return; } try{ if(window.fiLead){ fiLead('dangky',{name:nm,phone:ph,email:em,note:'Tạo tài khoản trên fitop.com.vn'}); } }catch(_e){} if(res.data&&res.data.session){ closeAuth(); } else { autherr('Tài khoản đã tạo. Vui lòng kiểm tra email để xác nhận rồi đăng nhập.'); switchAuth('login'); } },function(){ busy('btn-reg',false); autherr('Có lỗi, thử lại.'); }); };
   window.doLogout=function(){ if(sb){ sb.auth.signOut().then(function(){},function(){}); } };
   if(sb){ sb.auth.onAuthStateChange(function(ev,sess){ if((ev==='INITIAL_SESSION'||ev==='SIGNED_IN'||ev==='TOKEN_REFRESHED')&&sess){ if(!session) onLogin(sess); else session=sess; } else if(ev==='SIGNED_OUT'){ onLogout(); } else { renderAuth(); } }); } else { renderAuth(); }
 })();
