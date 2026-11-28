@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duyệt căn ký gửi — FiTop Retreat</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Lora:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#16202E;--gold:#C69A3A;--gold-dk:#8C6A1E;--gold-bg:#FBF3E2;--sand:#F7F4EE;--white:#FFF;
+--ink:#1A1F26;--ink-2:#56606C;--ink-3:#8A929C;--line:#E2DED6;--red:#B8433A;--green:#357254;--green-bg:#EAF3EE;--amber:#B57B12}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Be Vietnam Pro',system-ui,sans-serif;color:var(--ink);background:var(--sand);font-size:15px;line-height:1.55}
+button{font-family:inherit;cursor:pointer}
+.top{background:var(--navy);color:#fff;padding:14px 22px;display:flex;align-items:center;gap:14px}
+.top b{font-family:'Lora',serif;font-size:18px}.top b span{color:var(--gold)}
+.top .out{margin-left:auto;font-size:13px;color:#B9C2CC;background:none;border:1px solid rgba(255,255,255,.2);padding:6px 12px;border-radius:7px}
+.wrap{max-width:1080px;margin:0 auto;padding:22px}
+/* login */
+.login{max-width:360px;margin:70px auto;background:#fff;border:1px solid var(--line);border-radius:14px;padding:28px;text-align:center}
+.login h1{font-family:'Lora',serif;font-size:22px;color:var(--navy);margin-bottom:6px}
+.login p{color:var(--ink-3);font-size:13.5px;margin-bottom:16px}
+.login input{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:15px;font-family:inherit;margin-bottom:12px}
+.login input:focus{outline:none;border-color:var(--gold)}
+.login button{width:100%;padding:12px;background:var(--gold);color:#16202E;border:none;border-radius:10px;font-weight:600;font-size:15px}
+.login .e{color:var(--red);font-size:13px;margin-top:8px;display:none}
+/* tabs */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.tab{padding:9px 16px;border:1.5px solid var(--line);background:#fff;border-radius:9px;font-size:14px;font-weight:500;color:var(--ink-2)}
+.tab.on{border-color:var(--gold);background:var(--gold-bg);color:var(--gold-dk);font-weight:600}
+.tab .b{display:inline-block;min-width:20px;padding:0 6px;margin-left:6px;background:var(--navy);color:#fff;border-radius:10px;font-size:11px;line-height:18px}
+.tab.on .b{background:var(--gold-dk)}
+/* card */
+.row{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:16px;display:grid;grid-template-columns:260px 1fr;gap:18px}
+.gal{display:flex;gap:6px;overflow-x:auto;border-radius:10px}
+.gal img{height:150px;border-radius:8px;border:1px solid var(--line);cursor:pointer;flex:0 0 auto}
+.gal .no{height:150px;width:100%;display:grid;place-items:center;background:var(--sand);color:var(--ink-3);border-radius:8px;font-size:13px}
+.info h3{font-size:18px;color:var(--navy);font-family:'Be Vietnam Pro';font-weight:600;margin-bottom:2px}
+.info .sub{color:var(--ink-3);font-size:13px;margin-bottom:8px}
+.info .tag{display:inline-block;font-size:11.5px;font-weight:600;padding:3px 9px;border-radius:20px;margin-right:6px}
+.tag.cho_duyet{background:var(--gold-bg);color:var(--amber)}
+.tag.da_duyet{background:var(--green-bg);color:var(--green)}
+.tag.tu_choi{background:#FBEAE8;color:var(--red)}
+.tag.an{background:#EEE;color:var(--ink-3)}
+.kv{font-size:13.5px;color:var(--ink-2);margin:3px 0}
+.kv b{color:var(--navy);font-weight:600}
+.mota{font-size:13.5px;color:var(--ink);margin:8px 0;white-space:pre-wrap}
+.tis{font-size:12.5px;color:var(--ink-3);margin-bottom:8px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.acts button{padding:9px 15px;border:none;border-radius:8px;font-size:13.5px;font-weight:600}
+.b-duyet{background:var(--green);color:#fff}
+.b-tuchoi{background:#fff;border:1.5px solid var(--red)!important;color:var(--red)}
+.b-an{background:#fff;border:1.5px solid var(--line)!important;color:var(--ink-2)}
+.b-lh{background:var(--navy);color:#fff}
+.empty{text-align:center;color:var(--ink-3);padding:50px}
+.lb{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:100;padding:20px}
+.lb.show{display:flex}.lb img{max-width:95%;max-height:95%;border-radius:8px}
+@media(max-width:720px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div id="loginView" class="login">
+  <h1>Duyệt căn ký gửi</h1>
+  <p>Nhập mã truy cập quản trị FiTop.</p>
+  <input id="pass" type="password" placeholder="Mã truy cập" autocomplete="current-password">
+  <button id="loginBtn">Vào</button>
+  <div class="e" id="loginErr">Mã truy cập sai.</div>
+</div>
+
+<div id="appView" style="display:none">
+  <div class="top"><b>FiTop<span>Retreat</span> · Duyệt căn</b>
+    <button class="out" id="outBtn">Đăng xuất</button>
+  </div>
+  <div class="wrap">
+    <div class="tabs" id="tabs"></div>
+    <div id="list"></div>
+  </div>
+</div>
+
+<div class="lb" id="lb"><img id="lbimg" src=""></div>
+
+<script>
+var KEY='ftr_admin_pass';
+var LOAI_TEN={can_ho:'Căn hộ',homestay:'Homestay',hotel:'Khách sạn',villa:'Villa',nha_nguyen_can:'Nhà nguyên căn',khac:'Khác'};
+var DV={dem:'đ/đêm',thang:'đ/tháng',ban:'đ (bán)'};
+var TT=[['cho_duyet','Chờ duyệt'],['da_duyet','Đã duyệt'],['tu_choi','Từ chối'],['an','Đã ẩn'],['all','Tất cả']];
+var curTT='cho_duyet', COUNT={};
+
+function getPass(){ try{ return sessionStorage.getItem(KEY)||localStorage.getItem(KEY)||''; }catch(e){ return ''; } }
+function setPass(v){ try{ localStorage.setItem(KEY,v); }catch(e){ try{ sessionStorage.setItem(KEY,v); }catch(e2){} } }
+function clearPass(){ try{ localStorage.removeItem(KEY); }catch(e){} try{ sessionStorage.removeItem(KEY); }catch(e){} }
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+document.getElementById('loginBtn').addEventListener('click',doLogin);
+document.getElementById('pass').addEventListener('keydown',function(e){ if(e.key==='Enter')doLogin(); });
+document.getElementById('outBtn').addEventListener('click',function(){ clearPass(); location.reload(); });
+document.getElementById('lb').addEventListener('click',function(){ this.classList.remove('show'); });
+
+function doLogin(){
+  var p=document.getElementById('pass').value.trim();
+  if(!p) return;
+  setPass(p); load(true);
+}
+function showApp(){ document.getElementById('loginView').style.display='none'; document.getElementById('appView').style.display='block'; }
+
+function renderTabs(){
+  var el=document.getElementById('tabs'); el.innerHTML='';
+  TT.forEach(function(t){
+    var b=document.createElement('button'); b.className='tab'+(t[0]===curTT?' on':'');
+    var n=t[0]==='all'?'':(COUNT[t[0]]!=null?'<span class="b">'+COUNT[t[0]]+'</span>':'');
+    b.innerHTML=t[1]+n;
+    b.addEventListener('click',function(){ curTT=t[0]; load(false); });
+    el.appendChild(b);
+  });
+}
+
+function load(first){
+  fetch('/api/can-admin?trang_thai='+encodeURIComponent(curTT),{ headers:{'x-admin-pass':getPass()} })
+    .then(function(r){
+      if(r.status===401||r.status===403){ if(first){ document.getElementById('loginErr').style.display='block'; clearPass(); } else { clearPass(); location.reload(); } throw 'auth'; }
+      return r.json();
+    })
+    .then(function(j){
+      showApp(); COUNT=j.count||{}; renderTabs(); renderList(j.items||[]);
+    })
+    .catch(function(e){ if(e!=='auth') console.error(e); });
+}
+
+function renderList(items){
+  var el=document.getElementById('list');
+  if(!items.length){ el.innerHTML='<div class="empty">Không có tin nào ở mục này.</div>'; return; }
+  el.innerHTML='';
+  items.forEach(function(r){
+    var imgs=(r.anh_url||[]).map(function(u){ return '<img src="'+u+'" onclick="lb(\''+u+'\')">'; }).join('');
+    var facts=[r.so_phong?r.so_phong+' phòng':'',r.dien_tich?r.dien_tich+' m²':'',r.tinh||''].filter(Boolean).join(' · ');
+    var gia=r.gia?Number(r.gia).toLocaleString('vi-VN')+' '+(DV[r.gia_don_vi]||''):'(chưa nêu giá)';
+    var d=document.createElement('div'); d.className='row';
+    d.innerHTML=
+      '<div class="gal">'+(imgs||'<div class="no">Chưa có ảnh</div>')+'</div>'+
+      '<div class="info">'+
+        '<span class="tag '+r.trang_thai+'">'+(r.trang_thai==='cho_duyet'?'Chờ duyệt':r.trang_thai==='da_duyet'?'Đã duyệt':r.trang_thai==='tu_choi'?'Từ chối':'Đã ẩn')+'</span>'+
+        '<span class="tag" style="background:#EEF;color:#4552A0">'+(LOAI_TEN[r.loai]||r.loai)+'</span>'+
+        '<h3>'+esc(r.ten)+'</h3>'+
+        '<div class="sub">Mã '+esc(r.ma||'')+' · '+new Date(r.created_at).toLocaleString('vi-VN')+(facts?' · '+esc(facts):'')+'</div>'+
+        '<div class="kv"><b>Giá:</b> '+esc(gia)+'</div>'+
+        (r.dia_chi?'<div class="kv"><b>Địa chỉ:</b> '+esc(r.dia_chi)+'</div>':'')+
+        '<div class="kv"><b>Liên hệ:</b> '+esc([r.lien_he_ten,r.lien_he_sdt,r.lien_he_email].filter(Boolean).join(' · '))+'</div>'+
+        (r.mo_ta?'<div class="mota">'+esc(r.mo_ta)+'</div>':'')+
+        ((r.tien_ich&&r.tien_ich.length)?'<div class="tis">Tiện ích: '+esc(r.tien_ich.join(', '))+'</div>':'')+
+        (r.ghi_chu_duyet?'<div class="kv" style="color:var(--red)"><b>Ghi chú:</b> '+esc(r.ghi_chu_duyet)+'</div>':'')+
+        '<div class="acts">'+
+          (r.trang_thai!=='da_duyet'?'<button class="b-duyet" onclick="setTT(\''+r.id+'\',\'da_duyet\')">✓ Duyệt &amp; hiện</button>':'')+
+          (r.trang_thai!=='tu_choi'?'<button class="b-tuchoi" onclick="setTT(\''+r.id+'\',\'tu_choi\',true)">✕ Từ chối</button>':'')+
+          (r.trang_thai!=='an'?'<button class="b-an" onclick="setTT(\''+r.id+'\',\'an\')">Ẩn</button>':'')+
+          (r.lien_he_sdt?'<a class="acts-lh" href="https://zalo.me/'+esc(r.lien_he_sdt)+'" target="_blank"><button class="b-lh">💬 Zalo chủ nhà</button></a>':'')+
+        '</div>'+
+      '</div>';
+    el.appendChild(d);
+  });
+}
+
+window.setTT=function(id,tt,hoiLyDo){
+  var ghi='';
+  if(hoiLyDo){ ghi=prompt('Lý do từ chối (tuỳ chọn):')||''; }
+  fetch('/api/can-admin',{ method:'POST', headers:{'content-type':'application/json','x-admin-pass':getPass()},
+    body:JSON.stringify({ id:id, trang_thai:tt, ghi_chu_duyet:ghi }) })
+    .then(function(r){ return r.json(); })
+    .then(function(j){ if(j.ok) load(false); else alert('Lỗi: '+(j.error||'')); })
+    .catch(function(){ alert('Không cập nhật được, thử lại.'); });
+};
+window.lb=function(u){ document.getElementById('lbimg').src=u; document.getElementById('lb').classList.add('show'); };
+
+// Tự vào nếu đã có mã lưu
+if(getPass()) load(true);
+</script>
+</body>
+</html>

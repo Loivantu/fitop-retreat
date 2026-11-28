@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Đăng ký ký gửi căn — FiTop Retreat</title>
+<meta name="description" content="Chủ nhà tự đăng ký căn hộ / homestay / khách sạn / villa để FiTop Retreat quản lý & bán phòng: nhập thông tin, tải ảnh, đưa ra giá. Miễn phí khảo sát.">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#16202E;--navy-2:#1E2A38;--gold:#C69A3A;--gold-lt:#E3C77A;--gold-dk:#8C6A1E;--gold-bg:#FBF3E2;
+--sand:#F7F4EE;--white:#FFF;--ink:#1A1F26;--ink-2:#56606C;--ink-3:#8A929C;--line:#E2DED6;
+--red:#B8433A;--green:#357254;--green-bg:#EAF3EE}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Be Vietnam Pro',system-ui,sans-serif;color:var(--ink);background:var(--sand);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer}
+h1,h2,h3,.serif{font-family:'Lora',serif;letter-spacing:-.015em}
+.nav{position:sticky;top:0;z-index:60;background:rgba(22,32,46,.97);backdrop-filter:blur(8px);border-bottom:1px solid rgba(198,154,58,.2)}
+.nav-in{max-width:900px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;gap:18px}
+.logo{display:flex;align-items:center;gap:5px;font-size:20px;font-weight:700;color:#fff}
+.logo span{color:var(--gold);font-weight:300}
+.logo img{width:28px;height:auto;margin-right:4px;border-radius:6px;background:#fff;padding:2px}
+.nav a.back{margin-left:auto;font-size:14px;color:#B9C2CC}.nav a.back:hover{color:#fff}
+.hero{background:var(--navy);color:#fff;padding:46px 0 40px}
+.wrap{max-width:900px;margin:0 auto;padding:0 24px}
+.hero .eyebrow{color:var(--gold);font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
+.hero h1{font-size:33px;font-weight:500;line-height:1.18;margin-bottom:12px}
+.hero h1 em{font-style:italic;color:var(--gold-lt)}
+.hero p{color:#A3ADB8;max-width:60ch;font-size:16px}
+.main{padding:34px 0 70px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:28px;box-shadow:0 8px 28px rgba(22,32,46,.06)}
+.step-tag{display:inline-block;font-size:12px;font-weight:700;color:var(--gold-dk);background:var(--gold-bg);padding:5px 12px;border-radius:20px;margin-bottom:6px}
+.sec-t{font-size:19px;color:var(--navy);margin:26px 0 14px;font-weight:600;font-family:'Be Vietnam Pro'}
+.sec-t:first-of-type{margin-top:4px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+label.f{display:block;font-size:13.5px;font-weight:600;color:var(--navy);margin-bottom:6px}
+label.f .req{color:var(--red)}
+label.f .hint{font-weight:400;color:var(--ink-3);font-size:12px}
+.in,select.in,textarea.in{width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:15px;color:var(--ink);background:#fff;transition:border-color .15s}
+.in:focus,select.in:focus,textarea.in:focus{outline:none;border-color:var(--gold)}
+textarea.in{resize:vertical;min-height:92px}
+.fg{margin-bottom:16px}
+.gia-row{display:grid;grid-template-columns:1fr 150px;gap:10px}
+.ti-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ti{display:flex;align-items:center;gap:8px;font-size:14px;padding:9px 12px;border:1.5px solid var(--line);border-radius:9px;cursor:pointer;user-select:none;background:#fff}
+.ti input{accent-color:var(--gold-dk);width:16px;height:16px}
+.ti.on{border-color:var(--gold);background:var(--gold-bg)}
+.up{border:2px dashed var(--line);border-radius:12px;padding:22px;text-align:center;background:#FcFbF8;cursor:pointer;transition:.15s}
+.up:hover{border-color:var(--gold);background:var(--gold-bg)}
+.up .ic{font-size:30px}
+.up b{color:var(--navy)}
+.up small{display:block;color:var(--ink-3);font-size:12.5px;margin-top:4px}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-top:14px}
+.thumb{position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid var(--line);background:#eee}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb .x{position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(22,32,46,.82);color:#fff;border:none;font-size:15px;line-height:1;display:grid;place-items:center}
+.note{background:var(--green-bg);border:1px solid #CDE6D8;border-radius:10px;padding:11px 14px;font-size:13px;color:#2C5240;margin-top:4px}
+.btn{font-size:16px;font-weight:600;padding:15px 26px;border-radius:10px;border:none;background:var(--gold);color:#16202E;width:100%;margin-top:22px;transition:.15s}
+.btn:hover{background:var(--gold-lt)}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+.err{color:var(--red);font-size:13.5px;margin-top:10px;display:none}
+.ok-box{display:none;text-align:center;padding:30px 10px}
+.ok-box .big{font-size:46px}
+.ok-box h2{color:var(--green);font-size:25px;margin:10px 0 8px}
+.ok-box p{color:var(--ink-2);max-width:46ch;margin:0 auto 6px}
+.ok-box .ma{font-family:'Lora',serif;font-size:20px;color:var(--navy);background:var(--sand);display:inline-block;padding:7px 18px;border-radius:9px;margin-top:10px}
+.ok-box a.cta{display:inline-block;margin-top:20px;background:var(--navy);color:#fff;padding:12px 24px;border-radius:9px;font-size:14px}
+footer{background:#0F1722;color:#9AA4AE;padding:30px 0;font-size:13px;text-align:center}
+footer a{color:var(--gold-lt)}
+@media(max-width:720px){.grid2,.grid3,.ti-grid{grid-template-columns:1fr}.gia-row{grid-template-columns:1fr}.hero h1{font-size:26px}.card{padding:20px}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-in">
+  <a class="logo" href="/"><img src="logo-fitop.png" alt="FiTop">FiTop<span>Retreat</span></a>
+  <a class="back" href="/villa">← Về trang dịch vụ</a>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">Dành cho chủ nhà</div>
+  <h1>Đăng ký <em>ký gửi căn</em> của bạn để FiTop khai thác</h1>
+  <p>Điền thông tin căn / homestay / khách sạn, tải vài tấm ảnh và đưa ra mức giá mong muốn. FiTop Retreat sẽ khảo sát, tư vấn phương án khai thác và liên hệ bạn — miễn phí bước định hướng ban đầu.</p>
+</div></header>
+
+<main class="main"><div class="wrap">
+  <div class="card" id="formCard">
+    <span class="step-tag">Thông tin căn</span>
+
+    <div class="sec-t">1 · Căn của bạn</div>
+    <div class="fg">
+      <label class="f" for="ten">Tên căn / homestay / khách sạn <span class="req">*</span></label>
+      <input class="in" id="ten" maxlength="160" placeholder="VD: Villa An Nhiên Đà Lạt">
+    </div>
+    <div class="grid2">
+      <div class="fg">
+        <label class="f" for="loai">Loại hình <span class="req">*</span></label>
+        <select class="in" id="loai">
+          <option value="">— Chọn loại —</option>
+          <option value="can_ho">Căn hộ / Căn hộ dịch vụ</option>
+          <option value="homestay">Homestay</option>
+          <option value="hotel">Khách sạn</option>
+          <option value="villa">Villa</option>
+          <option value="nha_nguyen_can">Nhà nguyên căn</option>
+          <option value="khac">Khác</option>
+        </select>
+      </div>
+      <div class="fg">
+        <label class="f" for="tinh">Tỉnh / Thành phố</label>
+        <input class="in" id="tinh" maxlength="80" placeholder="VD: Lâm Đồng (Đà Lạt)" list="tinh-list">
+        <datalist id="tinh-list">
+          <option>Lâm Đồng (Đà Lạt)</option><option>TP. Hồ Chí Minh</option><option>Hà Nội</option>
+          <option>Khánh Hòa (Nha Trang)</option><option>Đà Nẵng</option><option>Bà Rịa - Vũng Tàu</option>
+          <option>Kiên Giang (Phú Quốc)</option><option>Quảng Nam (Hội An)</option><option>Bình Thuận (Phan Thiết)</option>
+        </datalist>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="f" for="diachi">Địa chỉ chi tiết <span class="hint">· chỉ FiTop xem, không hiện công khai</span></label>
+      <input class="in" id="diachi" maxlength="300" placeholder="Số nhà, đường, phường/xã">
+    </div>
+    <div class="grid3">
+      <div class="fg">
+        <label class="f" for="sophong">Số phòng</label>
+        <input class="in" id="sophong" type="number" min="1" max="999" placeholder="VD: 3">
+      </div>
+      <div class="fg">
+        <label class="f" for="dientich">Diện tích (m²)</label>
+        <input class="in" id="dientich" type="number" min="1" placeholder="VD: 120">
+      </div>
+      <div class="fg">
+        <label class="f">Giá mong muốn</label>
+        <div class="gia-row">
+          <input class="in" id="gia" type="number" min="0" placeholder="VD: 5.000.000">
+          <select class="in" id="giadv">
+            <option value="thang">đ / tháng</option>
+            <option value="dem">đ / đêm</option>
+            <option value="ban">đ (bán đứt)</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="f" for="mota">Mô tả ngắn</label>
+      <textarea class="in" id="mota" maxlength="2000" placeholder="Vị trí, view, điểm nổi bật, tình trạng nội thất..."></textarea>
+    </div>
+
+    <div class="sec-t">2 · Tiện ích</div>
+    <div class="ti-grid" id="tiGrid"></div>
+
+    <div class="sec-t">3 · Hình ảnh <span class="hint" style="font-weight:400;color:var(--ink-3);font-size:13px">· tối đa 6 ảnh</span></div>
+    <div class="up" id="upBox">
+      <div class="ic">📸</div>
+      <b>Chọn ảnh căn của bạn</b>
+      <small>Ảnh sẽ được tự nén gọn trước khi gửi · JPG/PNG · tối đa 6 tấm</small>
+    </div>
+    <input type="file" id="fileInput" accept="image/*" multiple hidden>
+    <div class="thumbs" id="thumbs"></div>
+
+    <div class="sec-t">4 · Liên hệ</div>
+    <div class="grid3">
+      <div class="fg">
+        <label class="f" for="lhten">Họ tên</label>
+        <input class="in" id="lhten" maxlength="120" placeholder="Tên bạn">
+      </div>
+      <div class="fg">
+        <label class="f" for="lhsdt">Số điện thoại / Zalo <span class="req">*</span></label>
+        <input class="in" id="lhsdt" maxlength="20" placeholder="09xx xxx xxx">
+      </div>
+      <div class="fg">
+        <label class="f" for="lhemail">Email</label>
+        <input class="in" id="lhemail" type="email" maxlength="160" placeholder="(không bắt buộc)">
+      </div>
+    </div>
+    <div class="note">🔒 Địa chỉ chi tiết và thông tin liên hệ của bạn <b>chỉ FiTop xem</b> để khảo sát và liên hệ. Trên trang công khai chỉ hiện tên căn, khu vực, giá và ảnh.</div>
+
+    <button class="btn" id="submitBtn">Gửi đăng ký</button>
+    <div class="err" id="errBox"></div>
+  </div>
+
+  <div class="card ok-box" id="okCard">
+    <div class="big">✅</div>
+    <h2>Đã nhận đăng ký của bạn!</h2>
+    <p>FiTop Retreat sẽ xem xét và liên hệ bạn sớm để khảo sát và tư vấn phương án khai thác.</p>
+    <div class="ma" id="okMa"></div>
+    <div><a class="cta" href="/villa">Xem lại dịch vụ quản lý &amp; bán phòng →</a></div>
+  </div>
+</div></main>
+
+<footer><div class="wrap">
+  FiTop Retreat · CÔNG TY TNHH TƯ VẤN &amp; DỊCH VỤ FITOP · MST 0317740194 ·
+  Liên hệ nhanh: <a href="https://zalo.me/0937116819" target="_blank" rel="noopener">Zalo 0937 116 819</a>
+</div></footer>
+
+<script>
+var TIEN_ICH=['Wifi','Điều hoà','Bếp','Máy giặt','Hồ bơi','Chỗ đậu xe','Ban công','Thang máy','An ninh 24/7','Thú cưng','Gần biển','View đẹp'];
+var tiGrid=document.getElementById('tiGrid');
+TIEN_ICH.forEach(function(t,i){
+  var id='ti'+i;
+  var lab=document.createElement('label'); lab.className='ti';
+  lab.innerHTML='<input type="checkbox" value="'+t+'" id="'+id+'"><span>'+t+'</span>';
+  var cb=lab.querySelector('input');
+  cb.addEventListener('change',function(){lab.classList.toggle('on',cb.checked);});
+  tiGrid.appendChild(lab);
+});
+
+// ---- Ảnh: nén client rồi giữ dataURL ----
+var MAX=6, anhList=[]; // {dataURL}
+var fileInput=document.getElementById('fileInput');
+var upBox=document.getElementById('upBox');
+var thumbsEl=document.getElementById('thumbs');
+upBox.addEventListener('click',function(){ fileInput.click(); });
+fileInput.addEventListener('change',function(e){ handleFiles(e.target.files); fileInput.value=''; });
+
+function handleFiles(files){
+  var arr=Array.prototype.slice.call(files);
+  arr.forEach(function(file){
+    if(anhList.length>=MAX){ return; }
+    if(!/^image\//.test(file.type)) return;
+    nenAnh(file,function(dataURL){ if(anhList.length<MAX){ anhList.push({dataURL:dataURL}); render(); } });
+  });
+}
+function nenAnh(file,cb){
+  var img=new Image(), url=URL.createObjectURL(file);
+  img.onload=function(){
+    var max=1280, w=img.width, h=img.height;
+    if(w>h && w>max){ h=Math.round(h*max/w); w=max; }
+    else if(h>=w && h>max){ w=Math.round(w*max/h); h=max; }
+    var cv=document.createElement('canvas'); cv.width=w; cv.height=h;
+    cv.getContext('2d').drawImage(img,0,0,w,h);
+    URL.revokeObjectURL(url);
+    cb(cv.toDataURL('image/jpeg',0.82));
+  };
+  img.onerror=function(){ URL.revokeObjectURL(url); };
+  img.src=url;
+}
+function render(){
+  thumbsEl.innerHTML='';
+  anhList.forEach(function(a,i){
+    var d=document.createElement('div'); d.className='thumb';
+    d.innerHTML='<img src="'+a.dataURL+'"><button class="x" title="Xoá">×</button>';
+    d.querySelector('.x').addEventListener('click',function(){ anhList.splice(i,1); render(); });
+    thumbsEl.appendChild(d);
+  });
+  upBox.querySelector('b').textContent = anhList.length ? ('Đã chọn '+anhList.length+'/'+MAX+' ảnh — thêm ảnh') : 'Chọn ảnh căn của bạn';
+}
+
+// ---- Gửi ----
+var btn=document.getElementById('submitBtn'), errBox=document.getElementById('errBox');
+function showErr(m){ errBox.textContent=m; errBox.style.display='block'; }
+function valSdt(s){ var d=(s||'').replace(/\D/g,''); return /^0\d{9}$/.test(d)||/^84\d{9}$/.test(d); }
+
+btn.addEventListener('click',function(){
+  errBox.style.display='none';
+  var ten=document.getElementById('ten').value.trim();
+  var loai=document.getElementById('loai').value;
+  var sdt=document.getElementById('lhsdt').value.trim();
+  if(!ten){ showErr('Vui lòng nhập tên căn.'); return; }
+  if(!loai){ showErr('Vui lòng chọn loại hình.'); return; }
+  if(!valSdt(sdt)){ showErr('Số điện thoại chưa đúng (10 số, bắt đầu bằng 0).'); return; }
+
+  var tien_ich=TIEN_ICH.filter(function(t,i){ return document.getElementById('ti'+i).checked; });
+  var payload={
+    ten:ten, loai:loai,
+    tinh:document.getElementById('tinh').value.trim(),
+    dia_chi:document.getElementById('diachi').value.trim(),
+    so_phong:document.getElementById('sophong').value,
+    dien_tich:document.getElementById('dientich').value,
+    gia:document.getElementById('gia').value,
+    gia_don_vi:document.getElementById('giadv').value,
+    mo_ta:document.getElementById('mota').value.trim(),
+    tien_ich:tien_ich,
+    lien_he_ten:document.getElementById('lhten').value.trim(),
+    lien_he_sdt:sdt,
+    lien_he_email:document.getElementById('lhemail').value.trim(),
+    anh:anhList.map(function(a){ return a.dataURL; })
+  };
+
+  btn.disabled=true; btn.textContent='Đang gửi'+(anhList.length?' '+anhList.length+' ảnh…':'…');
+  fetch('/api/dang-ky-can',{ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) })
+    .then(function(r){ return r.json().then(function(j){ return {ok:r.ok,j:j}; }); })
+    .then(function(res){
+      if(!res.ok || !res.j.ok){
+        var map={thieu_ten_can:'Thiếu tên căn.',loai_khong_hop_le:'Loại hình không hợp lệ.',so_dien_thoai_khong_hop_le:'Số điện thoại chưa đúng.',anh_qua_lon:'Có ảnh quá lớn, vui lòng chọn ảnh nhỏ hơn.',tong_anh_qua_lon:'Tổng dung lượng ảnh quá lớn, bớt vài tấm giúp em.',ghi_that_bai:'Lỗi lưu, thử lại giúp em.'};
+        showErr(map[res.j.error]||'Có lỗi xảy ra, vui lòng thử lại hoặc nhắn Zalo 0937 116 819.');
+        btn.disabled=false; btn.textContent='Gửi đăng ký'; return;
+      }
+      document.getElementById('formCard').style.display='none';
+      document.getElementById('okMa').textContent='Mã tin: '+(res.j.ma||'');
+      document.getElementById('okCard').style.display='block';
+      window.scrollTo({top:0,behavior:'smooth'});
+    })
+    .catch(function(){
+      showErr('Không gửi được — kiểm tra mạng rồi thử lại, hoặc nhắn Zalo 0937 116 819.');
+      btn.disabled=false; btn.textContent='Gửi đăng ký';
+    });
+});
+</script>
+</body>
+</html>

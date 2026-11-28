@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Căn đang khai thác — FiTop Retreat</title>
+<meta name="description" content="Các căn hộ, homestay, khách sạn, villa do FiTop Retreat quản lý & khai thác. Xem ảnh, giá và liên hệ FiTop để thuê hoặc hợp tác.">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#16202E;--gold:#C69A3A;--gold-lt:#E3C77A;--gold-dk:#8C6A1E;--gold-bg:#FBF3E2;
+--sand:#F7F4EE;--white:#FFF;--ink:#1A1F26;--ink-2:#56606C;--ink-3:#8A929C;--line:#E2DED6;--green:#357254}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Be Vietnam Pro',system-ui,sans-serif;color:var(--ink);background:var(--sand);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}button{font-family:inherit;cursor:pointer}
+h1,h2,h3,.serif{font-family:'Lora',serif;letter-spacing:-.015em}
+.nav{position:sticky;top:0;z-index:60;background:rgba(22,32,46,.97);backdrop-filter:blur(8px);border-bottom:1px solid rgba(198,154,58,.2)}
+.nav-in{max-width:1140px;margin:0 auto;padding:13px 24px;display:flex;align-items:center;gap:18px}
+.logo{display:flex;align-items:center;gap:5px;font-size:20px;font-weight:700;color:#fff}
+.logo span{color:var(--gold);font-weight:300}
+.logo img{width:28px;height:auto;margin-right:4px;border-radius:6px;background:#fff;padding:2px}
+.nav .sp{margin-left:auto;display:flex;gap:16px}
+.nav a.l{font-size:14px;color:#B9C2CC}.nav a.l:hover{color:#fff}
+.nav a.cta{font-size:14px;font-weight:500;padding:8px 16px;border-radius:7px;background:var(--gold);color:#16202E}
+.hero{background:var(--navy);color:#fff;padding:40px 0 34px}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+.hero .eyebrow{color:var(--gold);font-size:13px;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px}
+.hero h1{font-size:30px;font-weight:500;margin-bottom:8px}
+.hero p{color:#A3ADB8;max-width:60ch}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin:22px 0 4px}
+.filters select,.filters input{padding:10px 13px;border:1.5px solid var(--line);border-radius:9px;font-family:inherit;font-size:14px;background:#fff;color:var(--ink)}
+.filters select:focus,.filters input:focus{outline:none;border-color:var(--gold)}
+.main{padding:8px 0 70px}
+.count{color:var(--ink-2);font-size:14px;margin:14px 2px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.pcard{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 4px 16px rgba(22,32,46,.05);display:flex;flex-direction:column;cursor:pointer;transition:transform .15s,box-shadow .15s}
+.pcard:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(22,32,46,.12)}
+.pimg{aspect-ratio:4/3;background:#EEF0F2;overflow:hidden;position:relative}
+.pimg img{width:100%;height:100%;object-fit:cover;display:block}
+.pimg .badge{position:absolute;top:10px;left:10px;background:rgba(22,32,46,.86);color:#fff;font-size:11.5px;font-weight:600;padding:4px 10px;border-radius:20px}
+.pimg .n{position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:3px 8px;border-radius:12px}
+.pb{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.pb h3{font-size:17px;color:var(--navy);font-family:'Be Vietnam Pro';font-weight:600;line-height:1.3}
+.pb .loc{font-size:13px;color:var(--ink-3)}
+.pb .meta{font-size:13px;color:var(--ink-2)}
+.pb .gia{font-family:'Lora',serif;font-size:18px;color:var(--gold-dk);font-weight:600;margin-top:auto}
+.empty{text-align:center;padding:60px 20px;color:var(--ink-3)}
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(10,15,22,.72);z-index:100;display:none;align-items:flex-start;justify-content:center;padding:24px;overflow:auto}
+.ov.show{display:flex}
+.modal{background:#fff;border-radius:16px;max-width:760px;width:100%;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.4)}
+.m-gal{background:#111;position:relative;aspect-ratio:16/10}
+.m-gal img{width:100%;height:100%;object-fit:contain;display:block}
+.m-gal .arw{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.9);border:none;font-size:20px;display:grid;place-items:center}
+.m-gal .arw.l{left:12px}.m-gal .arw.r{right:12px}
+.m-gal .cnt{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fff;font-size:12px;padding:3px 10px;border-radius:12px}
+.m-x{position:absolute;top:12px;right:12px;width:34px;height:34px;border-radius:50%;background:rgba(0,0,0,.5);color:#fff;border:none;font-size:20px;z-index:3}
+.m-b{padding:22px 24px 24px}
+.m-b .badge{display:inline-block;background:var(--gold-bg);color:var(--gold-dk);font-size:12px;font-weight:700;padding:4px 11px;border-radius:20px}
+.m-b h2{font-size:23px;color:var(--navy);margin:9px 0 3px}
+.m-b .loc{color:var(--ink-3);font-size:14px}
+.m-b .gia{font-family:'Lora',serif;font-size:24px;color:var(--gold-dk);font-weight:600;margin:12px 0}
+.m-b .facts{display:flex;gap:18px;flex-wrap:wrap;font-size:14px;color:var(--ink-2);margin-bottom:12px}
+.m-b .mota{font-size:14.5px;color:var(--ink);line-height:1.65;white-space:pre-wrap;margin-bottom:14px}
+.m-b .tis{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.m-b .ti{font-size:12.5px;background:var(--sand);border:1px solid var(--line);padding:5px 11px;border-radius:20px;color:var(--ink-2)}
+.m-cta{display:flex;gap:10px;flex-wrap:wrap}
+.m-cta a{flex:1;min-width:150px;text-align:center;padding:13px;border-radius:10px;font-size:15px;font-weight:600}
+.m-cta .zalo{background:var(--gold);color:#16202E}
+.m-cta .call{background:var(--navy);color:#fff}
+footer{background:#0F1722;color:#9AA4AE;padding:30px 0;font-size:13px;text-align:center}
+footer a{color:var(--gold-lt)}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="nav-in">
+  <a class="logo" href="/"><img src="logo-fitop.png" alt="FiTop">FiTop<span>Retreat</span></a>
+  <div class="sp">
+    <a class="l" href="/villa">Dịch vụ</a>
+    <a class="cta" href="/dang-ky-can">+ Ký gửi căn</a>
+  </div>
+</div></nav>
+
+<header class="hero"><div class="wrap">
+  <div class="eyebrow">Danh mục khai thác</div>
+  <h1>Căn đang được FiTop Retreat khai thác</h1>
+  <p>Căn hộ · homestay · khách sạn · villa do FiTop quản lý &amp; bán phòng. Chọn căn bạn quan tâm và liên hệ FiTop.</p>
+  <div class="filters">
+    <select id="fLoai">
+      <option value="">Tất cả loại hình</option>
+      <option value="can_ho">Căn hộ</option><option value="homestay">Homestay</option>
+      <option value="hotel">Khách sạn</option><option value="villa">Villa</option>
+      <option value="nha_nguyen_can">Nhà nguyên căn</option><option value="khac">Khác</option>
+    </select>
+    <input id="fTinh" placeholder="Lọc theo khu vực (VD: Đà Lạt)">
+  </div>
+</div></header>
+
+<main class="main"><div class="wrap">
+  <div class="count" id="count">Đang tải…</div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">Chưa có căn nào phù hợp. <a href="/dang-ky-can" style="color:var(--gold-dk);font-weight:600">Ký gửi căn của bạn →</a></div>
+</div></main>
+
+<div class="ov" id="ov">
+  <div class="modal" id="modal"></div>
+</div>
+
+<footer><div class="wrap">
+  FiTop Retreat · Quản lý &amp; bán phòng villa / homestay / căn hộ ·
+  <a href="https://zalo.me/0937116819" target="_blank" rel="noopener">Zalo 0937 116 819</a> ·
+  <a href="/dang-ky-can">Ký gửi căn của bạn</a>
+</div></footer>
+
+<script>
+var LOAI_TEN={can_ho:'Căn hộ',homestay:'Homestay',hotel:'Khách sạn',villa:'Villa',nha_nguyen_can:'Nhà nguyên căn',khac:'Khác'};
+var DV={dem:'đ/đêm',thang:'đ/tháng',ban:'đ'};
+var ZALO='https://zalo.me/0937116819', TEL='tel:0937116819';
+var ALL=[], gIdx=0, gImgs=[];
+var grid=document.getElementById('grid'), countEl=document.getElementById('count'), emptyEl=document.getElementById('empty');
+
+function fmtGia(r){
+  if(!r.gia) return 'Liên hệ';
+  return Number(r.gia).toLocaleString('vi-VN')+' '+(DV[r.gia_don_vi]||'');
+}
+function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function render(list){
+  grid.innerHTML='';
+  if(!list.length){ emptyEl.style.display='block'; countEl.textContent=''; return; }
+  emptyEl.style.display='none';
+  countEl.textContent=list.length+' căn';
+  list.forEach(function(r){
+    var img=(r.anh&&r.anh[0])||'';
+    var c=document.createElement('div'); c.className='pcard';
+    c.innerHTML=
+      '<div class="pimg">'+(img?'<img loading="lazy" src="'+img+'" alt="'+esc(r.ten)+'">':'')+
+        '<span class="badge">'+(LOAI_TEN[r.loai]||r.loai)+'</span>'+
+        (r.anh&&r.anh.length>1?'<span class="n">📷 '+r.anh.length+'</span>':'')+
+      '</div>'+
+      '<div class="pb">'+
+        '<h3>'+esc(r.ten)+'</h3>'+
+        (r.tinh?'<div class="loc">📍 '+esc(r.tinh)+'</div>':'')+
+        '<div class="meta">'+[r.so_phong?r.so_phong+' phòng':'',r.dien_tich?r.dien_tich+' m²':''].filter(Boolean).join(' · ')+'</div>'+
+        '<div class="gia">'+fmtGia(r)+'</div>'+
+      '</div>';
+    c.addEventListener('click',function(){ openModal(r); });
+    grid.appendChild(c);
+  });
+}
+
+function openModal(r){
+  gImgs=r.anh||[]; gIdx=0;
+  var facts=[r.so_phong?('🛏 '+r.so_phong+' phòng'):'',r.dien_tich?('📐 '+r.dien_tich+' m²'):'',r.tinh?('📍 '+esc(r.tinh)):''].filter(Boolean);
+  var tis=(r.tien_ich||[]).map(function(t){return '<span class="ti">'+esc(t)+'</span>';}).join('');
+  var m=document.getElementById('modal');
+  m.innerHTML=
+    '<div class="m-gal" id="mgal">'+
+      '<button class="m-x" id="mx">×</button>'+
+      (gImgs.length?'<img id="mimg" src="'+gImgs[0]+'">':'<div style="color:#888;display:grid;place-items:center;height:100%">Chưa có ảnh</div>')+
+      (gImgs.length>1?'<button class="arw l" id="marl">‹</button><button class="arw r" id="marr">›</button><span class="cnt" id="mcnt">1/'+gImgs.length+'</span>':'')+
+    '</div>'+
+    '<div class="m-b">'+
+      '<span class="badge">'+(LOAI_TEN[r.loai]||r.loai)+'</span>'+
+      '<h2>'+esc(r.ten)+'</h2>'+
+      (r.tinh?'<div class="loc">📍 '+esc(r.tinh)+'</div>':'')+
+      '<div class="gia">'+fmtGia(r)+'</div>'+
+      (facts.length?'<div class="facts">'+facts.map(function(f){return '<span>'+f+'</span>';}).join('')+'</div>':'')+
+      (r.mo_ta?'<div class="mota">'+esc(r.mo_ta)+'</div>':'')+
+      (tis?'<div class="tis">'+tis+'</div>':'')+
+      '<div class="m-cta">'+
+        '<a class="zalo" href="'+ZALO+'" target="_blank" rel="noopener">💬 Liên hệ FiTop qua Zalo</a>'+
+        '<a class="call" href="'+TEL+'">📞 Gọi 0937 116 819</a>'+
+      '</div>'+
+      '<p style="font-size:12px;color:var(--ink-3);margin-top:12px">Mã căn: '+esc(r.ma||'')+' · Liên hệ FiTop để được tư vấn, đặt phòng hoặc hợp tác khai thác.</p>'+
+    '</div>';
+  document.getElementById('mx').addEventListener('click',closeModal);
+  if(gImgs.length>1){
+    document.getElementById('marl').addEventListener('click',function(e){e.stopPropagation();nav(-1);});
+    document.getElementById('marr').addEventListener('click',function(e){e.stopPropagation();nav(1);});
+  }
+  document.getElementById('ov').classList.add('show');
+  document.body.style.overflow='hidden';
+}
+function nav(d){
+  if(!gImgs.length) return;
+  gIdx=(gIdx+d+gImgs.length)%gImgs.length;
+  document.getElementById('mimg').src=gImgs[gIdx];
+  document.getElementById('mcnt').textContent=(gIdx+1)+'/'+gImgs.length;
+}
+function closeModal(){ document.getElementById('ov').classList.remove('show'); document.body.style.overflow=''; }
+document.getElementById('ov').addEventListener('click',function(e){ if(e.target===this) closeModal(); });
+document.addEventListener('keydown',function(e){ if(!document.getElementById('ov').classList.contains('show'))return; if(e.key==='Escape')closeModal(); if(e.key==='ArrowLeft')nav(-1); if(e.key==='ArrowRight')nav(1); });
+
+function applyFilter(){
+  var l=document.getElementById('fLoai').value;
+  var t=document.getElementById('fTinh').value.trim().toLowerCase();
+  render(ALL.filter(function(r){
+    if(l && r.loai!==l) return false;
+    if(t && String(r.tinh||'').toLowerCase().indexOf(t)<0) return false;
+    return true;
+  }));
+}
+document.getElementById('fLoai').addEventListener('change',applyFilter);
+document.getElementById('fTinh').addEventListener('input',applyFilter);
+
+fetch('/api/can-cong-khai').then(function(r){return r.json();}).then(function(j){
+  ALL=(j&&j.items)||[]; render(ALL);
+}).catch(function(){ countEl.textContent='Không tải được danh sách. Thử lại sau.'; });
+</script>
+</body>
+</html>
