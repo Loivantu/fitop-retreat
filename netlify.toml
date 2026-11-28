@@ -46,3 +46,9 @@
     X-Frame-Options = "DENY"
     Referrer-Policy = "no-referrer"
     Cache-Control = "no-store"
+
+# --- Trang quản lý & bán phòng villa: /villa phục vụ villa.html ---
+[[redirects]]
+  from = "/villa"
+  to = "/villa.html"
+  status = 200
