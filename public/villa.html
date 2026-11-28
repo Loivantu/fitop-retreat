@@ -30,6 +30,10 @@ h1,h2,h3,.serif{font-family:'Lora',serif;letter-spacing:-.015em}
 .nav-links a{font-size:14px;color:#B9C2CC}.nav-links a:hover{color:#fff}
 .nav-cta{font-size:14px;font-weight:500;padding:9px 20px;border-radius:6px;background:var(--gold);color:#16202E;border:none}
 .nav-cta:hover{background:var(--gold-lt)}
+.lang-sw{display:flex;gap:2px;margin-left:14px;background:rgba(255,255,255,.08);border:1px solid rgba(198,154,58,.3);border-radius:7px;padding:2px}
+.lang-sw button{background:none;border:none;color:#B9C2CC;font-size:12.5px;font-weight:600;padding:5px 9px;border-radius:5px;font-family:inherit}
+.lang-sw button.on{background:var(--gold);color:#16202E}
+@media(max-width:860px){.lang-sw{margin-left:auto}}
 /* HERO */
 .hero{background:var(--navy);color:#fff;padding:74px 0 64px;position:relative;overflow:hidden}
 .hero::after{content:"";position:absolute;right:-120px;top:-100px;width:420px;height:420px;border-radius:50%;background:radial-gradient(circle,rgba(198,154,58,.16),transparent 68%)}
@@ -121,6 +125,7 @@ footer{background:#0F1722;color:#9AA4AE;padding:44px 0 26px}
     <a href="#cam-ket">3 cam kết</a><a href="#van-hanh">Vận hành A–Z</a><a href="#tien">Minh bạch tiền</a><a href="#tinh">Máy tính</a><a href="#phi">Bảng phí</a>
   </div>
   <a class="nav-cta" href="https://zalo.me/0937116819" target="_blank" rel="noopener">Tư vấn miễn phí</a>
+  <div class="lang-sw"><button data-l="vi" class="on" onclick="setLang('vi')">VI</button><button data-l="en" onclick="setLang('en')">EN</button><button data-l="zh" onclick="setLang('zh')">中</button></div>
 </div></nav>
 
 <header class="hero"><div class="wrap">
@@ -254,6 +259,140 @@ footer{background:#0F1722;color:#9AA4AE;padding:44px 0 26px}
 
 <div class="toast" id="toast"></div>
 <script>
+/* ===== i18n VI / EN / ZH ===== */
+var DICT={
+"3 cam kết":{en:"3 commitments",zh:"三项承诺"},
+"Vận hành A–Z":{en:"A–Z operations",zh:"A–Z 运营"},
+"Minh bạch tiền":{en:"Money transparency",zh:"资金透明"},
+"Máy tính":{en:"Calculator",zh:"计算器"},
+"Bảng phí":{en:"Pricing",zh:"收费表"},
+"Tư vấn miễn phí":{en:"Free consult",zh:"免费咨询"},
+"Dịch vụ cho chủ nhà ở xa":{en:"A service for remote owners",zh:"为异地业主打造的服务"},
+"Quản lý & bán phòng":{en:"Management & room sales of",zh:"管理与房源销售："},
+"Villa · Homestay · Nhà nguyên căn cao cấp":{en:"premium Villas · Homestays · Whole houses",zh:"高端别墅 · 民宿 · 整租房"},
+"Vận hành tự động từ A–Z — bạn không cần đụng tay. Bán đa kênh OTA, giá linh động theo thị trường, tối ưu lấp phòng. Tiền về thẳng tài khoản của bạn.":{en:"Fully automated A–Z operations — hands-off for you. Multi-channel OTA sales, dynamic market pricing, optimized occupancy. Money goes straight to your account.",zh:"全自动 A–Z 运营——您完全无需插手。多渠道 OTA 销售、随市场动态定价、优化入住率。房款直接进入您的账户。"},
+"Nhận tư vấn & khảo sát miễn phí":{en:"Get a free consult & survey",zh:"获取免费咨询与勘查"},
+"Xem 3 cam kết khác biệt":{en:"See the 3 key commitments",zh:"查看三项差异化承诺"},
+"Chỉ thu phí từ":{en:"Fee from only",zh:"收费仅从"},
+"12% doanh thu THỰC":{en:"12% of ACTUAL revenue",zh:"实收营业额的 12%"},
+"/căn · ưu đãi 30 căn đầu tiên":{en:"/unit · offer for the first 30 units",zh:"/套 · 前 30 套优惠"},
+"Điều khác biệt":{en:"What makes us different",zh:"差异所在"},
+"3 cam kết trả lời đúng điều bạn lo nhất":{en:"3 commitments that answer your biggest worries",zh:"三项承诺，回应您最担心的问题"},
+"Đây là 3 câu hỏi mọi chủ nhà đều hỏi — FiTop trả lời dứt khoát bằng cam kết.":{en:"These are the 3 questions every owner asks — FiTop answers them firmly, in writing.",zh:"这是每位业主都会问的三个问题——FiTop 以书面承诺给出明确答复。"},
+"“Phí tính trên doanh thu thực hay hiển thị trên OTA?”":{en:"“Is the fee on actual revenue or the figure shown on OTAs?”",zh:"“收费是按实收营业额，还是 OTA 上显示的金额？”"},
+"Phí trên doanh thu THỰC nhận":{en:"Fee on ACTUAL revenue received",zh:"按实收营业额收费"},
+"Chỉ tính phí trên số tiền thực về sau khi OTA đã trừ hoa hồng — minh bạch công thức trong hợp đồng, không tính trên con số hiển thị ảo.":{en:"The fee applies only to the money actually received after OTA commissions — the formula is spelled out in the contract, never on an inflated displayed figure.",zh:"仅对 OTA 扣除佣金后实际到账的金额收费——合同中写明计算公式，绝不按虚高的显示金额计算。"},
+"Không phí ẩn":{en:"No hidden fees",zh:"无隐藏费用"},
+"“Tiền về tay ai trước, bao lâu chủ nhà nhận?”":{en:"“Who receives the money first, and how soon does the owner get it?”",zh:"“钱先到谁手里，业主多久能收到？”"},
+"100% tiền phòng về thẳng TK của bạn":{en:"100% of room income straight to your account",zh:"100% 房款直接进入您的账户"},
+"Tiền khách thanh toán về":{en:"Guest payments go to your",zh:"客人支付的款项进入"},
+"tài khoản chính chủ":{en:"own-name account",zh:"业主本人账户"},
+". FiTop thu phí quản lý riêng và đối soát định kỳ hàng tháng — FiTop không giữ tiền phòng của bạn.":{en:". FiTop charges its management fee separately and reconciles monthly — FiTop never holds your room income.",zh:"。FiTop 单独收取管理费并每月定期对账——FiTop 不代管您的房款。"},
+"Bạn giữ dòng tiền":{en:"You keep the cash flow",zh:"现金流掌握在您手中"},
+"“Vận hành từ xa hay có người tại căn?”":{en:"“Is it run remotely, or is there someone on-site?”",zh:"“是远程运营，还是有人驻点？”"},
+"Hệ thống từ xa + đội tại chỗ":{en:"Remote systems + on-site team",zh:"远程系统 + 当地团队"},
+"Vận hành bằng hệ thống (khóa thông minh, tự động hoá)":{en:"Run by systems (smart locks, automation)",zh:"以系统运营（智能门锁、自动化）"},
+"cộng":{en:"plus",zh:"外加"},
+"đội dọn & xử lý sự cố tại địa phương. SOP + nghiệm thu ảnh đảm bảo chất lượng dù bạn ở xa.":{en:"a local cleaning & incident-handling team. SOPs + photo sign-off guarantee quality even when you're far away.",zh:"当地的保洁与应急处理团队。标准作业流程 + 照片验收，即使您身在远方也能保证品质。"},
+"Hybrid · an tâm":{en:"Hybrid · peace of mind",zh:"混合模式 · 安心"},
+"Bạn giao chìa khoá — phần còn lại để FiTop lo":{en:"You hand over the keys — FiTop handles the rest",zh:"您交出钥匙——其余交给 FiTop"},
+"Bán đa kênh":{en:"Multi-channel sales",zh:"多渠道销售"},
+"OTA (Booking, Agoda, Airbnb, Traveloka) + đại lý + mạng xã hội, đồng bộ một lịch chống trùng phòng.":{en:"OTAs (Booking, Agoda, Airbnb, Traveloka) + agents + social media, synced on one calendar to prevent double-booking.",zh:"OTA（Booking、Agoda、Airbnb、Traveloka）+ 代理 + 社交媒体，统一日历同步，防止重复订房。"},
+"Giá linh động":{en:"Dynamic pricing",zh:"动态定价"},
+"Tối ưu giá mỗi đêm theo mùa, ngày lễ và công suất — dù thấp hay cao điểm.":{en:"Optimizes nightly rates by season, holidays and occupancy — in low and peak periods alike.",zh:"根据季节、节假日与入住率优化每晚房价——淡旺季皆然。"},
+"Khóa thông minh":{en:"Smart locks",zh:"智能门锁"},
+"Cấp mã tự động theo từng đơn, tự hết hạn khi khách trả phòng.":{en:"Codes issued automatically per booking, expiring on check-out.",zh:"按每笔订单自动发放密码，退房时自动失效。"},
+"SOP dọn + nghiệm thu ảnh":{en:"Cleaning SOP + photo sign-off",zh:"保洁标准 + 照片验收"},
+"Quy trình dọn chuẩn từng khu vực, ảnh nghiệm thu bắt buộc trước giờ khách vào.":{en:"Standardized cleaning per zone, with mandatory photo sign-off before check-in.",zh:"分区标准化保洁，入住前须拍照验收。"},
+"Khai báo lưu trú":{en:"Stay registration",zh:"住宿登记"},
+"Khai báo đúng quy định qua cổng Bộ Công an cho mỗi lượt khách.":{en:"Compliant registration via the Ministry of Public Security portal for every guest.",zh:"每位客人均通过公安部门户按规定申报。"},
+"Báo cáo minh bạch":{en:"Transparent reporting",zh:"透明报表"},
+"Cổng chủ nhà theo dõi doanh thu, công suất, lịch khai thác real-time.":{en:"An owner portal to track revenue, occupancy and the booking calendar in real time.",zh:"业主端口实时查看营收、入住率与运营日历。"},
+"Minh bạch dòng tiền":{en:"Transparent cash flow",zh:"透明现金流"},
+"Tiền của bạn — không qua tay người giữ hộ":{en:"Your money — never held by a middleman",zh:"您的钱——不经他人代管"},
+"Khách thanh toán":{en:"Guest pays",zh:"客人支付"},
+"OTA / trực tiếp":{en:"OTA / direct",zh:"OTA / 直接"},
+"Tài khoản CHÍNH CHỦ":{en:"OWNER'S account",zh:"业主本人账户"},
+"100% tiền phòng về bạn":{en:"100% of room income to you",zh:"100% 房款归您"},
+"Đối soát hàng tháng":{en:"Monthly reconciliation",zh:"每月对账"},
+"FiTop thu phí quản lý riêng":{en:"FiTop charges its management fee separately",zh:"FiTop 单独收取管理费"},
+"Bạn luôn nắm dòng tiền. FiTop chỉ nhận phí dịch vụ sau khi đối soát minh bạch.":{en:"You always hold the cash flow. FiTop takes its service fee only after a transparent reconciliation.",zh:"现金流始终由您掌握。FiTop 仅在透明对账后收取服务费。"},
+"Máy tính doanh thu":{en:"Revenue calculator",zh:"营收计算器"},
+"Bạn thực nhận bao nhiêu?":{en:"How much do you actually receive?",zh:"您实际能收到多少？"},
+"Kéo thử doanh thu dự kiến để xem con số về tay bạn — minh bạch từng đồng.":{en:"Drag the expected revenue to see what reaches you — transparent to the last dong.",zh:"拖动预计营收，查看最终到您手中的金额——每一分都透明。"},
+"Doanh thu THỰC nhận / tháng (căn)":{en:"ACTUAL revenue / month (per unit)",zh:"实收营业额 / 月（每套）"},
+"Gói dịch vụ":{en:"Service package",zh:"服务套餐"},
+"Tiêu chuẩn · 12%":{en:"Standard · 12%",zh:"标准 · 12%"},
+"Trọn gói · 15%":{en:"Full-service · 15%",zh:"全包 · 15%"},
+"Phí tính trên doanh thu thực nhận, đã gồm vận hành A–Z.":{en:"Fee on actual revenue received, A–Z operations included.",zh:"按实收营业额收费，已含 A–Z 运营。"},
+"Doanh thu thực/tháng":{en:"Actual revenue/month",zh:"实收营业额/月"},
+"Phí FiTop (":{en:"FiTop fee (",zh:"FiTop 费用 ("},
+"Bạn thực nhận":{en:"You actually receive",zh:"您实际收到"},
+"✓ Tiền về thẳng tài khoản của bạn · ước tính ~":{en:"✓ Money straight to your account · est. ~",zh:"✓ 款项直接进入您的账户 · 预计约 ~"},
+"triệu/năm":{en:"M VND/year",zh:"百万越盾/年"},
+"Quy trình":{en:"Process",zh:"流程"},
+"Bắt đầu trong 4 bước":{en:"Get started in 4 steps",zh:"四步开始"},
+"Khảo sát miễn phí":{en:"Free survey",zh:"免费勘查"},
+"Đánh giá căn, kiểm pháp lý & tiềm năng khai thác.":{en:"Assess the unit, legal status & earning potential.",zh:"评估房源、法律状态与运营潜力。"},
+"Ký uỷ thác":{en:"Sign the mandate",zh:"签署委托"},
+"Hợp đồng minh bạch: phí, dòng tiền, chu kỳ chi trả.":{en:"A transparent contract: fees, cash flow, payment cycle.",zh:"透明合同：费用、现金流、付款周期。"},
+"Thiết lập & lên kênh":{en:"Set up & list",zh:"搭建与上架"},
+"Chụp hình, lên OTA, cấu hình giá, lắp khóa thông minh.":{en:"Photos, OTA listings, pricing setup, smart-lock install.",zh:"拍摄、上架 OTA、配置价格、安装智能门锁。"},
+"Vận hành & báo cáo":{en:"Operate & report",zh:"运营与报表"},
+"FiTop chạy A–Z, bạn theo dõi qua cổng chủ nhà.":{en:"FiTop runs A–Z; you follow along via the owner portal.",zh:"FiTop 全程运营，您通过业主端口跟进。"},
+"Hai gói — chọn theo nhu cầu":{en:"Two packages — choose what fits",zh:"两种套餐——按需选择"},
+"Phí tính trên doanh thu thực nhận. Số liệu minh hoạ, chốt theo từng căn.":{en:"Fee on actual revenue received. Figures are illustrative, finalized per unit.",zh:"按实收营业额收费。数据仅供参考，按每套最终确定。"},
+"Tư vấn & Thiết lập":{en:"Consulting & Setup",zh:"咨询与搭建"},
+"Theo gói":{en:"By package",zh:"按套餐"},
+"FiTop xây & bàn giao hệ thống, bạn tự vận hành.":{en:"FiTop builds & hands over the system; you run it yourself.",zh:"FiTop 搭建并交付系统，您自行运营。"},
+"Lên kênh OTA + booking engine":{en:"OTA listings + booking engine",zh:"OTA 上架 + 预订引擎"},
+"Cấu hình giá linh động":{en:"Dynamic pricing setup",zh:"动态定价配置"},
+"Bộ SOP dọn & nghiệm thu ảnh":{en:"Cleaning SOP & photo sign-off kit",zh:"保洁标准与照片验收套件"},
+"Đào tạo vận hành":{en:"Operations training",zh:"运营培训"},
+"Hỗ trợ khởi động":{en:"Launch support",zh:"启动支持"},
+"Nhận báo giá":{en:"Get a quote",zh:"获取报价"},
+"Phổ biến":{en:"Popular",zh:"热门"},
+"Uỷ thác trọn gói":{en:"Full-service mandate",zh:"全包委托"},
+"từ 12%":{en:"from 12%",zh:"自 12% 起"},
+"doanh thu thực/căn":{en:"of actual revenue/unit",zh:"实收营业额/套"},
+"FiTop vận hành A–Z, bạn chỉ nhận tiền & báo cáo.":{en:"FiTop runs A–Z; you just receive money & reports.",zh:"FiTop 全程运营，您只需收款与查看报表。"},
+"Tất cả của gói Tư vấn":{en:"Everything in the Consulting package",zh:"包含咨询套餐全部内容"},
+"Bán đa kênh + tối ưu giá mỗi đêm":{en:"Multi-channel sales + nightly rate optimization",zh:"多渠道销售 + 每晚价格优化"},
+"Khóa thông minh & tự nhận phòng":{en:"Smart locks & self check-in",zh:"智能门锁与自助入住"},
+"Đội dọn & xử lý sự cố tại chỗ":{en:"On-site cleaning & incident team",zh:"当地保洁与应急团队"},
+"Khai báo lưu trú + bảo vệ tài sản":{en:"Stay registration + asset protection",zh:"住宿登记 + 资产保护"},
+"Cổng chủ nhà & đối soát hàng tháng":{en:"Owner portal & monthly reconciliation",zh:"业主端口与每月对账"},
+"Đăng ký 30 căn đầu":{en:"Join the first 30 units",zh:"报名前 30 套"},
+"Để lại thông tin, đội FiTop Retreat sẽ đánh giá tiềm năng căn của bạn và báo phương án khai thác.":{en:"Leave your details and the FiTop Retreat team will assess your unit's potential and propose an operating plan.",zh:"留下信息，FiTop Retreat 团队将评估您房源的潜力并提出运营方案。"},
+"Gửi yêu cầu":{en:"Send request",zh:"提交请求"},
+"Hoặc liên hệ nhanh:":{en:"Or reach us quickly:",zh:"或快速联系："},
+"Gọi 0937 116 819":{en:"Call 0937 116 819",zh:"致电 0937 116 819"},
+"Dịch vụ quản lý & bán phòng villa / homestay / nhà nguyên căn cao cấp.":{en:"Management & room-sales service for premium villas / homestays / whole houses.",zh:"高端别墅 / 民宿 / 整租房的管理与房源销售服务。"},
+"Dịch vụ":{en:"Services",zh:"服务"},
+"Máy tính doanh thu":{en:"Revenue calculator",zh:"营收计算器"},
+"Liên hệ":{en:"Contact",zh:"联系"},
+"Về trang chủ FiTop":{en:"Back to FiTop home",zh:"返回 FiTop 首页"},
+"Vận hành bởi FiTop · ezCloudhotel · OTA · Khóa thông minh":{en:"Powered by FiTop · ezCloudhotel · OTA · Smart locks",zh:"由 FiTop · ezCloudhotel · OTA · 智能门锁 提供支持"},
+"Vui lòng nhập họ tên và số điện thoại":{en:"Please enter your name and phone number",zh:"请输入姓名和电话号码"},
+"! FiTop Retreat sẽ liên hệ bạn sớm nhất.":{en:"! FiTop Retreat will contact you as soon as possible.",zh:"！FiTop Retreat 将尽快与您联系。"},
+"Có lỗi — vui lòng nhắn Zalo 0937 116 819":{en:"Something went wrong — please message Zalo 0937 116 819",zh:"出现错误——请通过 Zalo 0937 116 819 联系"}
+};
+var PH={"cName":{vi:"Họ tên",en:"Full name",zh:"姓名"},"cPhone":{vi:"Số điện thoại / Zalo",en:"Phone / Zalo",zh:"电话 / Zalo"}};
+var TOAST_THANKS={vi:"Cảm ơn ",en:"Thank you, ",zh:"感谢您，"};
+var __L="vi";
+function __trNode(n,lang){var raw=n.nodeValue;if(raw==null)return;
+ if(n.__k===undefined){var k=raw.trim();n.__k=DICT[k]?k:null;}
+ if(!n.__k)return;var d=DICT[n.__k];var val=lang==="vi"?n.__k:(d[lang]||n.__k);
+ var lead=raw.match(/^\s*/)[0],trail=raw.match(/\s*$/)[0];n.nodeValue=lead+val+trail;}
+function __walk(root,lang){var w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT,null);var n;while(n=w.nextNode())__trNode(n,lang);}
+function setLang(lang){__L=lang;__walk(document.body,lang);
+ for(var id in PH){var el=document.getElementById(id);if(el)el.placeholder=PH[id][lang]||PH[id].vi;}
+ document.documentElement.lang=lang;
+ var b=document.querySelectorAll(".lang-sw button");for(var i=0;i<b.length;i++)b[i].classList.toggle("on",b[i].getAttribute("data-l")===lang);
+ try{localStorage.setItem("ftr_lang",lang);}catch(e){}}
+new MutationObserver(function(ms){if(__L==="vi")return;ms.forEach(function(m){for(var i=0;i<m.addedNodes.length;i++){var a=m.addedNodes[i];if(a.nodeType===3)__trNode(a,__L);else if(a.nodeType===1)__walk(a,__L);}});}).observe(document.body,{childList:true,subtree:true});
+
+/* ===== calculator + form ===== */
 let pct=12;const fmt=n=>Math.round(n).toLocaleString('vi-VN');
 function setPkg(p){pct=p;document.getElementById('p12').classList.toggle('on',p===12);document.getElementById('p15').classList.toggle('on',p===15);calc();}
 function calc(){const rev=+document.getElementById('rev').value*1000000;document.getElementById('revVal').textContent=fmt(rev)+'đ';
@@ -261,13 +400,14 @@ function calc(){const rev=+document.getElementById('rev').value*1000000;document
  document.getElementById('rFee').textContent='−'+fmt(fee)+'đ';document.getElementById('rNet').textContent=fmt(net)+'đ';document.getElementById('rYear').textContent=fmt(net*12/1000000);}
 let tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800);}
 function submitLead(e){e.preventDefault();const form=e.target;const n=form.hoten.value.trim(),ph=form.sodienthoai.value.trim();
- if(!n||!ph){toast('Vui lòng nhập họ tên và số điện thoại');return false;}
+ if(!n||!ph){toast(DICT["Vui lòng nhập họ tên và số điện thoại"][__L]||"Vui lòng nhập họ tên và số điện thoại");return false;}
  const data=new URLSearchParams(new FormData(form)).toString();
  fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:data})
-  .then(()=>{toast('Cảm ơn '+n+'! FiTop Retreat sẽ liên hệ bạn sớm nhất.');form.reset();})
-  .catch(()=>{toast('Có lỗi — vui lòng nhắn Zalo 0937 116 819');window.open('https://zalo.me/0937116819','_blank');});
+  .then(()=>{var pre=(TOAST_THANKS[__L]||TOAST_THANKS.vi),suf=(__L==="vi"?"! FiTop Retreat sẽ liên hệ bạn sớm nhất.":DICT["! FiTop Retreat sẽ liên hệ bạn sớm nhất."][__L]);toast(pre+n+suf);form.reset();})
+  .catch(()=>{toast(__L==="vi"?"Có lỗi — vui lòng nhắn Zalo 0937 116 819":DICT["Có lỗi — vui lòng nhắn Zalo 0937 116 819"][__L]);window.open('https://zalo.me/0937116819','_blank');});
  return false;}
 calc();
+(function(){var l="vi";try{l=localStorage.getItem("ftr_lang")||"vi";}catch(e){}if(l!=="vi")setLang(l);})();
 </script>
 </body>
 </html>

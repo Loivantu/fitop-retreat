@@ -1176,6 +1176,16 @@ function __trNode(n,lang){ if(n.nodeType===1){ if(!['SCRIPT','STYLE'].includes(n
   n.nodeValue=(lang!=='vi'&&tr&&tr[lang])?n.__vi.replace(key,tr[lang]):n.__vi; }
 new MutationObserver(ms=>{ const lang=window.__lang||'vi'; if(lang==='vi') return;
   ms.forEach(m=>m.addedNodes.forEach(nd=>__trNode(nd,lang))); }).observe(document.body,{childList:true,subtree:true});
+Object.assign(I18N_T, {
+"Quản lý & bán phòng": {"en":"Rental management","zh":"房源管理与销售"},
+"Nhà di động Zen": {"en":"Zen Mobile Homes","zh":"Zen 移动房屋"},
+"Khác": {"en":"More","zh":"更多"},
+"Khai thác · Mới": {"en":"Operation · New","zh":"运营 · 新"},
+"Quản lý & bán phòng Villa / Homestay / Nhà nguyên căn cao cấp": {"en":"Villa / Homestay / Premium whole-house rental management","zh":"别墅 / 民宿 / 高端整租房源管理与销售"},
+"Vận hành tự động A–Z · bán đa kênh OTA · giá linh động theo thị trường. Phí trên doanh thu thực, 100% tiền phòng về tài khoản chính chủ.": {"en":"Fully automated A–Z operations · multi-channel OTA sales · dynamic market pricing. Fee on actual revenue, 100% of room income goes straight to the owner's account.","zh":"全自动A–Z运营 · 多渠道OTA销售 · 随市场动态定价。按实收营业额收费，100%房费直接进业主账户。"},
+"Xem dịch vụ →": {"en":"View service →","zh":"查看服务 →"},
+"Cộng tác viên": {"en":"Partners","zh":"合作伙伴"}
+});
 (function(){ let l='vi'; try{ l=localStorage.getItem('ftr_lang')||'vi'; }catch(e){} if(l!=='vi') setLang(l); else setLang('vi'); })();
 </script>
 
