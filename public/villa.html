@@ -231,11 +231,13 @@ footer{background:#0F1722;color:#9AA4AE;padding:44px 0 26px}
   <div class="cta-box">
     <h2>Nhận tư vấn & khảo sát miễn phí</h2>
     <p>Để lại thông tin, đội FiTop Retreat sẽ đánh giá tiềm năng căn của bạn và báo phương án khai thác.</p>
-    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;max-width:560px;margin:0 auto 16px">
-      <input id="cName" placeholder="Họ tên" style="flex:1;min-width:150px;padding:13px 16px;border:none;border-radius:9px;font-family:inherit;font-size:15px">
-      <input id="cPhone" placeholder="Số điện thoại / Zalo" style="flex:1;min-width:150px;padding:13px 16px;border:none;border-radius:9px;font-family:inherit;font-size:15px">
-      <button class="btn btn-gold" onclick="submitLead()">Gửi yêu cầu</button>
-    </div>
+    <form name="tu-van-villa" method="POST" data-netlify="true" netlify-honeypot="bot-field" onsubmit="return submitLead(event)" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;max-width:560px;margin:0 auto 16px">
+      <input type="hidden" name="form-name" value="tu-van-villa">
+      <p style="display:none"><label>Bỏ trống ô này: <input name="bot-field"></label></p>
+      <input name="hoten" id="cName" placeholder="Họ tên" required style="flex:1;min-width:150px;padding:13px 16px;border:none;border-radius:9px;font-family:inherit;font-size:15px">
+      <input name="sodienthoai" id="cPhone" placeholder="Số điện thoại / Zalo" required style="flex:1;min-width:150px;padding:13px 16px;border:none;border-radius:9px;font-family:inherit;font-size:15px">
+      <button type="submit" class="btn btn-gold">Gửi yêu cầu</button>
+    </form>
     <p style="font-size:13px;opacity:.8">Hoặc liên hệ nhanh: <a href="https://zalo.me/0937116819" target="_blank" rel="noopener" style="color:var(--gold-lt)">Zalo 0937 116 819</a> · <a href="tel:0937116819" style="color:var(--gold-lt)">Gọi 0937 116 819</a></p>
   </div>
 </div></section>
@@ -258,10 +260,13 @@ function calc(){const rev=+document.getElementById('rev').value*1000000;document
  const fee=rev*pct/100,net=rev-fee;document.getElementById('rRev').textContent=fmt(rev)+'đ';document.getElementById('rPct').textContent=pct;
  document.getElementById('rFee').textContent='−'+fmt(fee)+'đ';document.getElementById('rNet').textContent=fmt(net)+'đ';document.getElementById('rYear').textContent=fmt(net*12/1000000);}
 let tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2800);}
-function submitLead(){const n=document.getElementById('cName').value.trim(),ph=document.getElementById('cPhone').value.trim();
- if(!n||!ph){toast('Vui lòng nhập họ tên và số điện thoại');return;}
- window.open('https://zalo.me/0937116819','_blank');toast('Cảm ơn '+n+'! Vui lòng nhắn Zalo để FiTop tư vấn nhanh nhất.');
- document.getElementById('cName').value='';document.getElementById('cPhone').value='';}
+function submitLead(e){e.preventDefault();const form=e.target;const n=form.hoten.value.trim(),ph=form.sodienthoai.value.trim();
+ if(!n||!ph){toast('Vui lòng nhập họ tên và số điện thoại');return false;}
+ const data=new URLSearchParams(new FormData(form)).toString();
+ fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:data})
+  .then(()=>{toast('Cảm ơn '+n+'! FiTop Retreat sẽ liên hệ bạn sớm nhất.');form.reset();})
+  .catch(()=>{toast('Có lỗi — vui lòng nhắn Zalo 0937 116 819');window.open('https://zalo.me/0937116819','_blank');});
+ return false;}
 calc();
 </script>
 </body>
