@@ -52,3 +52,25 @@
   from = "/villa"
   to = "/villa.html"
   status = 200
+
+# --- Ký gửi căn (self-service): đăng ký, chợ công khai, duyệt nội bộ ---
+[[redirects]]
+  from = "/dang-ky-can"
+  to = "/dang-ky-can.html"
+  status = 200
+[[redirects]]
+  from = "/can-ho"
+  to = "/can-ho.html"
+  status = 200
+[[redirects]]
+  from = "/quan-ly-can"
+  to = "/quan-ly-can.html"
+  status = 200
+
+# Trang duyệt nội bộ: không cho lập chỉ mục, không nhúng khung.
+[[headers]]
+  for = "/quan-ly-can*"
+  [headers.values]
+    X-Robots-Tag = "noindex"
+    X-Frame-Options = "DENY"
+    Cache-Control = "no-store"
