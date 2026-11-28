@@ -284,6 +284,20 @@ button{font-family:inherit}
 }
 .ch-gia{font-weight:700;color:var(--gold-dk);white-space:nowrap}
 .ch-ghi{margin:10px 2px 0;font-size:13.5px;color:var(--ink-3)}
+.zen-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:6px}
+.zen-card{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--white);box-shadow:0 4px 16px rgba(22,32,46,.05);display:flex;flex-direction:column;transition:transform .15s,box-shadow .15s}
+.zen-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(22,32,46,.12)}
+.zen-img{aspect-ratio:4/3;background:#F3F4F6;overflow:hidden}
+.zen-img img{width:100%;height:100%;object-fit:cover;display:block}
+.zen-b{padding:14px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.zen-h{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+.zen-h b{font-size:17px;color:var(--navy)}
+.zen-h .ch-gia{font-size:14px}
+.zen-sp{font-size:13px;color:var(--ink-2)}
+.zen-ly{font-size:12.5px;color:var(--ink-3);line-height:1.45}
+@media(max-width:1000px){.zen-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:760px){.zen-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:460px){.zen-grid{grid-template-columns:1fr}}
 @media(max-width:700px){
   /* Dien thoai: bo cot kich thuoc va bo tri, de Gia khong bi day ra ngoai man.
      Gia la cot khach can thay nhat, khong de no nam sau mot cu vuot ngang. */
@@ -539,20 +553,31 @@ html{scroll-padding-top:74px}
     <div class="ch-l"><h4>Không mất trắng khi đổi hướng</h4><p>Tháo chuyển hoặc sang nhượng được, khác hẳn công trình xây cố định sai công năng.</p></div>
   </div>
 
-  <div class="ch-tb">
-    <table class="ch-bang">
-      <thead><tr><th>Mẫu</th><th>Diện tích</th><th>Kích thước</th><th>Bố trí</th><th>Giá</th></tr></thead>
-      <tbody>
-        <tr><td><b>Zen 3</b></td><td>16,7 m²</td><td>6,8 × 2,45 × 2,9 m</td><td>1 phòng ngủ · 1 toilet</td><td class="ch-gia">370.000.000 đ</td></tr>
-        <tr><td><b>Zen 6 Mini</b></td><td>19,8 m²</td><td>8 × 2,48 × 2,9 m</td><td>1 phòng ngủ · 1 toilet · ban công — 1–2 khách</td><td class="ch-gia">415.000.000 đ</td></tr>
-        <tr><td><b>Zen 6</b></td><td>29,7 m²</td><td>9 × 3,3 × 3,3 m</td><td>1 phòng ngủ · 1 toilet · ban công</td><td class="ch-gia">375.000.000 đ</td></tr>
-        <tr><td><b>Zen 6 Basic</b></td><td>29,7 m²</td><td>9 × 3,3 × 3,3 m</td><td>Bản tiêu chuẩn · 1 phòng ngủ · 1 toilet · ban công</td><td class="ch-gia">475.000.000 đ</td></tr>
-        <tr><td><b>Zen 6 Lux</b></td><td>29,7 m²</td><td>9 × 3,3 × 3,3 m</td><td>Bản Lux · tích hợp nhà thông minh</td><td class="ch-gia">630.000.000 đ</td></tr>
-        <tr><td><b>Zen 7</b></td><td>—</td><td>11,5 × 3,3 × 3,2 m</td><td>1 phòng ngủ · khách + bếp + quầy bar — 2–4 khách</td><td class="ch-gia">523.000.000 đ</td></tr>
-        <tr><td><b>Zen 8</b></td><td>38 m²</td><td>11,5 × 3,3 × 3,2 m</td><td>2 phòng ngủ · 1 toilet · ban công</td><td class="ch-gia">688.000.000 đ</td></tr>
-        <tr><td><b>Zen 9</b></td><td>38 m²</td><td>11,6 × 3,3 × 3,4 m</td><td>1 phòng ngủ · phòng khách · 1 toilet · sân thượng</td><td class="ch-gia">740.000.000 đ</td></tr>
-      </tbody>
-    </table>
+  <div class="zen-grid">
+    <div class="zen-card"><div class="zen-img"><img src="zen-3.webp" alt="Nhà di động CoolHome Zen 3" loading="lazy"></div>
+      <div class="zen-b"><div class="zen-h"><b>Zen 3</b><span class="ch-gia">370.000.000 đ</span></div>
+        <div class="zen-sp">16,7 m² · 6,8 × 2,45 × 2,9 m</div><div class="zen-ly">1 phòng ngủ · 1 toilet</div></div></div>
+    <div class="zen-card"><div class="zen-img"><img src="zen-6-mini.webp" alt="Nhà di động CoolHome Zen 6 Mini" loading="lazy"></div>
+      <div class="zen-b"><div class="zen-h"><b>Zen 6 Mini</b><span class="ch-gia">415.000.000 đ</span></div>
+        <div class="zen-sp">19,8 m² · 8 × 2,48 × 2,9 m</div><div class="zen-ly">1 phòng ngủ · 1 toilet · ban công — 1–2 khách</div></div></div>
+    <div class="zen-card"><div class="zen-img"><img src="zen-6.webp" alt="Nhà di động CoolHome Zen 6" loading="lazy"></div>
+      <div class="zen-b"><div class="zen-h"><b>Zen 6</b><span class="ch-gia">375.000.000 đ</span></div>
+        <div class="zen-sp">29,7 m² · 9 × 3,3 × 3,3 m</div><div class="zen-ly">1 phòng ngủ · 1 toilet · ban công</div></div></div>
+    <div class="zen-card"><div class="zen-img"><img src="zen-6-basic.webp" alt="Nhà di động CoolHome Zen 6 Basic" loading="lazy"></div>
+      <div class="zen-b"><div class="zen-h"><b>Zen 6 Basic</b><span class="ch-gia">475.000.000 đ</span></div>
+        <div class="zen-sp">29,7 m² · 9 × 3,3 × 3,3 m</div><div class="zen-ly">Bản tiêu chuẩn · 1 phòng ngủ · 1 toilet · ban công</div></div></div>
+    <div class="zen-card"><div class="zen-img"><img src="zen-6-lux.webp" alt="Nhà di động CoolHome Zen 6 Lux" loading="lazy"></div>
+      <div class="zen-b"><div class="zen-h"><b>Zen 6 Lux</b><span class="ch-gia">630.000.000 đ</span></div>
+        <div class="zen-sp">29,7 m² · 9 × 3,3 × 3,3 m</div><div class="zen-ly">Bản Lux · tích hợp nhà thông minh</div></div></div>
+    <div class="zen-card"><div class="zen-img"><img src="zen-7.webp" alt="Nhà di động CoolHome Zen 7" loading="lazy"></div>
+      <div class="zen-b"><div class="zen-h"><b>Zen 7</b><span class="ch-gia">523.000.000 đ</span></div>
+        <div class="zen-sp">11,5 × 3,3 × 3,2 m</div><div class="zen-ly">1 phòng ngủ · khách + bếp + quầy bar — 2–4 khách</div></div></div>
+    <div class="zen-card"><div class="zen-img"><img src="zen-8.webp" alt="Nhà di động CoolHome Zen 8" loading="lazy"></div>
+      <div class="zen-b"><div class="zen-h"><b>Zen 8</b><span class="ch-gia">688.000.000 đ</span></div>
+        <div class="zen-sp">38 m² · 11,5 × 3,3 × 3,2 m</div><div class="zen-ly">2 phòng ngủ · 1 toilet · ban công</div></div></div>
+    <div class="zen-card"><div class="zen-img"><img src="zen-9.webp" alt="Nhà di động CoolHome Zen 9" loading="lazy"></div>
+      <div class="zen-b"><div class="zen-h"><b>Zen 9</b><span class="ch-gia">740.000.000 đ</span></div>
+        <div class="zen-sp">38 m² · 11,6 × 3,3 × 3,4 m</div><div class="zen-ly">1 phòng ngủ · phòng khách · 1 toilet · sân thượng</div></div></div>
   </div>
   <p class="ch-ghi">Ngoài dải Zen 3–Zen 9 còn các mẫu Zen 30 · Zen 40 và nhà lều Camping C3 — báo giá theo yêu cầu.</p>
 
